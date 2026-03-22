@@ -16,7 +16,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Temporary bypass as requested for quick dashboard access
-    if (password === '1234') {
+    if (password === '12345678') {
       const token = jwt.sign(
         { adminId: 'demo_admin', email, role: 'finance_admin' },
         JWT_SECRET,

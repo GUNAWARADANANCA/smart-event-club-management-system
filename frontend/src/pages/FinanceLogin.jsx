@@ -5,7 +5,7 @@ import { Lock, Mail, ChevronRight, ShieldAlert } from 'lucide-react';
 
 export default function FinanceLogin() {
   const [email, setEmail] = useState('admin@finance.uni.edu');
-  const [password, setPassword] = useState('1234');
+  const [password, setPassword] = useState('12345678');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -14,6 +14,10 @@ export default function FinanceLogin() {
     e.preventDefault();
     if (!email || !password) {
       setError('Please fill in both email and password.');
+      return;
+    }
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
       return;
     }
     
