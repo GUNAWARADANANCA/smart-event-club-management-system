@@ -5,7 +5,7 @@ import { Lock, Mail, ChevronRight, ShieldAlert } from 'lucide-react';
 
 export default function FinanceLogin() {
   const [email, setEmail] = useState('admin@finance.uni.edu');
-  const [password, setPassword] = useState('12345678');
+  const [password, setPassword] = useState('admin@123');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
