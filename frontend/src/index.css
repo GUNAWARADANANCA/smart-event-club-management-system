@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Light Theme with Teal/Orange Palette */
+body {
+  background-color: #F8FAFC;
+  color: #0F172A;
+}
+
+/* Antd Custom Theme Overrides for Light Theme */
+.ant-pagination-item-active {
+  border-color: #14B8A6 !important;
+  background-color: #14B8A6 !important;
+}
+
+.ant-pagination-item-active a {
+  color: #FFFFFF !important;
+}
+
+.ant-pagination-item {
+  border-color: #E2E8F0 !important;
+  background-color: #FFFFFF !important;
+}
+
+.ant-pagination-item a {
+  color: #0F172A !important;
+}
+
+.ant-menu {
+  background-color: #0F172A !important;
+  color: #0F172A !important;
+}
+
+.ant-menu-item-selected {
+  background-color: #14B8A6 !important;
+  color: #FFFFFF !important;
+}
+
+.ant-menu-item {
+  color: #FFFFFF !important;
+}
+
+.ant-menu-item:hover {
+  color: #14B8A6 !important;
+}
+
+.ant-table {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid #E2E8F0 !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: #F1F5F9 !important;
+}
+
+/* Ant Design Button Theming */
+.ant-btn-primary {
+  background-color: #14B8A6 !important;
+  border-color: #14B8A6 !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #0F766E !important;
+  border-color: #0F766E !important;
+}
+
+.ant-btn-default {
+  color: #0F172A !important;
+  border-color: #E2E8F0 !important;
+  background-color: #FFFFFF !important;
+}
+
+.ant-btn-default:hover {
+  background-color: #F8FAFC !important;
+  border-color: #14B8A6 !important;
+  color: #14B8A6 !important;
+}
+
+/* Ant Design Input Theming */
+.ant-input,
+.ant-input-number,
+.ant-select-selector,
+.ant-picker {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #E2E8F0 !important;
+}
+
+.ant-input:focus,
+.ant-input-number:focus,
+.ant-select-selector:focus,
+.ant-picker:focus {
+  border-color: #14B8A6 !important;
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.2) !important;
+}
+
+/* Ant Design Modal & Cards */
+.ant-modal-content,
+.ant-card {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+.ant-modal-header {
+  background-color: #F8FAFC !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+.ant-card-head {
+  background-color: #F8FAFC !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+/* Ant Design Form Labels */
+.ant-form-item-label > label {
+  color: #0F172A !important;
+}
+
+/* Ant Design Tabs */
+.ant-tabs {
+  color: #0F172A !important;
+}
+
+.ant-tabs-tab {
+  color: #64748B !important;
+}
+
+.ant-tabs-tab-active {
+  color: #14B8A6 !important;
+}
+
+.ant-tabs-ink-bar {
+  background-color: #14B8A6 !important;
+}
+
+/* Ant Design Select Dropdown */
+.ant-select-item-option-selected {
+  background-color: #E0F2F1 !important;
+}
+
+.ant-select-item-option-selected:hover {
+  background-color: #B2DFDB !important;
+}
