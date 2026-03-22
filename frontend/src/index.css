@@ -54,10 +54,10 @@ body {
 }
 
 .ant-table-thead > tr > th {
-  background-color: #F8FAFC !important;
-  color: #0F172A !important;
+  background-color: #14B8A6 !important;
+  color: #000000 !important;
   font-weight: 600 !important;
-  border-bottom: 2px solid #E2E8F0 !important;
+  border-bottom: 2px solid #0F766E !important;
 }
 
 .ant-table-tbody > tr > td {
@@ -66,7 +66,7 @@ body {
 }
 
 .ant-table-tbody > tr:hover > td {
-  background-color: #F1F5F9 !important;
+  background-color: #CCFBF1 !important;
 }
 
 /* Ant Design Button Theming */
@@ -129,7 +129,7 @@ body {
 
 /* Ant Design Form Labels */
 .ant-form-item-label > label {
-  color: #0F172A !important;
+  color: #000000 !important;
 }
 
 /* Ant Design Tabs */
@@ -156,4 +156,46 @@ body {
 
 .ant-select-item-option-selected:hover {
   background-color: #B2DFDB !important;
+}
+
+/* Green Select Overrides - Ensure these are extremely visible */
+.green-select .ant-select-selector {
+  background-color: #14B8A6 !important; /* Vibrant Green/Teal */
+  color: #000000 !important;
+  border-color: #0F766E !important;
+  border-radius: 8px !important;
+}
+
+.green-select .ant-select-selection-placeholder {
+  color: #000000 !important;
+  font-weight: 500 !important;
+  opacity: 1 !important;
+}
+
+.green-select .ant-select-arrow {
+  color: #000000 !important;
+}
+
+.green-dropdown {
+  background-color: #FFFFFF !important;
+  border: 1px solid #14B8A6 !important;
+}
+
+.green-dropdown .ant-select-item {
+  color: #000000 !important;
+}
+
+.green-dropdown .ant-select-item-option-selected {
+  background-color: #14B8A6 !important;
+  color: #FFFFFF !important;
+}
+
+.green-dropdown .ant-select-item-option-active {
+  background-color: #CCFBF1 !important; /* Light teal on hover */
+}
+
+/* Ant Design Statistic Text Colors */
+.ant-statistic-title {
+  color: #000000 !important;
+  font-weight: 500 !important;
 }

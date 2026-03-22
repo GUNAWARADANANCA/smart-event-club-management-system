@@ -20,18 +20,14 @@ const EventManagement = () => {
   }, []);
 
   const fetchEvents = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get('/events');
-      // Backend returns mock message. Since mock backend doesn't return real data yet, 
-      // we'll simulate an empty array or the mock data if backend returned it.
-      // Ideally backend returns: { data: [...] }
-      setData(response.data.events || []);
-    } catch (error) {
-      message.error('Failed to load events from backend');
-    } finally {
-      setLoading(false);
-    }
+    // Mock data for UI demonstration
+    setData([
+      { id: 'E-001', title: 'Annual Tech Symposium 2026', date: '2026-08-15', venue: 'Main Hall', capacity: 500, status: 'Approved' },
+      { id: 'E-002', title: 'Robotics Workshop: Level 1', date: '2026-09-10', venue: 'Lab 04', capacity: 50, status: 'Pending' },
+      { id: 'E-003', title: 'University Cultural Night', date: '2026-10-05', venue: 'Auditorium', capacity: 1200, status: 'Approved' },
+      { id: 'E-004', title: 'Freshers Welcome: Faculty of IT', date: '2026-11-20', venue: 'Sports Ground', capacity: 2000, status: 'Rejected' },
+    ]);
+    setLoading(false);
   };
 
   const openEditModal = (record) => {
@@ -87,12 +83,19 @@ const EventManagement = () => {
   ];
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Title level={2}>Event Management</Title>
-        <Button type="primary" onClick={() => navigate('/events/create')}>Craft New Event Post</Button>
+    <div style={{ padding: '24px', background: '#FFFFFF', borderRadius: 16, border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24, alignItems: 'center' }}>
+        <Title level={2} style={{ margin: 0, color: '#000000' }}>Event Management</Title>
+        <Button 
+          type="primary" 
+          size="large"
+          style={{ background: '#14B8A6', borderColor: '#0F766E', fontWeight: 'bold', color: '#000' }}
+          onClick={() => navigate('/events/create')}
+        >
+          Craft New Event Post
+        </Button>
       </div>
-      <Table columns={columns} dataSource={data} rowKey="id" />
+      <Table columns={columns} dataSource={data} rowKey="id" loading={loading} />
 
       <Modal 
         title={`Edit Event: ${editingEvent?.title}`} 

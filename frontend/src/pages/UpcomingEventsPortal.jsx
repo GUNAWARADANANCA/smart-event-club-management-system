@@ -171,7 +171,7 @@ const UpcomingEventsPortal = () => {
             <Input placeholder="Search by title, organizer, or keywords..." prefix={<SearchOutlined />} size="large" value={searchText} onChange={e => setSearchText(e.target.value)} style={{ background: '#F8FAFC', borderColor: '#E2E8F0', color: '#0F172A' }} />
           </Col>
           <Col xs={12} sm={8} md={4}>
-            <Select value={filterCategory} onChange={setFilterCategory} size="large" style={{ width: '100%' }} popupClassName="dark-select-dropdown">
+            <Select value={filterCategory} onChange={setFilterCategory} size="large" style={{ width: '100%' }} className="green-select" popupClassName="green-dropdown">
               <Option value="All">All Categories</Option>
               <Option value="Academic">Academic</Option>
               <Option value="Sports">Sports</Option>
@@ -180,14 +180,14 @@ const UpcomingEventsPortal = () => {
             </Select>
           </Col>
           <Col xs={12} sm={8} md={4}>
-            <Select value={filterAudience} onChange={setFilterAudience} size="large" style={{ width: '100%' }} popupClassName="dark-select-dropdown">
+            <Select value={filterAudience} onChange={setFilterAudience} size="large" style={{ width: '100%' }} className="green-select" popupClassName="green-dropdown">
               <Option value="All">All Audience</Option>
               <Option value="University Students Only">University Only</Option>
               <Option value="Open to All">Open to All</Option>
             </Select>
           </Col>
           <Col xs={12} sm={8} md={4}>
-            <Select value={filterMode} onChange={setFilterMode} size="large" style={{ width: '100%' }} popupClassName="dark-select-dropdown">
+            <Select value={filterMode} onChange={setFilterMode} size="large" style={{ width: '100%' }} className="green-select" popupClassName="green-dropdown">
               <Option value="All">All Modes</Option>
               <Option value="Physical">Physical</Option>
               <Option value="Online">Online</Option>
@@ -195,7 +195,7 @@ const UpcomingEventsPortal = () => {
             </Select>
           </Col>
           <Col xs={12} sm={8} md={4}>
-            <Select value={sortBy} onChange={setSortBy} size="large" style={{ width: '100%' }} popupClassName="dark-select-dropdown">
+            <Select value={sortBy} onChange={setSortBy} size="large" style={{ width: '100%' }} className="green-select" popupClassName="green-dropdown">
               <Option value="Date">Sort by Date</Option>
               <Option value="Popularity">Sort by Popularity</Option>
               <Option value="Closing Soon">Sort by Closing Soon</Option>

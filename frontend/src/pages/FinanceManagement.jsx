@@ -35,18 +35,18 @@ const FinanceManagement = () => {
   ];
 
   return (
-    <div>
+    <div style={{ minHeight: '100vh', padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24, alignItems: 'center' }}>
-        <Title level={2} style={{ margin: 0 }}>Revenue Dashboard</Title>
+        <Title level={2} style={{ margin: 0, color: '#0F172A' }}>Revenue Dashboard</Title>
         <Space size="middle">
-          <div style={{ padding: '6px 16px', background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.3)', borderRadius: 24, display: 'flex', alignItems: 'center', gap: 12, marginRight: 8 }}>
-            <span style={{ color: 'rgba(255,255,255,0.85)', letterSpacing: '0.5px' }}>External Ticket Sales:</span>
+          <div style={{ padding: '6px 16px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 24, display: 'flex', alignItems: 'center', gap: 12, marginRight: 8 }}>
+            <span style={{ color: '#0F172A', letterSpacing: '0.5px' }}>External Ticket Sales:</span>
             <Switch 
               checked={salesActive} 
               onChange={handleSalesToggle} 
               checkedChildren="Active" 
               unCheckedChildren="Closed" 
-              style={{ background: salesActive ? '#8b5cf6' : '#303030' }}
+              style={{ background: salesActive ? '#14B8A6' : '#E2E8F0' }}
             />
           </div>
           <Button type="default" onClick={() => navigate('/finance/budget-approval')}>Approvals</Button>
@@ -57,26 +57,26 @@ const FinanceManagement = () => {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={8}>
-          <Card hoverable>
+          <Card hoverable style={{ border: '1px solid #E2E8F0' }}>
             <Statistic title="Total Revenue" value={12500} prefix={<DollarOutlined />} valueStyle={{ color: '#52c41a' }} />
           </Card>
         </Col>
         <Col xs={24} sm={8}>
-          <Card hoverable>
+          <Card hoverable style={{ border: '1px solid #E2E8F0' }}>
             <Statistic title="Total Expenses" value={3200} prefix={<ArrowDownOutlined />} valueStyle={{ color: '#f5222d' }} />
           </Card>
         </Col>
         <Col xs={24} sm={8}>
-          <Card hoverable>
-            <Statistic title="Net Profit" value={9300} prefix={<ArrowUpOutlined />} valueStyle={{ color: '#8b5cf6' }} />
+          <Card hoverable style={{ border: '1px solid #E2E8F0' }}>
+            <Statistic title="Net Profit" value={9300} prefix={<ArrowUpOutlined />} valueStyle={{ color: '#14B8A6' }} />
           </Card>
         </Col>
       </Row>
 
       <div style={{ marginTop: 24 }}>
-        <Card title="Budget Proposals" bordered={false}>
+        <Card title="Budget Proposals" bordered={false} style={{ border: '1px solid #E2E8F0' }}>
           <Table 
-            columns={[
+            columns={[ 
               { title: 'ID', dataIndex: 'id', key: 'id' },
               { title: 'Event', dataIndex: 'event', key: 'event' },
               { title: 'Amount (Rs.)', dataIndex: 'amount', key: 'amount', render: val => `Rs. ${Number(val).toLocaleString()}` },
@@ -101,9 +101,9 @@ const FinanceManagement = () => {
           bottom: '40px',
           right: '40px',
           zIndex: 1000,
-          background: '#8b5cf6',
-          borderColor: '#8b5cf6',
-          boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)'
+          background: 'linear-gradient(to right, #0F766E, #14B8A6)',
+          borderColor: 'transparent',
+          boxShadow: '0 4px 12px rgba(20, 184, 166, 0.4)'
         }}
         onClick={() => setIsModalVisible(true)}
       >
@@ -116,24 +116,17 @@ const FinanceManagement = () => {
         onCancel={() => setIsModalVisible(false)}
         width={700}
         footer={[
-          <Button key="close" type="primary" onClick={() => setIsModalVisible(false)} style={{ background: '#8b5cf6', borderColor: '#8b5cf6' }}>
+          <Button key="close" type="primary" onClick={() => setIsModalVisible(false)} style={{ background: '#14B8A6', borderColor: '#14B8A6' }}>
             Close
           </Button>
         ]}
         className="glass-modal"
-        styles={{ 
-          content: { background: '#141414', border: '1px solid #303030', color: 'white' },
-          header: { background: '#141414', borderBottom: '1px solid #303030' },
-          title: { color: 'white' },
-          closeIcon: { color: 'white' }
-        }}
       >
         <Table 
           dataSource={ticketPurchases} 
           columns={ticketColumns} 
           rowKey="id" 
           pagination={false} 
-          className="dark-table"
         />
       </Modal>
     </div>

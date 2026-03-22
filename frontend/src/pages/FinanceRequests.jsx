@@ -14,20 +14,38 @@ const FinanceRequests = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchRequests();
+    // fetchRequests(); // No need for backend now
+    setRequests([
+      { 
+        id: 'FR-2026-001', 
+        name: 'Annual Tech Symposium Budget', 
+        type: 'Event', 
+        submittedDate: '2026-03-15', 
+        status: 'Pending', 
+        description: 'Budget request for venue booking, speaker fees, and marketing materials for the upcoming symposium.',
+        remarks: '' 
+      },
+      { 
+        id: 'FR-2026-002', 
+        name: 'Robotics Club Equipment', 
+        type: 'Club', 
+        submittedDate: '2026-03-18', 
+        status: 'Approved', 
+        description: 'Purchase of 10 Arduino and 5 Raspberry Pi kits for the upcoming workshops.',
+        remarks: 'Approved as per previous committee meeting.' 
+      },
+      { 
+        id: 'FR-2026-003', 
+        name: 'Cultural Night Performance Costumes', 
+        type: 'Event', 
+        submittedDate: '2026-03-20', 
+        status: 'Pending', 
+        description: 'Request for costume rentals and stage setup for the Annual Cultural Night.',
+        remarks: '' 
+      }
+    ]);
+    setLoading(false);
   }, []);
-
-  const fetchRequests = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get('/finance/budgets');
-      setRequests(res.data.requests || []);
-    } catch (err) {
-      message.error('Failed to load finance requests from backend');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleViewPDF = (req) => {
     setSelectedRequest(req);
@@ -61,8 +79,8 @@ const FinanceRequests = () => {
   return (
     <div>
       <div style={{ marginBottom: 32 }}>
-        <Title level={2} style={{ margin: 0 }}>Finance Request Review</Title>
-        <Text type="secondary" style={{ fontSize: 16 }}>Review and manage pending PDF requests submitted by clubs and events.</Text>
+        <Title level={2} style={{ margin: 0, color: '#000000' }}>Finance Request Review</Title>
+        <Text style={{ fontSize: 16, color: '#000000' }}>Review and manage pending PDF requests submitted by clubs and events.</Text>
       </div>
 
       <Row gutter={[24, 24]}>
@@ -72,9 +90,8 @@ const FinanceRequests = () => {
               hoverable
               style={{ 
                 height: '100%', 
-                background: 'rgba(20, 20, 20, 0.6)', 
-                backdropFilter: 'blur(16px)', 
-                border: '1px solid rgba(139, 92, 246, 0.3)',
+                background: '#FFFFFF', 
+                border: '1px solid #E2E8F0',
                 borderRadius: 16,
                 display: 'flex', flexDirection: 'column'
               }}
@@ -82,8 +99,8 @@ const FinanceRequests = () => {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
                 <div>
-                  <Title level={4} style={{ color: '#a78bfa', margin: 0 }}>{req.name}</Title>
-                  <Text type="secondary">{req.id}</Text>
+                  <Title level={4} style={{ color: '#000000', margin: 0 }}>{req.name}</Title>
+                  <Text style={{ color: '#000000' }}>{req.id}</Text>
                 </div>
                 {getStatusTag(req.status)}
               </div>
@@ -94,7 +111,7 @@ const FinanceRequests = () => {
               </Space>
 
               <div style={{ flex: 1, marginBottom: 24 }}>
-                <Paragraph style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                <Paragraph style={{ color: '#000000' }}>
                   {req.description}
                 </Paragraph>
               </div>
@@ -118,7 +135,7 @@ const FinanceRequests = () => {
         title={
           <Space>
             <FilePdfOutlined style={{ color: '#f5222d', fontSize: 24 }} />
-            <span style={{ fontSize: 20 }}>Review Request: {selectedRequest?.name}</span>
+            <span style={{ fontSize: 20, color: '#000000' }}>Review Request: {selectedRequest?.name}</span>
           </Space>
         }
         open={isModalVisible}
@@ -135,17 +152,17 @@ const FinanceRequests = () => {
               {/* Dummy PDF Viewer */}
               <div style={{ 
                 height: '500px', 
-                background: '#1f1f1f', 
-                border: '1px solid #303030', 
+                background: '#F0F2F5', 
+                border: '1px solid #E2E8F0', 
                 borderRadius: 8,
                 display: 'flex', 
                 flexDirection: 'column',
                 justifyContent: 'center', 
                 alignItems: 'center',
-                color: 'rgba(255, 255, 255, 0.5)'
+                color: '#475569'
               }}>
                 <FilePdfOutlined style={{ fontSize: 64, marginBottom: 16 }} />
-                <Title level={4} style={{ color: '#a78bfa' }}>{selectedRequest.name}</Title>
+                <Title level={4} style={{ color: '#000000' }}>{selectedRequest.name}</Title>
                 <Text>Submitted Date: {selectedRequest.submittedDate}</Text>
                 <Text style={{ marginTop: 16 }}>(PDF Document Viewer Embedded Here)</Text>
               </div>
@@ -153,25 +170,25 @@ const FinanceRequests = () => {
             
             <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ flex: 1 }}>
-                <Title level={5} style={{ color: 'white' }}>Request Details</Title>
+                <Title level={5} style={{ color: '#000000' }}>Request Details</Title>
                 <Descriptions column={1} size="small" style={{ marginBottom: 24 }}>
                   <Descriptions.Item label="ID">{selectedRequest.id}</Descriptions.Item>
                   <Descriptions.Item label="Type">{selectedRequest.type}</Descriptions.Item>
                   <Descriptions.Item label="Status">{getStatusTag(selectedRequest.status)}</Descriptions.Item>
                 </Descriptions>
                 
-                <Title level={5} style={{ color: 'white' }}>Original Description</Title>
-                <Paragraph style={{ color: 'rgba(255,255,255,0.7)', padding: 12, background: '#141414', borderRadius: 8, border: '1px solid #303030' }}>
+                <Title level={5} style={{ color: '#000000' }}>Original Description</Title>
+                <Paragraph style={{ color: '#000000', padding: 12, background: '#F8FAFC', borderRadius: 8, border: '1px solid #E2E8F0' }}>
                   {selectedRequest.description}
                 </Paragraph>
 
-                <Title level={5} style={{ color: 'white' }}>Admin Remarks (Optional)</Title>
+                <Title level={5} style={{ color: '#000000' }}>Admin Remarks (Optional)</Title>
                 <TextArea 
                   rows={4} 
                   placeholder="Enter comments or justification for approval/rejection..." 
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
-                  style={{ background: '#141414', borderColor: '#303030', color: 'white', marginBottom: 24 }}
+                  style={{ background: '#F8FAFC', borderColor: '#E2E8F0', color: '#000000', marginBottom: 24 }}
                 />
               </div>
 
@@ -209,20 +226,19 @@ const FinanceRequests = () => {
 
       <style>{`
         .glass-modal .ant-modal-content {
-          background: rgba(20, 20, 20, 0.85) !important;
-          backdrop-filter: blur(20px) !important;
-          border: 1px solid rgba(139, 92, 246, 0.3) !important;
+          background: #FFFFFF !important;
           border-radius: 16px;
+          border: 1px solid #E2E8F0 !important;
         }
         .glass-modal .ant-modal-header {
           background: transparent !important;
-          border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+          border-bottom: 1px solid #F0F0F0 !important;
         }
         .glass-modal .ant-modal-title {
-          color: white !important;
+          color: #000000 !important;
         }
         .glass-modal .ant-modal-close {
-          color: white !important;
+          color: #000000 !important;
         }
       `}</style>
     </div>

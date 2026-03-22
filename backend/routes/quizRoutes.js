@@ -15,4 +15,16 @@ router.post('/:id/attempt', (req, res) => {
   res.json({ message: 'Submit quiz attempt', score: 85 });
 });
 
+router.post('/', (req, res) => {
+  const { title, description, timeLimit, eventId, questions } = req.body;
+  
+  // Logic to save to database would go here
+  console.log('Creating new quiz:', { title, eventId, questionCount: questions.length });
+  
+  res.status(201).json({ 
+    message: 'Quiz created successfully', 
+    quiz: { id: Date.now(), title, eventId, questions: questions.length, timeLimit, status: 'Active' } 
+  });
+});
+
 module.exports = router;

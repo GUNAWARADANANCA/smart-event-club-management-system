@@ -40,7 +40,7 @@ const ExpenseManagement = () => {
       <Modal title="Log Expense" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)}>
         <Form form={form} layout="vertical">
           <Form.Item name="event" label="Associated Event" rules={[{ required: true }]}>
-            <Select>
+            <Select className="green-select" popupClassName="green-dropdown">
                 <Option value="Tech Symposium">Tech Symposium</Option>
                 <Option value="Art Workshop">Art Workshop</Option>
             </Select>

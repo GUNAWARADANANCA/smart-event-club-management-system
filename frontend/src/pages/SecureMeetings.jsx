@@ -75,17 +75,17 @@ const SecureMeetings = () => {
   };
 
   return (
-    <div>
+    <div className="p-6">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
         <div>
-          <Title level={2} style={{ margin: 0 }}>Secure Meeting Schedule</Title>
-          <Text type="secondary" style={{ fontSize: 16 }}>Manage unified access and schedule restricted meetings for clubs and events.</Text>
+          <Title level={2} style={{ margin: 0, color: '#000' }}>Secure Meeting Schedule</Title>
+          <Text style={{ fontSize: 16, color: '#475569' }}>Manage unified access and schedule restricted meetings for clubs and events.</Text>
         </div>
         <Button 
           type="primary" 
           icon={<PlusOutlined />} 
           size="large" 
-          style={{ background: '#8b5cf6', borderColor: '#8b5cf6' }}
+          style={{ background: '#14B8A6', borderColor: '#0F766E' }}
           onClick={() => setIsModalVisible(true)}
         >
           Schedule Meeting
@@ -95,27 +95,28 @@ const SecureMeetings = () => {
       <Row gutter={24}>
         <Col xs={24} lg={16}>
           <Card 
-            title={<><VideoCameraOutlined style={{ color: '#8b5cf6', marginRight: 8 }}/> Upcoming Secure Meetings</>}
+            title={<><VideoCameraOutlined style={{ color: '#14B8A6', marginRight: 8 }}/> <span style={{ color: '#000' }}>Upcoming Secure Meetings</span></>}
             bordered={false} 
-            style={{ background: '#141414', borderColor: '#303030', borderRadius: 16 }}
+            className="shadow-md"
+            style={{ background: '#FFFFFF', borderRadius: 16 }}
           >
             {meetings.length === 0 ? (
               <Empty description="No upcoming scheduled meetings" />
             ) : (
               <Timeline style={{ marginTop: 20 }}>
                 {meetings.map((mtg, index) => (
-                  <Timeline.Item key={index} color={mtg.accessType === 'Passcode Protected' ? 'red' : 'blue'}>
+                  <Timeline.Item key={index} color={mtg.accessType === 'Passcode Protected' ? '#EF4444' : '#14B8A6'}>
                     <div style={{ 
                       padding: 16, 
-                      background: 'rgba(255,255,255,0.02)', 
-                      border: '1px solid #303030', 
+                      background: '#F8FAFC', 
+                      border: '1px solid #E2E8F0', 
                       borderRadius: 12,
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center'
                     }}>
                       <div>
-                        <Title level={5} style={{ color: '#fff', margin: 0, marginBottom: 4 }}>{mtg.title}</Title>
+                        <Title level={5} style={{ color: '#0F172A', margin: 0, marginBottom: 4 }}>{mtg.title}</Title>
                         <Space style={{ marginBottom: 8 }}>
                           <Tag icon={<GlobalOutlined />} color="cyan">{mtg.platform}</Tag>
                           <Tag icon={mtg.accessType === 'Passcode Protected' ? <LockOutlined /> : <GlobalOutlined />} color={mtg.accessType === 'Passcode Protected' ? 'error' : 'processing'}>
@@ -123,7 +124,7 @@ const SecureMeetings = () => {
                           </Tag>
                         </Space>
                         <div>
-                          <Text type="secondary" strong>{mtg.date}</Text>
+                          <Text style={{ color: '#475569', fontWeight: '600' }}>{mtg.date}</Text>
                         </div>
                       </div>
                       
@@ -132,7 +133,7 @@ const SecureMeetings = () => {
                         shape="round"
                         icon={mtg.accessType === 'Passcode Protected' ? <LockOutlined /> : null}
                         onClick={() => handleJoinClick(mtg)}
-                        style={{ background: '#3b82f6', borderColor: '#3b82f6' }}
+                        style={{ background: '#14B8A6', borderColor: '#14B8A6' }}
                       >
                         Join Securely
                       </Button>
@@ -146,18 +147,19 @@ const SecureMeetings = () => {
 
         <Col xs={24} lg={8}>
           <Card 
-            title="Access Security Rules" 
+            title={<span style={{ color: '#000' }}>Access Security Rules</span>}
             bordered={false} 
-            style={{ background: '#141414', borderColor: '#303030', borderRadius: 16 }}
+            className="shadow-md"
+            style={{ background: '#FFFFFF', borderRadius: 16 }}
           >
-            <Paragraph style={{ color: 'rgba(255,255,255,0.7)' }}>
-              1. <strong style={{color:'white'}}>University Students Only:</strong> End-users must be logged in with a certified `.edu` or `.lk` domain. Access is automatically filtered.
+            <Paragraph style={{ color: '#475569' }}>
+              1. <strong style={{color:'#0F172A'}}>University Students Only:</strong> End-users must be logged in with a certified `.edu` or `.lk` domain. Access is automatically filtered.
             </Paragraph>
-            <Paragraph style={{ color: 'rgba(255,255,255,0.7)' }}>
-              2. <strong style={{color:'white'}}>Passcode Protected:</strong> High-security meetings require the host-provided 4-to-6 digit PIN before exposing the transport link.
+            <Paragraph style={{ color: '#475569' }}>
+              2. <strong style={{color:'#0F172A'}}>Passcode Protected:</strong> High-security meetings require the host-provided 4-to-6 digit PIN before exposing the transport link.
             </Paragraph>
-            <Paragraph style={{ color: 'rgba(255,255,255,0.7)' }}>
-              3. <strong style={{color:'white'}}>E2E Encryption:</strong> All meeting handshakes are strictly encrypted via the central gateway server to prevent link sniffing.
+            <Paragraph style={{ color: '#475569' }}>
+              3. <strong style={{color:'#0F172A'}}>E2E Encryption:</strong> All meeting handshakes are strictly encrypted via the central gateway server to prevent link sniffing.
             </Paragraph>
           </Card>
         </Col>
@@ -165,21 +167,21 @@ const SecureMeetings = () => {
 
       {/* Schedule Modal */}
       <Modal
-        title="Schedule Secure Meeting"
+        title={<span style={{ color: '#000' }}>Schedule Secure Meeting</span>}
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
         className="glass-modal"
       >
         <Form form={form} layout="vertical" onFinish={handleScheduleSubmit}>
-          <Form.Item name="title" label="Meeting Topic" rules={[{ required: true }]}>
-            <Input placeholder="e.g. Finance Budget Review Sync" size="large" />
+          <Form.Item name="title" label={<span style={{ color: '#000', fontWeight: '500' }}>Meeting Topic</span>} rules={[{ required: true }]}>
+            <Input placeholder="e.g. Finance Budget Review Sync" size="large" className="bg-[#F9FAFB]" />
           </Form.Item>
           
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="platform" label="Platform" rules={[{ required: true }]}>
-                <Select placeholder="Select Platform" size="large">
+              <Form.Item name="platform" label={<span style={{ color: '#000', fontWeight: '500' }}>Platform</span>} rules={[{ required: true }]}>
+                <Select placeholder="Select Platform" size="large" className="green-select" popupClassName="green-dropdown">
                   <Option value="Zoom">Zoom Meeting</Option>
                   <Option value="Microsoft Teams">Microsoft Teams</Option>
                   <Option value="Google Meet">Google Meet</Option>
@@ -187,14 +189,14 @@ const SecureMeetings = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="date" label="Date & Time" rules={[{ required: true }]}>
-                <DatePicker showTime style={{ width: '100%' }} size="large" />
+              <Form.Item name="date" label={<span style={{ color: '#000', fontWeight: '500' }}>Date & Time</span>} rules={[{ required: true }]}>
+                <DatePicker showTime style={{ width: '100%' }} size="large" className="bg-[#F9FAFB]" />
               </Form.Item>
             </Col>
           </Row>
 
-          <Form.Item name="accessType" label="Security & Access Control" rules={[{ required: true }]}>
-            <Select placeholder="Set Access Layer" size="large">
+          <Form.Item name="accessType" label={<span style={{ color: '#000', fontWeight: '500' }}>Security & Access Control</span>} rules={[{ required: true }]}>
+            <Select placeholder="Set Access Layer" size="large" className="green-select" popupClassName="green-dropdown">
               <Option value="University Students Only">University Authentication Only</Option>
               <Option value="Passcode Protected">Strict Passcode Protected</Option>
               <Option value="Public / Open">Public / Open</Option>
@@ -207,15 +209,15 @@ const SecureMeetings = () => {
           >
             {({ getFieldValue }) =>
               getFieldValue('accessType') === 'Passcode Protected' ? (
-                <Form.Item name="passcode" label="Meeting Passcode" rules={[{ required: true }]}>
-                  <Input.Password placeholder="Enter 4-6 digit passcode" size="large" />
+                <Form.Item name="passcode" label={<span style={{ color: '#000', fontWeight: '500' }}>Meeting Passcode</span>} rules={[{ required: true }]}>
+                  <Input.Password placeholder="Enter 4-6 digit passcode" size="large" className="bg-[#F9FAFB]" />
                 </Form.Item>
               ) : null
             }
           </Form.Item>
 
           <Form.Item style={{ marginBottom: 0, marginTop: 24 }}>
-            <Button type="primary" htmlType="submit" size="large" block style={{ background: '#8b5cf6', borderColor: '#8b5cf6' }}>
+            <Button type="primary" htmlType="submit" size="large" block style={{ background: '#14B8A6', borderColor: '#0F766E', color: 'black', fontWeight: 'bold' }}>
               Schedule & Generate Link
             </Button>
           </Form.Item>
@@ -227,7 +229,7 @@ const SecureMeetings = () => {
         title={
           <Space>
             <LockOutlined style={{ color: '#f5222d' }} />
-            Protected Meeting Access
+            <span style={{ color: '#000' }}>Protected Meeting Access</span>
           </Space>
         }
         open={isJoinModalVisible}
@@ -243,8 +245,8 @@ const SecureMeetings = () => {
         bodyStyle={{ textAlign: 'center', padding: '32px 16px' }}
         className="glass-modal"
       >
-        <Title level={4} style={{ color: 'white' }}>{selectedMeeting?.title}</Title>
-        <Text type="secondary">This meeting endpoint requires validation.</Text>
+        <Title level={4} style={{ color: '#000' }}>{selectedMeeting?.title}</Title>
+        <Text style={{ color: '#475569' }}>This meeting endpoint requires validation.</Text>
         
         <div style={{ marginTop: 24 }}>
           <Input.Password
@@ -253,7 +255,7 @@ const SecureMeetings = () => {
             placeholder="Enter Meeting Passcode"
             value={passcodeAttempt}
             onChange={(e) => setPasscodeAttempt(e.target.value)}
-            style={{ maxWidth: 300, background: '#000', borderColor: '#303030', color: 'white' }}
+            style={{ maxWidth: 300, background: '#F9FAFB', borderColor: '#E2E8F0', color: '#000' }}
             onPressEnter={verifyPasscode}
           />
         </div>
@@ -261,20 +263,19 @@ const SecureMeetings = () => {
 
       <style>{`
         .glass-modal .ant-modal-content {
-          background: rgba(20, 20, 20, 0.9) !important;
-          backdrop-filter: blur(20px) !important;
-          border: 1px solid rgba(139, 92, 246, 0.4) !important;
+          background: #FFFFFF !important;
           border-radius: 16px;
+          border: 1px solid #E2E8F0 !important;
         }
         .glass-modal .ant-modal-header {
           background: transparent !important;
-          border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+          border-bottom: 1px solid #F0F0F0 !important;
         }
         .glass-modal .ant-modal-title {
-          color: white !important;
+          color: #000000 !important;
         }
         .glass-modal .ant-modal-close {
-          color: white !important;
+          color: #000000 !important;
         }
       `}</style>
     </div>

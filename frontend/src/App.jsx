@@ -38,6 +38,7 @@ import QuizAttempt from './pages/QuizAttempt';
 import QuizResult from './pages/QuizResult';
 import Certificate from './pages/Certificate';
 import UserPerformance from './pages/UserPerformance';
+import CreateQuiz from './pages/CreateQuiz';
 
 function App() {
   return (
@@ -84,6 +85,7 @@ function App() {
           <Route path="quizzes/attempt" element={<QuizAttempt />} />
           <Route path="quizzes/result" element={<QuizResult />} />
           <Route path="quizzes/certificate" element={<Certificate />} />
+          <Route path="quizzes/create" element={<CreateQuiz />} />
           
           <Route element={<QuizProtectedRoute />}>
              <Route path="quizzes/performance" element={<UserPerformance />} />

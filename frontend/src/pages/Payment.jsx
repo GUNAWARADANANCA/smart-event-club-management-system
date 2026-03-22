@@ -25,7 +25,7 @@ const Payment = () => {
       <Card style={{ maxWidth: 500, margin: '0 auto' }}>
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item name="event" label="Select Event" rules={[{ required: true }]}>
-             <Select placeholder="Choose event to attend">
+             <Select placeholder="Choose event to attend" className="green-select" popupClassName="green-dropdown">
                 <Option value="Tech Symposium">Tech Symposium - $15.00</Option>
                 <Option value="Art Workshop">Art Workshop - $5.00</Option>
              </Select>

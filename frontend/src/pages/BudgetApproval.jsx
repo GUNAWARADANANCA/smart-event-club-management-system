@@ -56,8 +56,8 @@ const BudgetApproval = () => {
   ];
 
   return (
-    <div>
-      <Title level={2}>Budget Approvals</Title>
+    <div style={{ padding: '24px', background: '#FFFFFF', borderRadius: 16, border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+      <Title level={2} style={{ color: '#000000', marginBottom: 24 }}>Budget Approvals</Title>
       <Table columns={columns} dataSource={data} rowKey="id" />
 
       <Modal

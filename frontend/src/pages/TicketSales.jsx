@@ -209,7 +209,7 @@ export default function TicketSales() {
         >
           <Form form={form} layout="vertical" onFinish={handleBookingSubmit} className="mt-4">
             <Form.Item name="event" label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Select Event</span>} rules={[{ required: true, message: 'Please select an event' }]}>
-              <Select placeholder="Choose an event">
+              <Select placeholder="Choose an event" className="green-select" popupClassName="green-dropdown">
                 <Option value="Spring Break Hackathon">Spring Break Hackathon</Option>
                 <Option value="Global Tech Symposium">Global Tech Symposium</Option>
                 <Option value="University Chess Masters">University Chess Masters</Option>
@@ -231,6 +231,8 @@ export default function TicketSales() {
             <Form.Item name="type" label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Ticket Type</span>} rules={[{ required: true, message: 'Please select ticket type' }]}>
               <Select 
                 placeholder="Select type"
+                className="green-select"
+                popupClassName="green-dropdown"
                 onChange={(value) => {
                   const prices = {
                     'General': 10000,
@@ -248,7 +250,7 @@ export default function TicketSales() {
             </Form.Item>
 
             <Form.Item name="parkingRequired" label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Parking Required</span>} rules={[{ required: true, message: 'Please select if parking is required' }]}>
-              <Select placeholder="Yes / No" onChange={(value) => setParkingRequired(value === 'Yes')}>
+              <Select placeholder="Yes / No" className="green-select" popupClassName="green-dropdown" onChange={(value) => setParkingRequired(value === 'Yes')}>
                 <Option value="Yes">Yes</Option>
                 <Option value="No">No</Option>
               </Select>
@@ -261,7 +263,7 @@ export default function TicketSales() {
                   <span className="font-black text-emerald-400 tracking-wider">42 Slots</span>
                 </div>
                 <Form.Item name="parkingSlot" label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Select Parking Slot</span>} rules={[{ required: true, message: 'Please select a parking slot' }]} className="mb-0">
-                  <Select placeholder="Choose slot">
+                  <Select placeholder="Choose slot" className="green-select" popupClassName="green-dropdown">
                     <Option value="A-01">A-01</Option>
                     <Option value="A-02">A-02</Option>
                     <Option value="B-01">B-01</Option>
@@ -283,7 +285,7 @@ export default function TicketSales() {
                 }}/>
               </Form.Item>
               <Form.Item name="paymentMethod" label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Payment Method</span>} rules={[{ required: true, message: 'Please select method' }]} className="flex-1">
-                <Select placeholder="Select method" onChange={(value) => {
+                <Select placeholder="Select method" className="green-select" popupClassName="green-dropdown" onChange={(value) => {
                   setIsOnlinePayment(value === 'Online');
                   setIsBankTransfer(value === 'Bank Transfer');
                 }}>
