@@ -4,8 +4,8 @@ import axios from 'axios';
 import { Calendar, Mail, ChevronRight, ShieldAlert, Lock } from 'lucide-react';
 
 export default function EventLogin() {
-  const [email, setEmail] = useState('admin@event.uni.edu');
-  const [password, setPassword] = useState('1234');
+  const [email, setEmail] = useState('admin@finance.uni.edu');
+  const [password, setPassword] = useState('admin123');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -20,10 +20,9 @@ export default function EventLogin() {
     setLoading(true);
     setError('');
     
-    try {
-      const response = await axios.post('http://localhost:5000/api/event-auth/login', { email, password });
-      if (response.data.token) {
-        localStorage.setItem('eventToken', response.data.token);
+    setTimeout(() => {
+      if ((email === 'admin@finance.uni.edu' || email === 'admin@event.uni.edu') && password === 'admin123') {
+        localStorage.setItem('eventToken', 'dummy-token-event');
         
         const extractedName = email.split('@')[0];
         const formattedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
@@ -31,12 +30,11 @@ export default function EventLogin() {
         localStorage.setItem('userRole', 'Event Admin');
         
         navigate('/events');
+      } else {
+        setError('Failed to login. Please check your credentials.');
       }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to login. Please check your credentials.');
-    } finally {
       setLoading(false);
-    }
+    }, 500);
   };
 
   return (

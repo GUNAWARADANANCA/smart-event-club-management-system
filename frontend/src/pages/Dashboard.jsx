@@ -202,9 +202,7 @@ export default function Dashboard() {
                         <span style={{ fontWeight: 500, color: 'rgba(0,0,0,0.85)', fontSize: 14 }}>{item.value}</span>
                       </div>
                     </List.Item>
-                  )}
-
-                  
+                  )}                  
                 />
               </Col>
             </Row>

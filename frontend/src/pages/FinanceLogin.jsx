@@ -5,7 +5,7 @@ import { Lock, Mail, ChevronRight, ShieldAlert } from 'lucide-react';
 
 export default function FinanceLogin() {
   const [email, setEmail] = useState('admin@finance.uni.edu');
-  const [password, setPassword] = useState('admin@123');
+  const [password, setPassword] = useState('admin123');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -16,40 +16,33 @@ export default function FinanceLogin() {
       setError('Please fill in both email and password.');
       return;
     }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
-    
     setLoading(true);
     setError('');
-    
-    try {
-      const response = await axios.post('http://localhost:5000/api/finance-auth/login', { email, password });
-      if (response.data.token) {
-        localStorage.setItem('financeToken', response.data.token);
-        
+
+    setTimeout(() => {
+      if (email === 'admin@finance.uni.edu' && password === 'admin123') {
+        localStorage.setItem('financeToken', 'dummy-token-finance');
+
         const extractedName = email.split('@')[0];
         const formattedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
         localStorage.setItem('userName', formattedName);
         localStorage.setItem('userRole', 'Finance Admin');
-        
+
         navigate('/finance');
+      } else {
+        setError('Failed to login. Please check your credentials.');
       }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to login. Please check your credentials.');
-    } finally {
       setLoading(false);
-    }
+    }, 500);
   };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gradient-to-br from-[#0F766E]/5 via-[#050505] to-purple-900/10 pointer-events-none z-0"></div>
-      
+
       <div className="max-w-md w-full bg-[#FFFFFF] shadow-sm backdrop-blur-xl border border-[#E2E8F0] rounded-3xl p-8 shadow-md relative z-10 overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#14B8A6] rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none"></div>
-        
+
         <div className="text-center mb-10">
           <div className="w-16 h-16 bg-[#14B8A6]/10 rounded-2xl border border-purple-500/20 flex items-center justify-center mx-auto mb-6 shadow-md">
             <Lock className="w-8 h-8 text-[#0F766E]" />
@@ -77,7 +70,7 @@ export default function FinanceLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-[#1a1a1a] border border-[#E2E8F0] rounded-xl py-3.5 pl-12 pr-4 text-slate-800 placeholder-gray-600 focus:outline-none focus:border-[#14B8A6]/50 focus:bg-[#222] transition-colors"
-                placeholder="admin@finance.uni.edu"
+              //placeholder="admin@finance.uni.edu"
               />
             </div>
           </div>
@@ -93,7 +86,7 @@ export default function FinanceLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-[#1a1a1a] border border-[#E2E8F0] rounded-xl py-3.5 pl-12 pr-4 text-slate-800 placeholder-gray-600 focus:outline-none focus:border-[#14B8A6]/50 focus:bg-[#222] transition-colors"
-                placeholder="••••••••••••"
+              //placeholder="••••••••••••"
               />
             </div>
           </div>
@@ -101,9 +94,8 @@ export default function FinanceLogin() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-sm flex items-center justify-center transition-all duration-300 shadow-md ${
-              loading ? 'bg-purple-800 text-purple-300 cursor-not-allowed' : 'bg-gradient-to-r from-[#0F766E] to-indigo-600 hover:from-[#0F766E] hover:to-indigo-500 text-slate-800 hover:shadow-md hover:-translate-y-0.5'
-            }`}
+            className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-sm flex items-center justify-center transition-all duration-300 shadow-md ${loading ? 'bg-purple-800 text-purple-300 cursor-not-allowed' : 'bg-gradient-to-r from-[#0F766E] to-indigo-600 hover:from-[#0F766E] hover:to-indigo-500 text-slate-800 hover:shadow-md hover:-translate-y-0.5'
+              }`}
           >
             {loading ? (
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-slate-800" fill="none" viewBox="0 0 24 24">
@@ -111,10 +103,10 @@ export default function FinanceLogin() {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
             ) : (
-               <>
-                 Secure Login
-                 <ChevronRight className="w-5 h-5 ml-2" />
-               </>
+              <>
+                Secure Login
+                <ChevronRight className="w-5 h-5 ml-2" />
+              </>
             )}
           </button>
         </form>
