@@ -42,6 +42,15 @@ const FinanceRequests = () => {
         status: 'Pending', 
         description: 'Request for costume rentals and stage setup for the Annual Cultural Night.',
         remarks: '' 
+      },
+      { 
+        id: 'FR-2026-004', 
+        name: 'Library Renovation Phase 1', 
+        type: 'Other', 
+        submittedDate: '2026-03-22', 
+        status: 'Pending', 
+        description: 'Initial budget request for library furniture replacement and painting as part of the phase 1 renovation plan.',
+        remarks: '' 
       }
     ]);
     setLoading(false);
@@ -51,6 +60,11 @@ const FinanceRequests = () => {
     setSelectedRequest(req);
     setRemarks(req.remarks || '');
     setIsModalVisible(true);
+  };
+  
+  const handleCancel = (id) => {
+    setRequests(requests.map(req => req.id === id ? { ...req, status: 'Cancelled' } : req));
+    message.info(`Request ${id} has been cancelled.`);
   };
 
   const closeModal = () => {
@@ -73,6 +87,7 @@ const FinanceRequests = () => {
   const getStatusTag = (status) => {
     if (status === 'Approved') return <Tag color="green">Approved</Tag>;
     if (status === 'Rejected') return <Tag color="red">Rejected</Tag>;
+    if (status === 'Cancelled') return <Tag color="default">Cancelled</Tag>;
     return <Tag color="orange">Pending</Tag>;
   };
 
@@ -116,16 +131,28 @@ const FinanceRequests = () => {
                 </Paragraph>
               </div>
 
-              <Button 
-                type="primary" 
-                icon={<EyeOutlined />} 
-                block 
-                size="large"
-                style={{ background: '#8b5cf6', borderColor: '#8b5cf6', borderRadius: 8 }}
-                onClick={() => handleViewPDF(req)}
-              >
-                View PDF
-              </Button>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Button 
+                  type="primary" 
+                  icon={<EyeOutlined />} 
+                  block 
+                  size="large"
+                  style={{ background: '#8b5cf6', borderColor: '#8b5cf6', borderRadius: 8 }}
+                  onClick={() => handleViewPDF(req)}
+                >
+                  View PDF
+                </Button>
+                {req.status === 'Pending' && (
+                  <Button 
+                    danger 
+                    block
+                    style={{ borderRadius: 8 }}
+                    onClick={() => handleCancel(req.id)}
+                  >
+                    Cancel Request
+                  </Button>
+                )}
+              </Space>
             </Card>
           </Col>
         ))}
