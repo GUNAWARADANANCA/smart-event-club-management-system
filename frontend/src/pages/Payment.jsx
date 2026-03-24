@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Card, Typography, Select, message, Spin } from 'antd';
-import { CreditCardOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Card, Typography, Select, message, Spin, Radio, Divider, Upload, Tag } from 'antd';
+import { CreditCardOutlined, BankOutlined, UploadOutlined, CarOutlined, TagOutlined, DollarOutlined, WalletOutlined } from '@ant-design/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const Payment = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('card');
+  
+  const bookingData = location.state?.bookingDetails;
+  const eventData = location.state?.event;
+  const paymentType = location.state?.paymentType;
+  const parkingSlot = location.state?.parkingSlot;
+  const totalAmount = location.state?.totalAmount;
+
+  useEffect(() => {
+    if (eventData) {
+      form.setFieldsValue({
+        event: eventData.event,
+        cardName: bookingData?.fullName || ''
+      });
+    }
+  }, [eventData, bookingData, form]);
 
   const onFinish = (values) => {
     setLoading(true);
@@ -23,31 +41,167 @@ const Payment = () => {
     <div>
       <Title level={2}>Mock Ticket Purchase</Title>
       <Card style={{ maxWidth: 500, margin: '0 auto' }}>
-        <Form layout="vertical" onFinish={onFinish}>
+
+        {/* ===== ORDER SUMMARY ===== */}
+        {paymentType && (
+          <div className="mb-6 p-5 rounded-2xl border border-white/10 bg-[#1e293b]/50">
+            <Text strong className="text-white mb-4 block text-lg">
+              <DollarOutlined className="mr-2 text-[#14B8A6]" /> Order Summary
+            </Text>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <Text className="text-gray-400 text-sm">Event</Text>
+                <Text className="text-white font-bold">{eventData?.event || '—'}</Text>
+              </div>
+              <div className="flex justify-between items-center">
+                <Text className="text-gray-400 text-sm">
+                  <TagOutlined className="mr-1" /> Pass Type
+                </Text>
+                <Tag 
+                  color={paymentType.color} 
+                  className="font-bold m-0 text-xs"
+                >
+                  {paymentType.label} — Rs. {paymentType.price}.00
+                </Tag>
+              </div>
+              {bookingData?.quantity && (
+                <div className="flex justify-between items-center">
+                  <Text className="text-gray-400 text-sm">Quantity</Text>
+                  <Text className="text-white font-bold">×{bookingData.quantity}</Text>
+                </div>
+              )}
+              {parkingSlot && (
+                <div className="flex justify-between items-center">
+                  <Text className="text-gray-400 text-sm">
+                    <CarOutlined className="mr-1 text-[#F97316]" /> Parking Slot
+                  </Text>
+                  <Tag color="#F97316" className="font-bold m-0 text-xs">
+                    🅿️ {parkingSlot} — Rs. 500.00
+                  </Tag>
+                </div>
+              )}
+              <Divider className="my-2 border-white/10" />
+              <div className="flex justify-between items-center">
+                <Text className="text-white font-black uppercase text-xs tracking-widest">Total</Text>
+                <Text className="text-[#14B8A6] font-black text-2xl">
+                  Rs. {totalAmount ? totalAmount.toFixed(2) : paymentType.price.toFixed(2)}
+                </Text>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item name="event" label="Select Event" rules={[{ required: true }]}>
              <Select placeholder="Choose event to attend" className="green-select" popupClassName="green-dropdown">
-                <Option value="Tech Symposium">Tech Symposium - $15.00</Option>
-                <Option value="Art Workshop">Art Workshop - $5.00</Option>
+                <Option value="CodeRed Hackathon">CodeRed Hackathon - Rs. 1200.00</Option>
+                <Option value="Robotics Workshop">Robotics Workshop - Rs. 1000.00</Option>
+                <Option value="Tech Symposium">Tech Symposium - Rs. 1500.00</Option>
+                <Option value="Art Workshop">Art Workshop - Rs. 500.00</Option>
              </Select>
           </Form.Item>
           
-          <div style={{ padding: '16px', background: 'transparent', border: '1px solid #303030', borderRadius: 8, marginBottom: 24 }}>
-            <Text strong><CreditCardOutlined /> Payment Details (Mock)</Text>
-            <Form.Item name="cardName" label="Name on Card" rules={[{ required: true }]} style={{ marginTop: 16 }}>
-              <Input placeholder="John Doe" />
-            </Form.Item>
-            <Form.Item name="cardNumber" label="Card Number" rules={[{ required: true, len: 16, message: 'Must be 16 digits' }]}>
-              <Input placeholder="1234 5678 9101 1121" maxLength={16} />
-            </Form.Item>
-            <div style={{ display: 'flex', gap: 16 }}>
-                <Form.Item name="expiry" label="Expiry" rules={[{ required: true }]} style={{ flex: 1 }}>
-                  <Input placeholder="MM/YY" />
-                </Form.Item>
-                <Form.Item name="cvv" label="CVV" rules={[{ required: true, len: 3 }]} style={{ flex: 1 }}>
-                  <Input placeholder="123" maxLength={3} />
-                </Form.Item>
+          <Divider />
+
+          <Form.Item label={<Text strong className="text-gray-300">Choose Payment Method</Text>} className="mb-8">
+            <style>{`
+              .payment-options .ant-radio-button-wrapper-checked {
+                background-color: #14B8A6 !important;
+                border-color: #14B8A6 !important;
+                color: white !important;
+              }
+              .payment-options .ant-radio-button-wrapper-checked::before {
+                background-color: transparent !important;
+                display: none !important;
+              }
+              .payment-options .ant-radio-button-wrapper:hover {
+                color: #14B8A6;
+              }
+              .payment-options .ant-radio-button-wrapper:focus-within,
+              .payment-options .ant-radio-button-wrapper:focus {
+                box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.4) !important;
+                border-inline-start-color: #14B8A6 !important;
+              }
+            `}</style>
+            <Radio.Group 
+              onChange={(e) => setPaymentMethod(e.target.value)} 
+              value={paymentMethod}
+              className="w-full flex gap-4 payment-options"
+            >
+              <Radio.Button value="card" className="flex-1 h-12 flex items-center justify-center font-bold rounded-xl border-[#303030] bg-transparent text-gray-400">
+                <CreditCardOutlined className="mr-2" /> Card
+              </Radio.Button>
+              <Radio.Button value="bank" className="flex-1 h-12 flex items-center justify-center font-bold rounded-xl border-[#303030] bg-transparent text-gray-400">
+                <BankOutlined className="mr-2" /> Bank Deposit
+              </Radio.Button>
+              <Radio.Button value="cash" className="flex-1 h-12 flex items-center justify-center font-bold rounded-xl border-[#303030] bg-transparent text-gray-400">
+                <WalletOutlined className="mr-2" /> Cash
+              </Radio.Button>
+              <Radio.Button value="paypal" className="flex-1 h-12 flex items-center justify-center font-bold rounded-xl border-[#303030] bg-transparent text-gray-400">
+                PayPal
+              </Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+
+          {paymentMethod === 'card' && (
+            <div className="p-6 bg-[#1e293b]/50 border border-white/10 rounded-2xl mb-8">
+              <Text strong className="text-white mb-6 block text-lg"><CreditCardOutlined className="mr-2 text-[#14B8A6]" /> Card Details</Text>
+              <Form.Item name="cardName" label={<span className="text-gray-400 text-xs uppercase font-bold tracking-widest">Name on Card</span>} rules={[{ required: true }]} className="mb-4">
+                <Input placeholder="John Doe" className="bg-white/5 border-white/10 text-white rounded-xl h-11" />
+              </Form.Item>
+              <Form.Item name="cardNumber" label={<span className="text-gray-400 text-xs uppercase font-bold tracking-widest">Card Number</span>} rules={[{ required: true, len: 16, message: 'Must be 16 digits' }]} className="mb-4">
+                <Input placeholder="1234 5678 9101 1121" maxLength={16} className="bg-white/5 border-white/10 text-white rounded-xl h-11" />
+              </Form.Item>
+              <div className="flex gap-4">
+                  <Form.Item name="expiry" label={<span className="text-gray-400 text-xs uppercase font-bold tracking-widest">Expiry</span>} rules={[{ required: true }]} className="flex-1">
+                    <Input placeholder="MM/YY" className="bg-white/5 border-white/10 text-white rounded-xl h-11" />
+                  </Form.Item>
+                  <Form.Item name="cvv" label={<span className="text-gray-400 text-xs uppercase font-bold tracking-widest">CVV</span>} rules={[{ required: true, len: 3 }]} className="flex-1">
+                    <Input placeholder="123" maxLength={3} className="bg-white/5 border-white/10 text-white rounded-xl h-11" />
+                  </Form.Item>
+              </div>
             </div>
-          </div>
+          )}
+
+          {paymentMethod === 'bank' && (
+            <div className="p-6 bg-[#1e293b]/50 border border-white/10 rounded-2xl mb-8">
+              <Text strong className="text-white mb-4 block text-lg"><BankOutlined className="mr-2 text-[#F97316]" /> Bank Account Details</Text>
+              <div className="space-y-3 bg-[#0f172a] p-4 rounded-xl border border-white/5 mb-6">
+                <div className="flex justify-between"><Text type="secondary">Bank:</Text><Text strong className="text-white">Bank of Ceylon (BOC)</Text></div>
+                <div className="flex justify-between"><Text type="secondary">Branch:</Text><Text strong className="text-white">University Branch</Text></div>
+                <div className="flex justify-between"><Text type="secondary">Account Name:</Text><Text strong className="text-white">Smart Event Club</Text></div>
+                <div className="flex justify-between"><Text type="secondary">Account Number:</Text><Text strong className="text-white">0084 1234 5678</Text></div>
+              </div>
+              
+              <Form.Item name="slip" label={<span className="text-gray-400 text-xs uppercase font-bold tracking-widest">Upload Deposit Slip</span>} rules={[{ required: true, message: 'Please upload the slip' }]}>
+                <Upload action="/upload" listType="picture" maxCount={1}>
+                  <Button icon={<UploadOutlined />} className="w-full h-11 bg-white/5 border-dashed border-white/20 text-gray-400 hover:text-[#14B8A6] hover:border-[#14B8A6] rounded-xl">Click to Upload Slip</Button>
+                </Upload>
+              </Form.Item>
+            </div>
+          )}
+
+          {paymentMethod === 'cash' && (
+            <div className="p-6 bg-[#1e293b]/50 border border-white/10 rounded-2xl mb-8">
+              <Text strong className="text-white mb-4 block text-lg"><WalletOutlined className="mr-2 text-[#14B8A6]" /> Cash Payment</Text>
+              <div className="space-y-3 bg-[#0f172a] p-4 rounded-xl border border-white/5 mb-6">
+                <Text className="text-gray-300">You have selected to pay by cash. Please make the payment at the registration desk on the day of the event.</Text>
+              </div>
+            </div>
+          )}
+
+          {paymentMethod === 'paypal' && (
+            <div className="p-6 bg-[#1e293b]/50 border border-white/10 rounded-2xl mb-8 flex flex-col items-center justify-center text-center">
+              <Text strong className="text-white mb-4 block text-lg">Pay with PayPal</Text>
+              <Text className="text-gray-400 mb-6 block text-sm max-w-sm">
+                You will be redirected safely to PayPal to securely complete your purchase.
+              </Text>
+              <Button type="primary" size="large" className="bg-[#0070BA] hover:bg-[#003087] border-0 h-11 px-8 rounded-xl font-bold flex items-center justify-center">
+                Proceed to PayPal
+              </Button>
+            </div>
+          )}
           
           <Button type="primary" htmlType="submit" size="large" block disabled={loading}>
             {loading ? <Spin /> : 'Pay Now'}

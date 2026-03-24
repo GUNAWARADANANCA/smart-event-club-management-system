@@ -11,7 +11,8 @@ import {
   CalendarDays,
   CircleDollarSign,
   Award,
-  Video
+  Video,
+  MessageCircle
 } from 'lucide-react';
 
 const { Header, Content, Sider } = Layout;
@@ -35,6 +36,8 @@ const MainLayout = () => {
     { key: '/events', icon: <CalendarDays size={18} />, label: 'Events' },
     { key: '/finance', icon: <CircleDollarSign size={18} />, label: 'Finance' },
     { key: '/quizzes', icon: <Award size={18} />, label: 'Quiz & Certs' },
+    { key: '/feedback', icon: <MessageCircle size={18} />, label: 'Feedback & Rating' },
+    { key: '/view-feedback', icon: <Database size={18} />, label: 'View Feedback' },
   ];
 
   return (

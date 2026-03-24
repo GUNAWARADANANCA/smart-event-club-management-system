@@ -51,8 +51,8 @@ const ManageRequests = () => {
       ],
       onFilter: (value, record) => record.status === value,
       render: status => {
-        let color = status === 'Approved' ? '#14B8A6' : status === 'Rejected' ? '#F97316' : '#0F766E';
-        return <Tag color={color}>{status}</Tag>;
+        let className = status === 'Approved' ? 'tag-teal-pill active' : status === 'Rejected' ? 'tag-teal-pill inactive' : 'tag-teal-pill inactive';
+        return <Tag className={className}>{status}</Tag>;
       }
     },
     { title: 'Date', dataIndex: 'submittedDate', key: 'submittedDate' },
@@ -61,11 +61,11 @@ const ManageRequests = () => {
       key: 'actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button icon={<EyeOutlined />} onClick={() => showDetails(record)} size="small" style={{ color: '#0F766E', borderColor: '#0F766E' }}>View</Button>
+          <Button icon={<EyeOutlined />} onClick={() => showDetails(record)} size="small" className="btn-teal-secondary">View</Button>
           {record.status === 'Pending' && (
             <>
-              <Button icon={<CheckCircleOutlined />} onClick={() => handleStatusChange(record.id, 'Approved')} size="small" style={{ color: '#14B8A6', borderColor: '#14B8A6', background: 'transparent' }}>Approve</Button>
-              <Button icon={<CloseCircleOutlined />} onClick={() => handleStatusChange(record.id, 'Rejected')} size="small" style={{ color: '#F97316', borderColor: '#F97316', background: 'transparent' }}>Reject</Button>
+              <Button icon={<CheckCircleOutlined />} onClick={() => handleStatusChange(record.id, 'Approved')} size="small" className="btn-teal-primary">Approve</Button>
+              <Button icon={<CloseCircleOutlined />} onClick={() => handleStatusChange(record.id, 'Rejected')} size="small" className="btn-teal-secondary">Reject</Button>
             </>
           )}
         </Space>
@@ -76,8 +76,8 @@ const ManageRequests = () => {
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
-        <Title level={2}>Manage Requests</Title>
-        <Text type="secondary">Review, approve, or reject student requests for events and clubs.</Text>
+        <Title level={2} style={{ color: '#000000' }}>Manage Requests</Title>
+        <Text style={{ color: '#334155' }}>Review, approve, or reject student requests for events and clubs.</Text>
       </div>
 
       <Card bordered={false} style={{ borderRadius: 12, backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
@@ -89,7 +89,7 @@ const ManageRequests = () => {
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={[
-          <Button key="close" onClick={() => setIsModalVisible(false)} type="primary" style={{ background: '#0F766E', borderColor: '#0F766E' }}>Close</Button>
+          <Button key="close" onClick={() => setIsModalVisible(false)} className="btn-teal-primary">Close</Button>
         ]}
       >
         {selectedRequest && (

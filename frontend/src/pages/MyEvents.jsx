@@ -16,10 +16,10 @@ const MyEvents = () => {
   };
 
   const columns = [
-    { title: 'Event Title', dataIndex: 'title', key: 'title', render: text => <strong style={{ color: '#a78bfa' }}>{text}</strong> },
+    { title: 'Event Title', dataIndex: 'title', key: 'title', render: text => <strong style={{ color: '#FFFFFF' }}>{text}</strong> },
     { title: 'Date Registered', dataIndex: 'registrationDate', key: 'registrationDate' },
     { title: 'Event Date', dataIndex: 'date', key: 'date' },
-    { title: 'Mode', dataIndex: 'mode', key: 'mode', render: mode => <Tag color="cyan">{mode}</Tag> },
+    { title: 'Mode', dataIndex: 'mode', key: 'mode', render: mode => <Tag className="tag-teal-pill active">{mode}</Tag> },
     { title: 'Venue', dataIndex: 'venue', key: 'venue' },
     { title: 'Organizer', dataIndex: 'organizer', key: 'organizer' },
     { 
@@ -42,16 +42,16 @@ const MyEvents = () => {
   return (
     <div>
       <div style={{ marginBottom: 32 }}>
-        <Title level={2}>My Registered Events</Title>
-        <Text type="secondary" style={{ fontSize: 16 }}>Manage and view all the university events you have successfully booked.</Text>
+        <Title level={2} style={{ color: '#000000' }}>My Registered Events</Title>
+        <Text style={{ fontSize: 16, color: '#000000' }}>Manage and view all the university events you have successfully booked.</Text>
       </div>
 
       {myEventsState.length === 0 ? (
         <Empty 
           description={<span style={{ color: 'gray' }}>You haven't registered for any events yet.</span>} 
-          style={{ margin: '60px 0', padding: 40, background: '#141414', borderRadius: 12, border: '1px solid #303030' }} 
+          style={{ margin: '60px 0', padding: 40, background: '#FFFFFF', borderRadius: 12, border: '1px solid #E2E8F0' }} 
         >
-          <Button type="primary" onClick={() => navigate('/portal')} style={{ background: '#8b5cf6', borderColor: 'transparent', marginTop: 16 }}>Browse Upcoming Events</Button>
+          <Button className="btn-teal-primary" onClick={() => navigate('/portal')} style={{ marginTop: 16 }}>Browse Upcoming Events</Button>
         </Empty>
       ) : (
         <Table 

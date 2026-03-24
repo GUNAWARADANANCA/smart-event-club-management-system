@@ -39,6 +39,8 @@ import QuizResult from './pages/QuizResult';
 import Certificate from './pages/Certificate';
 import UserPerformance from './pages/UserPerformance';
 import CreateQuiz from './pages/CreateQuiz';
+import FeedbackForm from './pages/FeedbackForm';
+import ViewFeedback from './pages/ViewFeedback';
 
 function App() {
   return (
@@ -59,6 +61,8 @@ function App() {
           <Route path="gallery/swimming-finals" element={<SwimmingGallery />} />
           <Route path="sponsorships" element={<Sponsorships />} />
           <Route path="ticket-sales" element={<TicketSales />} />
+          <Route path="feedback" element={<FeedbackForm />} />
+          <Route path="view-feedback" element={<ViewFeedback />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="manage-requests" element={<ManageRequests />} />
           <Route path="portal" element={<UpcomingEventsPortal />} />

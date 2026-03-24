@@ -49,9 +49,9 @@ const FinanceManagement = () => {
               style={{ background: salesActive ? '#14B8A6' : '#E2E8F0' }}
             />
           </div>
-          <Button type="default" onClick={() => navigate('/finance/budget-approval')}>Approvals</Button>
-          <Button type="default" onClick={() => navigate('/finance/requests')}>Requests</Button>
-          <Button type="default" onClick={() => navigate('/finance/expenses')}>Expenses</Button>
+          <Button className="btn-teal-secondary" onClick={() => navigate('/finance/budget-approval')}>Approvals</Button>
+          <Button className="btn-teal-secondary" onClick={() => navigate('/finance/requests')}>Requests</Button>
+          <Button className="btn-teal-secondary" onClick={() => navigate('/finance/expenses')}>Expenses</Button>
         </Space>
       </div>
 
@@ -74,7 +74,7 @@ const FinanceManagement = () => {
       </Row>
 
       <div style={{ marginTop: 24 }}>
-        <Card title="Budget Proposals" bordered={false} style={{ border: '1px solid #E2E8F0' }}>
+        <Card title={<span style={{ color: '#FFFFFF' }}>Budget Proposals</span>} bordered={false} style={{ border: '1px solid #E2E8F0' }}>
           <Table 
             columns={[ 
               { title: 'ID', dataIndex: 'id', key: 'id' },
@@ -92,7 +92,7 @@ const FinanceManagement = () => {
       </div>
 
       <Button 
-        type="primary" 
+        className="btn-teal-primary"
         shape="round" 
         icon={<EyeOutlined />} 
         size="large" 
@@ -101,9 +101,6 @@ const FinanceManagement = () => {
           bottom: '40px',
           right: '40px',
           zIndex: 1000,
-          background: 'linear-gradient(to right, #0F766E, #14B8A6)',
-          borderColor: 'transparent',
-          boxShadow: '0 4px 12px rgba(20, 184, 166, 0.4)'
         }}
         onClick={() => setIsModalVisible(true)}
       >

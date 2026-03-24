@@ -70,7 +70,7 @@ export default function EventLogin() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#1a1a1a] border border-[#E2E8F0] rounded-xl py-3.5 pl-12 pr-4 text-slate-800 placeholder-gray-600 focus:outline-none focus:border-blue-500/50 focus:bg-[#222] transition-colors"
+                className="w-full bg-[#1a1a1a] border border-[#E2E8F0] rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 focus:bg-[#222] transition-colors"
                 placeholder="admin@event.uni.edu"
               />
             </div>
@@ -86,7 +86,7 @@ export default function EventLogin() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#1a1a1a] border border-[#E2E8F0] rounded-xl py-3.5 pl-12 pr-4 text-slate-800 placeholder-gray-600 focus:outline-none focus:border-blue-500/50 focus:bg-[#222] transition-colors"
+                className="w-full bg-[#1a1a1a] border border-[#E2E8F0] rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 focus:bg-[#222] transition-colors"
                 placeholder="••••••••••••"
               />
             </div>

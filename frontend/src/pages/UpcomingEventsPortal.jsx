@@ -102,11 +102,11 @@ const UpcomingEventsPortal = () => {
         <Badge.Ribbon text={status.label} color={status.color === 'gray' ? '#475569' : status.color}>
           <Card 
             hoverable 
-            style={{ height: '100%', flexDirection: 'column', backgroundColor: '#FFFFFF', borderColor: isFeatured ? '#F97316' : '#E2E8F0', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
+            style={{ height: '100%', flexDirection: 'column', backgroundColor: '#141414', borderColor: isFeatured ? '#F97316' : '#303030', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
             bodyStyle={{ display: 'flex', flexDirection: 'column', height: '100%' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12, marginTop: 12 }}>
-              <Title level={isFeatured ? 3 : 4} style={{ color: '#0F766E', margin: 0 }}>{event.title}</Title>
+              <Title level={isFeatured ? 3 : 4} style={{ color: '#FFFFFF', margin: 0 }}>{event.title}</Title>
             </div>
             
             <Space style={{ marginBottom: 16 }}>
@@ -116,16 +116,16 @@ const UpcomingEventsPortal = () => {
             </Space>
             
             <div style={{ flex: 1, marginBottom: 16 }}>
-              <Paragraph type="secondary" ellipsis={{ rows: isFeatured ? 3 : 2 }} style={{ minHeight: isFeatured ? 66 : 44, color: '#000000' }}>
+              <Paragraph type="secondary" ellipsis={{ rows: isFeatured ? 3 : 2 }} style={{ minHeight: isFeatured ? 66 : 44, color: '#E2E8F0' }}>
                   {event.description}
               </Paragraph>
               
               <Space direction="vertical" style={{ width: '100%', marginTop: 1 }}>
-                <Text style={{ color: '#000000' }}><CalendarOutlined style={{ color: '#14B8A6' }} /> <strong style={{ color: '#000000' }}>Date:</strong> {event.date} | <ClockCircleOutlined /> {event.time}</Text>
-                <Text style={{ color: '#000000' }}><UserOutlined style={{ color: '#F97316' }} /> <strong style={{ color: '#000000' }}>Deadline:</strong> {event.deadline}</Text>
-                <Text style={{ color: '#000000' }}><EnvironmentOutlined style={{ color: '#0F766E' }} /> <strong style={{ color: '#000000' }}>Venue:</strong> {event.venue}</Text>
-                <Text style={{ color: '#000000' }}><TeamOutlined style={{ color: '#F97316' }} /> <strong style={{ color: '#000000' }}>Organizer:</strong> {event.organizer}</Text>
-                <Text style={{ color: seatsLeft <= 10 && seatsLeft > 0 ? 'red' : '#475569' }}>🪑 {seatsLeft > 0 ? `${seatsLeft} seats left` : 'No seats available'}</Text>
+                <Text style={{ color: '#FFFFFF' }}><CalendarOutlined style={{ color: '#14B8A6' }} /> <strong style={{ color: '#FFFFFF' }}>Date:</strong> {event.date} | <ClockCircleOutlined /> {event.time}</Text>
+                <Text style={{ color: '#FFFFFF' }}><UserOutlined style={{ color: '#F97316' }} /> <strong style={{ color: '#FFFFFF' }}>Deadline:</strong> {event.deadline}</Text>
+                <Text style={{ color: '#FFFFFF' }}><EnvironmentOutlined style={{ color: '#0F766E' }} /> <strong style={{ color: '#FFFFFF' }}>Venue:</strong> {event.venue}</Text>
+                <Text style={{ color: '#FFFFFF' }}><TeamOutlined style={{ color: '#F97316' }} /> <strong style={{ color: '#FFFFFF' }}>Organizer:</strong> {event.organizer}</Text>
+                <Text style={{ color: seatsLeft <= 10 && seatsLeft > 0 ? '#FCA5A5' : '#94A3B8' }}>🪑 {seatsLeft > 0 ? `${seatsLeft} seats left` : 'No seats available'}</Text>
               </Space>
             </div>
 

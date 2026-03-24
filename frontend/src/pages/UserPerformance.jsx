@@ -23,7 +23,7 @@ const UserPerformance = () => {
 
   return (
     <div>
-      <Title level={2} style={{ marginBottom: 24 }}>My Performance Details</Title>
+      <Title level={2} style={{ marginBottom: 24, color: '#000000' }}>My Performance Details</Title>
       
       <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col span={8}>
@@ -33,7 +33,7 @@ const UserPerformance = () => {
         </Col>
         <Col span={8}>
             <Card hoverable>
-              <Statistic title="Average Score" value="70%" valueStyle={{ color: '#8b5cf6' }} />
+              <Statistic title="Average Score" value="70%" valueStyle={{ color: 'var(--teal-primary)' }} />
             </Card>
         </Col>
         <Col span={8}>
@@ -43,7 +43,7 @@ const UserPerformance = () => {
         </Col>
       </Row>
 
-      <Card title="Detailed Quiz History" bordered={false}>
+      <Card title={<span style={{ color: '#000000' }}>Detailed Quiz History</span>} bordered={false}>
           <Table columns={columns} dataSource={data} rowKey="id" />
       </Card>
     </div>

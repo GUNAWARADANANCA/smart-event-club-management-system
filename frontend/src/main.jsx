@@ -5,7 +5,6 @@ import './index.css';
 import 'antd/dist/reset.css'; // Since antd v5 doesn't need css import, this might fail, let's just use empty styles, or rely on token.
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <App />,
 );
+

@@ -30,105 +30,118 @@ const RequestManagement = () => {
   };
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: '20px', backgroundColor: '#14B8A6', minHeight: '100vh', borderRadius: '16px' }}>
-      <div style={{ marginBottom: 24, textAlign: 'center' }}>
-        <Title level={2} style={{ color: '#000000' }}>Request for Uni Events and Club Management</Title>
-        <Text style={{ color: '#000000', fontSize: '16px' }}>Submit your proposals for new university events or club activities here.</Text>
-      </div>
+    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative p-6 md:p-8">
+      {/* Ambient background glow */}
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#0F766E]/5 to-transparent pointer-events-none z-0"></div>
       
-      <Card bordered={false} style={{ borderRadius: 16, backgroundColor: '#14B8A6', border: '1px solid #14B8A6', boxShadow: '0 10px 15px -3px rgba(16, 185, 129, 0.1)' }}>
-        <ConfigProvider
-          theme={{
-            components: {
-              Select: {
-                colorBgContainer: '#14B8A6',
-                colorText: '#000000',
-                colorTextPlaceholder: '#000000',
-                colorBorder: '#0F766E',
-                colorIcon: '#000000',
-                controlItemBgActive: '#0F766E',
-                controlItemBgHover: '#2DD4BF',
-                controlItemBgActiveDisabled: '#0F766E',
-                colorBgElevated: '#14B8A6',
-                colorIconHover: '#000000'
-              },
-            },
-          }}
+      <div className="max-w-4xl mx-auto relative z-10">
+        <div className="flex items-center gap-4 mb-8">
+          <Title level={4} className="m-0 !text-slate-800 tracking-tight font-extrabold uppercase tracking-widest text-xs border-b border-[#14B8A6]/30 pb-2">Request Management</Title>
+        </div>
+        
+        <Form 
+          form={form} 
+          layout="vertical" 
+          onFinish={onFinish} 
+          onFinishFailed={onFinishFailed}
+          size="large"
+          autoComplete="off"
         >
-          <Form 
-            form={form} 
-            layout="vertical" 
-            onFinish={onFinish} 
-            onFinishFailed={onFinishFailed}
-            size="large"
-          >
-            <Form.Item
-              name="fullName"
-              label={<span style={{ color: '#000000', fontWeight: '500' }}>Full Name</span>}
-              rules={[{ required: true, message: 'Please enter your full name' }]}
-            >
-              <Input placeholder="John Doe" style={{ background: '#F9FAFB', borderColor: '#D1FAE5', color: '#000000' }} />
-            </Form.Item>
+          <Card className="bg-[#0F172A] border-[#1E293B] shadow-2xl rounded-3xl mb-8 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#14B8A6]/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-[#14B8A6]/20 transition-colors duration-500 pointer-events-none"></div>
+            
+            <div className="mb-8">
+              <Title level={4} className="!text-white mb-2 relative z-10 font-bold uppercase tracking-widest text-xs border-b border-white/10 pb-2">
+                Request for Uni Events and Club Management
+              </Title>
+              <Text className="text-gray-400 text-sm block mt-2">
+                Submit your proposals for new university events or club activities here.
+              </Text>
+            </div>
 
-            <Form.Item
-              name="email"
-              label={<span style={{ color: '#000000', fontWeight: '500' }}>University Email</span>}
-              rules={[
-                { required: true, message: 'Please enter your University Email' },
-                { type: 'email', message: 'Please enter a valid email address' },
-                {
-                  validator: (_, value) => {
-                    if (value && !value.endsWith('@my.sliit.lk')) {
-                      return Promise.reject(new Error('Email must be a valid SLIIT student email ending with @my.sliit.lk'));
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <Form.Item
+                name="fullName"
+                label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Full Name</Text>}
+                rules={[{ required: true, message: 'Please enter your full name' }]}
+              >
+                <Input placeholder="John Doe" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
+              </Form.Item>
+
+              <Form.Item
+                name="email"
+                label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">University Email</Text>}
+                rules={[
+                  { required: true, message: 'Please enter your University Email' },
+                  { type: 'email', message: 'Please enter a valid email address' },
+                  {
+                    validator: (_, value) => {
+                      if (value && !value.endsWith('@my.sliit.lk')) {
+                        return Promise.reject(new Error('Email must be a valid SLIIT student email ending with @my.sliit.lk'));
+                      }
+                      return Promise.resolve();
                     }
-                    return Promise.resolve();
                   }
-                }
-              ]}
-            >
-              <Input placeholder="example@my.sliit.lk" style={{ background: '#F9FAFB', borderColor: '#D1FAE5', color: '#000000' }} />
-            </Form.Item>
+                ]}
+              >
+                <Input placeholder="example@my.sliit.lk" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
+              </Form.Item>
 
-            <Form.Item
-              name="academicYear"
-              label={<span style={{ color: '#000000', fontWeight: '500' }}>Academic Year</span>}
-              rules={[{ required: true, message: 'Please select your Academic Year' }]}
-            >
-              <Select placeholder="Select Academic Year">
-                <Option value="Year 1" style={{ color: '#000000' }}>Year 1</Option>
-                <Option value="Year 2" style={{ color: '#000000' }}>Year 2</Option>
-                <Option value="Year 3" style={{ color: '#000000' }}>Year 3</Option>
-                <Option value="Year 4" style={{ color: '#000000' }}>Year 4</Option>
-              </Select>
-            </Form.Item>
+              <Form.Item
+                name="academicYear"
+                label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Academic Year</Text>}
+                rules={[{ required: true, message: 'Please select your Academic Year' }]}
+              >
+                <Select 
+                  placeholder="Select Academic Year"
+                  className="dark-select"
+                  popupClassName="dark-dropdown"
+                >
+                  <Option value="Year 1">Year 1</Option>
+                  <Option value="Year 2">Year 2</Option>
+                  <Option value="Year 3">Year 3</Option>
+                  <Option value="Year 4">Year 4</Option>
+                </Select>
+              </Form.Item>
 
-            <Form.Item
-              name="requestType"
-              label={<span style={{ color: '#000000', fontWeight: '500' }}>Request Type</span>}
-              rules={[{ required: true, message: 'Please select a Request Type' }]}
-            >
-              <Select placeholder="Select Request Type">
-                <Option value="University Event Request" style={{ color: '#000000' }}>University Event Request</Option>
-                <Option value="Club Management Request" style={{ color: '#000000' }}>Club Management Request</Option>
-              </Select>
-            </Form.Item>
+              <Form.Item
+                name="requestType"
+                label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Request Type</Text>}
+                rules={[{ required: true, message: 'Please select a Request Type' }]}
+              >
+                <Select 
+                  placeholder="Select Request Type"
+                  className="dark-select"
+                  popupClassName="dark-dropdown"
+                >
+                  <Option value="University Event Request">University Event Request</Option>
+                  <Option value="Club Management Request">Club Management Request</Option>
+                </Select>
+              </Form.Item>
+            </div>
 
             <Form.Item
               name="description"
-              label={<span style={{ color: '#000000', fontWeight: '500' }}>Request Description</span>}
+              label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest mt-4 block">Request Description</Text>}
               rules={[{ required: true, message: 'Please provide a description of your request' }]}
             >
-              <TextArea rows={6} placeholder="Describe the event or club management request in detail..." style={{ background: '#F9FAFB', borderColor: '#D1FAE5', color: '#000000' }} />
+              <TextArea rows={5} placeholder="Describe the event or club management request in detail..." className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl resize-none" />
             </Form.Item>
 
-            <Form.Item style={{ marginTop: 32, marginBottom: 0 }}>
-              <Button type="primary" htmlType="submit" style={{ width: '100%', height: 50, background: '#10B981', borderColor: '#059669', color: '#FFFFFF', fontSize: 18, fontWeight: 'bold', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.4)' }}>
+            <Form.Item className="mt-8 mb-0">
+              <Button 
+                type="primary" 
+                htmlType="submit" 
+                size="large" 
+                block 
+                className="h-14 bg-gradient-to-r from-[#0F766E] to-[#14B8A6] hover:from-[#0F766E] hover:to-[#0d9488] border-0 rounded-2xl font-bold uppercase tracking-widest text-sm shadow-xl hover:shadow-2xl transition-all text-white"
+              >
                 Submit Request
               </Button>
             </Form.Item>
-          </Form>
-        </ConfigProvider>
-      </Card>
+          </Card>
+        </Form>
+      </div>
     </div>
   );
 };

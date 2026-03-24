@@ -32,12 +32,12 @@ const ExpenseManagement = () => {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Title level={2}>Expense Management</Title>
-        <Button type="primary" onClick={() => setIsModalVisible(true)}>Log New Expense</Button>
+        <Title level={2} style={{ color: '#000000' }}>Expense Management</Title>
+        <Button className="btn-teal-primary" onClick={() => setIsModalVisible(true)}>Log New Expense</Button>
       </div>
       <Table columns={columns} dataSource={data} rowKey="id" />
 
-      <Modal title="Log Expense" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)}>
+      <Modal title="Log Expense" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)} okButtonProps={{ className: 'btn-teal-primary' }}>
         <Form form={form} layout="vertical">
           <Form.Item name="event" label="Associated Event" rules={[{ required: true }]}>
             <Select className="green-select" popupClassName="green-dropdown">

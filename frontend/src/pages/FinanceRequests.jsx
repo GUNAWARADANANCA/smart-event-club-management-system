@@ -76,7 +76,7 @@ const FinanceRequests = () => {
   const handleAction = async (status) => {
     try {
       await api.post('/finance/budgets', { id: selectedRequest.id, status, remarks });
-      message.success(`Request ${status} successfully!`);
+      message.success(status === 'Approved' ? 'Approved successfully!' : `Request ${status} successfully!`);
       closeModal();
       fetchRequests(); // conceptual reload
     } catch (err) {
@@ -85,17 +85,17 @@ const FinanceRequests = () => {
   };
 
   const getStatusTag = (status) => {
-    if (status === 'Approved') return <Tag color="green">Approved</Tag>;
-    if (status === 'Rejected') return <Tag color="red">Rejected</Tag>;
-    if (status === 'Cancelled') return <Tag color="default">Cancelled</Tag>;
-    return <Tag color="orange">Pending</Tag>;
+    if (status === 'Approved') return <Tag className="tag-teal-pill active">Approved</Tag>;
+    if (status === 'Rejected') return <Tag color="red" className="rounded-full">Rejected</Tag>;
+    if (status === 'Cancelled') return <Tag className="tag-teal-pill inactive">Cancelled</Tag>;
+    return <Tag className="tag-teal-pill inactive" style={{ color: 'orange' }}>Pending</Tag>;
   };
 
   return (
     <div>
       <div style={{ marginBottom: 32 }}>
-        <Title level={2} style={{ margin: 0, color: '#000000' }}>Finance Request Review</Title>
-        <Text style={{ fontSize: 16, color: '#000000' }}>Review and manage pending PDF requests submitted by clubs and events.</Text>
+        <Title level={2} style={{ margin: 0, color: '#FFFFFF' }}>Finance Request Review</Title>
+        <Text style={{ fontSize: 16, color: '#94A3B8' }}>Review and manage pending PDF requests submitted by clubs and events.</Text>
       </div>
 
       <Row gutter={[24, 24]}>
@@ -105,8 +105,8 @@ const FinanceRequests = () => {
               hoverable
               style={{ 
                 height: '100%', 
-                background: '#FFFFFF', 
-                border: '1px solid #E2E8F0',
+                background: '#0F172A', 
+                border: '1px solid #1E293B',
                 borderRadius: 16,
                 display: 'flex', flexDirection: 'column'
               }}
@@ -114,34 +114,33 @@ const FinanceRequests = () => {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
                 <div>
-                  <Title level={4} style={{ color: '#000000', margin: 0 }}>{req.name}</Title>
-                  <Text style={{ color: '#000000' }}>{req.id}</Text>
+                  <Title level={4} style={{ color: '#FFFFFF', margin: 0 }}>{req.name}</Title>
+                  <Text style={{ color: '#94A3B8' }}>{req.id}</Text>
                 </div>
                 {getStatusTag(req.status)}
               </div>
               
               <Space style={{ marginBottom: 16 }}>
-                <Tag color={req.type === 'Event' ? 'magenta' : 'geekblue'}>{req.type} Request</Tag>
-                <Tag color="default">{req.submittedDate}</Tag>
+                <Tag className={`tag-teal-pill ${req.type === 'Event' ? 'active' : 'inactive'}`}>{req.type} Request</Tag>
+                <Tag className="tag-teal-pill inactive">{req.submittedDate}</Tag>
               </Space>
 
               <div style={{ flex: 1, marginBottom: 24 }}>
-                <Paragraph style={{ color: '#000000' }}>
+                <Paragraph style={{ color: '#E2E8F0' }}>
                   {req.description}
                 </Paragraph>
               </div>
 
               <Space direction="vertical" style={{ width: '100%' }}>
-                <Button 
-                  type="primary" 
-                  icon={<EyeOutlined />} 
-                  block 
-                  size="large"
-                  style={{ background: '#8b5cf6', borderColor: '#8b5cf6', borderRadius: 8 }}
-                  onClick={() => handleViewPDF(req)}
-                >
-                  View PDF
-                </Button>
+                  <Button 
+                    className="btn-teal-primary"
+                    icon={<EyeOutlined />} 
+                    block 
+                    size="large"
+                    onClick={() => handleViewPDF(req)}
+                  >
+                    View PDF
+                  </Button>
                 {req.status === 'Pending' && (
                   <Button 
                     danger 
@@ -162,7 +161,7 @@ const FinanceRequests = () => {
         title={
           <Space>
             <FilePdfOutlined style={{ color: '#f5222d', fontSize: 24 }} />
-            <span style={{ fontSize: 20, color: '#000000' }}>Review Request: {selectedRequest?.name}</span>
+            <span style={{ fontSize: 20, color: '#FFFFFF' }}>Review Request: {selectedRequest?.name}</span>
           </Space>
         }
         open={isModalVisible}
@@ -179,43 +178,44 @@ const FinanceRequests = () => {
               {/* Dummy PDF Viewer */}
               <div style={{ 
                 height: '500px', 
-                background: '#F0F2F5', 
-                border: '1px solid #E2E8F0', 
+                background: '#1E293B', 
+                border: '1px solid #334155', 
                 borderRadius: 8,
                 display: 'flex', 
                 flexDirection: 'column',
                 justifyContent: 'center', 
                 alignItems: 'center',
-                color: '#475569'
+                color: '#94A3B8'
               }}>
-                <FilePdfOutlined style={{ fontSize: 64, marginBottom: 16 }} />
-                <Title level={4} style={{ color: '#000000' }}>{selectedRequest.name}</Title>
-                <Text>Submitted Date: {selectedRequest.submittedDate}</Text>
-                <Text style={{ marginTop: 16 }}>(PDF Document Viewer Embedded Here)</Text>
+                <FilePdfOutlined style={{ fontSize: 64, marginBottom: 16, color: '#ef4444' }} />
+                <Title level={4} style={{ color: '#FFFFFF' }}>{selectedRequest.name}</Title>
+                <Text style={{ color: '#CBD5E1' }}>Submitted Date: {selectedRequest.submittedDate}</Text>
+                <Text style={{ marginTop: 16, color: '#94A3B8' }}>(PDF Document Viewer Embedded Here)</Text>
               </div>
             </Col>
             
             <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ flex: 1 }}>
-                <Title level={5} style={{ color: '#000000' }}>Request Details</Title>
-                <Descriptions column={1} size="small" style={{ marginBottom: 24 }}>
+                <Title level={5} style={{ color: '#FFFFFF' }}>Request Details</Title>
+                <Descriptions column={1} size="small" style={{ marginBottom: 24 }} labelStyle={{ color: '#FFFFFF', fontWeight: 'bold' }} contentStyle={{ color: '#FFFFFF' }}>
                   <Descriptions.Item label="ID">{selectedRequest.id}</Descriptions.Item>
                   <Descriptions.Item label="Type">{selectedRequest.type}</Descriptions.Item>
                   <Descriptions.Item label="Status">{getStatusTag(selectedRequest.status)}</Descriptions.Item>
                 </Descriptions>
                 
-                <Title level={5} style={{ color: '#000000' }}>Original Description</Title>
-                <Paragraph style={{ color: '#000000', padding: 12, background: '#F8FAFC', borderRadius: 8, border: '1px solid #E2E8F0' }}>
+                <Title level={5} style={{ color: '#FFFFFF' }}>Original Description</Title>
+                <Paragraph style={{ color: '#E2E8F0', padding: 12, background: '#1E293B', borderRadius: 8, border: '1px solid #334155' }}>
                   {selectedRequest.description}
                 </Paragraph>
 
-                <Title level={5} style={{ color: '#000000' }}>Admin Remarks (Optional)</Title>
+                <Title level={5} style={{ color: '#FFFFFF' }}>Admin Remarks (Optional)</Title>
                 <TextArea 
                   rows={4} 
                   placeholder="Enter comments or justification for approval/rejection..." 
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
-                  style={{ background: '#F8FAFC', borderColor: '#E2E8F0', color: '#000000', marginBottom: 24 }}
+                  style={{ background: '#1E293B', borderColor: '#334155', color: '#FFFFFF', marginBottom: 24 }}
+                  className="placeholder-gray-500"
                 />
               </div>
 
@@ -253,19 +253,22 @@ const FinanceRequests = () => {
 
       <style>{`
         .glass-modal .ant-modal-content {
-          background: #FFFFFF !important;
+          background: #0F172A !important;
           border-radius: 16px;
-          border: 1px solid #E2E8F0 !important;
+          border: 1px solid #1E293B !important;
         }
         .glass-modal .ant-modal-header {
           background: transparent !important;
-          border-bottom: 1px solid #F0F0F0 !important;
+          border-bottom: 1px solid #1E293B !important;
         }
         .glass-modal .ant-modal-title {
-          color: #000000 !important;
+          color: #FFFFFF !important;
         }
         .glass-modal .ant-modal-close {
-          color: #000000 !important;
+          color: #94A3B8 !important;
+        }
+        .glass-modal .ant-modal-close:hover {
+          color: #FFFFFF !important;
         }
       `}</style>
     </div>

@@ -11,7 +11,7 @@ const BudgetApproval = () => {
 
   const approveBudget = (id) => {
     setData(data.map(b => b.id === id ? { ...b, status: 'Approved' } : b));
-    message.success('Budget approved.');
+    message.success('Approved successfully');
     setIsModalOpen(false);
   };
 
@@ -35,7 +35,7 @@ const BudgetApproval = () => {
       key: 'status',
       render: status => {
         let color = status === 'Approved' ? 'green' : (status === 'Pending' ? 'orange' : 'red');
-        return <Tag color={color}>{status}</Tag>
+        return <Tag className={`tag-teal-pill ${status === 'Approved' ? 'active' : 'inactive'}`}>{status}</Tag>
       }
     },
     {
@@ -43,11 +43,11 @@ const BudgetApproval = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => handleReview(record)} type="dashed">Review</Button>
+           <Button onClick={() => handleReview(record)} className="btn-teal-secondary">Review</Button>
           {record.status === 'Pending' && (
             <>
-              <Button type="primary" style={{ background: '#52c41a', borderColor: '#52c41a' }} onClick={() => approveBudget(record.id)}>Approve</Button>
-              <Button danger onClick={() => rejectBudget(record.id)}>Reject</Button>
+              <Button className="btn-teal-primary" onClick={() => approveBudget(record.id)}>Approve</Button>
+              <Button danger className="rounded-full" onClick={() => rejectBudget(record.id)}>Reject</Button>
             </>
           )}
         </Space>
@@ -61,22 +61,23 @@ const BudgetApproval = () => {
       <Table columns={columns} dataSource={data} rowKey="id" />
 
       <Modal
-        title={`Review Budget Proposal: ${selectedBudget?.event}`}
+        title={<span style={{ color: '#FFFFFF' }}>Review Budget Proposal: {selectedBudget?.event}</span>}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={[
           <Button key="close" onClick={() => setIsModalOpen(false)}>Close</Button>,
           selectedBudget && selectedBudget.status === 'Pending' && (
             <React.Fragment key="actions">
-              <Button danger onClick={() => rejectBudget(selectedBudget.id)}>Reject</Button>
-              <Button type="primary" style={{ background: '#52c41a', borderColor: '#52c41a' }} onClick={() => approveBudget(selectedBudget.id)}>Approve</Button>
+              <Button danger className="rounded-full" onClick={() => rejectBudget(selectedBudget.id)}>Reject</Button>
+              <Button className="btn-teal-primary" onClick={() => approveBudget(selectedBudget.id)}>Approve</Button>
             </React.Fragment>
           )
         ]}
         width={700}
+        className="glass-modal"
       >
         {selectedBudget && (
-          <Descriptions bordered column={1} size="small" labelStyle={{ width: '150px' }}>
+          <Descriptions bordered column={1} size="small" labelStyle={{ width: '150px', color: '#FFFFFF', fontWeight: 'bold' }} contentStyle={{ color: '#FFFFFF' }}>
              <Descriptions.Item label="Status">
                <Badge status={selectedBudget.status === 'Approved' ? 'success' : selectedBudget.status === 'Pending' ? 'warning' : 'error'} text={selectedBudget.status} />
              </Descriptions.Item>

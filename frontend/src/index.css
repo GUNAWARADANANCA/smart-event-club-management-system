@@ -2,200 +2,178 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global Light Theme with Teal/Orange Palette */
+:root {
+  --teal-primary: #1FAF9A;
+  --teal-secondary: #1E8F7E;
+  --teal-hover: #22C1AA;
+  --teal-active: #178F7C;
+  --teal-dark: #146F63;
+  --teal-bg: #E6F4F1;
+  --teal-gradient: linear-gradient(135deg, #1FAF9A, #1E8F7E);
+  --teal-gradient-hover: linear-gradient(135deg, #22C1AA, #1FAF9A);
+  --teal-gradient-active: linear-gradient(135deg, #178F7C, #146F63);
+  --teal-shadow: 0 6px 20px rgba(31, 175, 154, 0.3);
+}
+
+
+
+/* Global Light Theme */
 body {
   background-color: #F8FAFC;
   color: #0F172A;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-/* Antd Custom Theme Overrides for Light Theme */
-.ant-pagination-item-active {
-  border-color: #14B8A6 !important;
-  background-color: #14B8A6 !important;
-}
-
-
-
-
-.ant-pagination-item-active a {
+/* Teal Gradient Button Utility */
+.btn-teal-primary {
+  background: var(--teal-gradient) !important;
   color: #FFFFFF !important;
-}
-
-.ant-pagination-item {
-  border-color: #E2E8F0 !important;
-  background-color: #FFFFFF !important;
-}
-
-.ant-pagination-item a {
-  color: #0F172A !important;
-}
-
-.ant-menu {
-  background-color: #0F172A !important;
-  color: #0F172A !important;
-}
-
-.ant-menu-item-selected {
-  background-color: #14B8A6 !important;
-  color: #FFFFFF !important;
-}
-
-.ant-menu-item {
-  color: #FFFFFF !important;
-}
-
-.ant-menu-item:hover {
-  color: #14B8A6 !important;
-}
-
-.ant-table {
-  background-color: #FFFFFF !important;
-  color: #0F172A !important;
-}
-
-.ant-table-thead > tr > th {
-  background-color: #14B8A6 !important;
-  color: #000000 !important;
+  border-radius: 999px !important;
   font-weight: 600 !important;
-  border-bottom: 2px solid #0F766E !important;
+  padding: 10px 24px !important;
+  box-shadow: var(--teal-shadow) !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.ant-table-tbody > tr > td {
-  border-bottom: 1px solid #E2E8F0 !important;
-  color: #0F172A !important;
+.btn-teal-primary:hover {
+  background: var(--teal-gradient-hover) !important;
+  box-shadow: 0 8px 25px rgba(31, 175, 154, 0.4) !important;
+  transform: translateY(-1px);
 }
 
-.ant-table-tbody > tr:hover > td {
-  background-color: #CCFBF1 !important;
+.btn-teal-primary:active {
+  background: var(--teal-gradient-active) !important;
+  transform: scale(0.98);
 }
 
-/* Ant Design Button Theming */
+/* Secondary Button Utility */
+.btn-teal-secondary {
+  background: transparent !important;
+  border: 2px solid var(--teal-primary) !important;
+  color: var(--teal-primary) !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  padding: 8px 22px !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-teal-secondary:hover {
+  background: var(--teal-primary) !important;
+  color: #FFFFFF !important;
+}
+
+/* Light Green Button Utility */
+.btn-light-green {
+  background: var(--teal-bg) !important;
+  color: var(--teal-secondary) !important;
+  border: 2px solid var(--teal-primary) !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  padding: 10px 24px !important;
+  transition: all 0.3s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-light-green:hover {
+  background: var(--teal-primary) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(31, 175, 154, 0.2) !important;
+}
+
+/* Pill Tag Utility */
+.tag-teal-pill {
+  border-radius: 999px !important;
+  padding: 4px 12px !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+
+.tag-teal-pill.active {
+  background: var(--teal-gradient) !important;
+  color: #FFFFFF !important;
+}
+
+.tag-teal-pill.inactive {
+  background: var(--teal-bg) !important;
+  color: var(--teal-secondary) !important;
+}
+
+/* Ant Design Global Overrides */
 .ant-btn-primary {
-  background-color: #14B8A6 !important;
-  border-color: #14B8A6 !important;
+  background: var(--teal-gradient) !important;
+  border-color: transparent !important;
+  border-radius: 999px !important;
+  box-shadow: var(--teal-shadow) !important;
+  height: auto !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
 }
 
 .ant-btn-primary:hover {
-  background-color: #0F766E !important;
-  border-color: #0F766E !important;
+  background: var(--teal-gradient-hover) !important;
 }
 
-.ant-btn-default {
-  color: #0F172A !important;
-  border-color: #E2E8F0 !important;
-  background-color: #FFFFFF !important;
-}
-
-.ant-btn-default:hover {
-  background-color: #F8FAFC !important;
-  border-color: #14B8A6 !important;
-  color: #14B8A6 !important;
-}
-
-/* Ant Design Input Theming */
-.ant-input,
-.ant-input-number,
-.ant-select-selector,
-.ant-picker {
-  background-color: #FFFFFF !important;
-  color: #0F172A !important;
-  border-color: #E2E8F0 !important;
-}
-
-.ant-input:focus,
-.ant-input-number:focus,
-.ant-select-selector:focus,
-.ant-picker:focus {
-  border-color: #14B8A6 !important;
-  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.2) !important;
-}
-
-/* Ant Design Modal & Cards */
-.ant-modal-content,
-.ant-card {
-  background-color: #FFFFFF !important;
-  color: #0F172A !important;
-}
-
-.ant-modal-header {
-  background-color: #F8FAFC !important;
-  border-bottom: 1px solid #E2E8F0 !important;
-}
-
-.ant-card-head {
-  background-color: #F8FAFC !important;
-  border-bottom: 1px solid #E2E8F0 !important;
-}
-
-/* Ant Design Form Labels */
-.ant-form-item-label > label {
-  color: #000000 !important;
-}
-
-/* Ant Design Tabs */
-.ant-tabs {
-  color: #0F172A !important;
-}
-
-.ant-tabs-tab {
-  color: #64748B !important;
-}
-
-.ant-tabs-tab-active {
-  color: #14B8A6 !important;
-}
-
-.ant-tabs-ink-bar {
-  background-color: #14B8A6 !important;
-}
-
-/* Ant Design Select Dropdown */
-.ant-select-item-option-selected {
-  background-color: #E0F2F1 !important;
-}
-
-.ant-select-item-option-selected:hover {
-  background-color: #B2DFDB !important;
-}
-
-/* Green Select Overrides - Ensure these are extremely visible */
-.green-select .ant-select-selector {
-  background-color: #14B8A6 !important; /* Vibrant Green/Teal */
-  color: #000000 !important;
-  border-color: #0F766E !important;
+.ant-menu-item-selected {
+  background-color: var(--teal-bg) !important;
+  color: var(--teal-primary) !important;
   border-radius: 8px !important;
 }
 
-.green-select .ant-select-selection-placeholder {
-  color: #000000 !important;
-  font-weight: 500 !important;
-  opacity: 1 !important;
+.ant-tabs-ink-bar {
+  background: var(--teal-gradient) !important;
 }
 
-.green-select .ant-select-arrow {
-  color: #000000 !important;
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--teal-primary) !important;
 }
 
-.green-dropdown {
-  background-color: #FFFFFF !important;
-  border: 1px solid #14B8A6 !important;
+.ant-card {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
 }
 
-.green-dropdown .ant-select-item {
-  color: #000000 !important;
+.ant-modal-content {
+  border-radius: 24px !important;
+}
+
+.ant-tag {
+  border-radius: 999px !important;
+}
+
+/* Green Select Overrides */
+.green-select .ant-select-selector {
+  background-color: var(--teal-bg) !important;
+  color: var(--teal-secondary) !important;
+  border-color: var(--teal-primary) !important;
+  border-radius: 999px !important;
 }
 
 .green-dropdown .ant-select-item-option-selected {
-  background-color: #14B8A6 !important;
+  background-color: var(--teal-primary) !important;
   color: #FFFFFF !important;
 }
 
-.green-dropdown .ant-select-item-option-active {
-  background-color: #CCFBF1 !important; /* Light teal on hover */
+/* Global Input Focus Style */
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-number:focus,
+.ant-input-number-focused {
+  border-color: var(--teal-primary) !important;
+  box-shadow: 0 0 0 2px rgba(31, 175, 154, 0.2) !important;
+  outline: 0;
 }
 
-/* Ant Design Statistic Text Colors */
-.ant-statistic-title {
-  color: #000000 !important;
-  font-weight: 500 !important;
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: var(--teal-primary) !important;
+}
+
+.ant-select-focused:not(.ant-select-disabled) .ant-select-selector {
+  border-color: var(--teal-primary) !important;
+  box-shadow: 0 0 0 2px rgba(31, 175, 154, 0.2) !important;
 }

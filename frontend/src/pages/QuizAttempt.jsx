@@ -21,7 +21,7 @@ const QuizAttempt = () => {
 
   return (
     <div>
-      <Title level={2}>Attempting: Tech Symposium Basics</Title>
+      <Title level={2} style={{ color: '#000000' }}>Attempting: Tech Symposium Basics</Title>
       <Card style={{ maxWidth: 800, margin: '0 auto' }}>
         <Form layout="vertical" onFinish={onFinish}>
           
