@@ -30,10 +30,6 @@ const Register = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundImage: 'url(/gallery/hackathon.png)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
       position: 'relative',
       padding: '20px'
     }}>
@@ -46,7 +42,7 @@ const Register = () => {
           padding: 12px 16px !important;
         }
         .glass-input.ant-input-affix-wrapper-focused, .glass-input.ant-input-focused, .glass-input.ant-input-affix-wrapper:hover, .glass-input.ant-input:hover {
-          border-color: #a78bfa !important;
+          border-color: #1FAF9A !important;
           background: rgba(0, 0, 0, 0.6) !important;
         }
         .glass-input input {
@@ -63,25 +59,25 @@ const Register = () => {
           color: white !important;
         }
         .glass-btn {
-          background: linear-gradient(135deg, #8b5cf6 0%, #4c1d95 100%) !important;
+          background: linear-gradient(135deg, #1FAF9A 0%, #1E8F7E 100%) !important;
           border: none !important;
           height: 50px !important;
           font-size: 18px !important;
           border-radius: 12px !important;
           font-weight: bold !important;
-          box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4) !important;
+          box-shadow: 0 4px 15px rgba(31, 175, 154, 0.4) !important;
           transition: all 0.3s ease !important;
         }
         .glass-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6) !important;
+          box-shadow: 0 6px 20px rgba(31, 175, 154, 0.6) !important;
         }
         .link-text {
-          color: #a78bfa;
+          color: #1FAF9A;
           transition: color 0.3s;
         }
         .link-text:hover {
-          color: #c4b5fd;
+          color: #22C1AA;
         }
       `}</style>
       
@@ -92,7 +88,7 @@ const Register = () => {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(18,18,18,0.4) 100%)',
+        background: 'linear-gradient(135deg, rgba(0, 40, 30, 0.9) 0%, rgba(31, 175, 154, 0.15) 100%)',
         zIndex: 1
       }} />
 
@@ -100,12 +96,12 @@ const Register = () => {
         <Card 
           bordered={false}
           style={{
-            background: 'rgba(20, 20, 20, 0.3)',
+            background: 'rgba(15, 35, 30, 0.4)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderTop: '1px solid rgba(255, 255, 255, 0.3)',
-            borderLeft: '1px solid rgba(255, 255, 255, 0.3)',
+            borderTop: '1px solid rgba(31, 175, 154, 0.4)',
+            borderLeft: '1px solid rgba(31, 175, 154, 0.4)',
             boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
             borderRadius: '24px',
             width: '100%',
@@ -117,7 +113,7 @@ const Register = () => {
             <Title level={2} style={{ color: '#fff', marginBottom: '8px', fontWeight: 700, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
               Create an Account
             </Title>
-            <Text style={{ color: '#a78bfa', fontSize: '16px', letterSpacing: '0.5px' }}>
+            <Text style={{ color: '#1FAF9A', fontSize: '16px', letterSpacing: '0.5px' }}>
               Join the University Club System
             </Text>
           </div>

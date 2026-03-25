@@ -41,7 +41,7 @@ const QuizManagement = () => {
   ];
 
   return (
-    <div style={{ padding: '24px', background: 'rgba(15, 169, 159, 1)', borderRadius: 16, border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+    <div style={{ padding: '24px', borderRadius: 16, border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24, alignItems: 'center' }}>
         <Title level={2} style={{ margin: 0, color: '#000000' }}>Quiz & Certification</Title>
         <div>

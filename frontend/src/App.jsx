@@ -44,8 +44,8 @@ import ViewFeedback from './pages/ViewFeedback';
 
 function App() {
   return (
-    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm, token: { colorPrimary: '#8b5cf6', colorBgContainer: '#141414' } }}>
-      <div style={{ minHeight: '100vh', backgroundColor: '#000' }}>
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm, token: { colorPrimary: '#1FAF9A', colorBgContainer: '#111827' } }}>
+      <div style={{ minHeight: '100vh', backgroundColor: '#0F172A' }}>
         <BrowserRouter>
           <Routes>
         <Route path="/" element={<Home />} />

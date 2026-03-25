@@ -16,7 +16,7 @@ export default function Sponsorships() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-transparent p-4 md:p-8 flex items-center justify-center">
+    <div className="min-h-[80vh] bg-white p-4 md:p-8 flex items-center justify-center rounded-3xl">
       <div className="max-w-5xl w-full bg-[#FFFFFF]/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-[#E2E8F0]">
         <div className="flex flex-col lg:flex-row">
           {/* Left Side: Brand/Event Info with strong gradient */}

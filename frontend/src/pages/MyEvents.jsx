@@ -43,13 +43,13 @@ const MyEvents = () => {
     <div>
       <div style={{ marginBottom: 32 }}>
         <Title level={2} style={{ color: '#000000' }}>My Registered Events</Title>
-        <Text style={{ fontSize: 16, color: '#000000' }}>Manage and view all the university events you have successfully booked.</Text>
+        <Text style={{ fontSize: 16, color: '#334155' }}>Manage and view all the university events you have successfully booked.</Text>
       </div>
 
       {myEventsState.length === 0 ? (
         <Empty 
-          description={<span style={{ color: 'gray' }}>You haven't registered for any events yet.</span>} 
-          style={{ margin: '60px 0', padding: 40, background: '#FFFFFF', borderRadius: 12, border: '1px solid #E2E8F0' }} 
+          description={<span style={{ color: '#94A3B8' }}>You haven't registered for any events yet.</span>} 
+          style={{ margin: '60px 0', padding: 40, background: '#111827', borderRadius: 12, border: '1px solid #1E293B' }} 
         >
           <Button className="btn-teal-primary" onClick={() => navigate('/portal')} style={{ marginTop: 16 }}>Browse Upcoming Events</Button>
         </Empty>

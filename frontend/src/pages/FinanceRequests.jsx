@@ -94,8 +94,8 @@ const FinanceRequests = () => {
   return (
     <div>
       <div style={{ marginBottom: 32 }}>
-        <Title level={2} style={{ margin: 0, color: '#FFFFFF' }}>Finance Request Review</Title>
-        <Text style={{ fontSize: 16, color: '#94A3B8' }}>Review and manage pending PDF requests submitted by clubs and events.</Text>
+        <Title level={2} style={{ margin: 0, color: '#000000' }}>Finance Request Review</Title>
+        <Text style={{ fontSize: 16, color: '#475569' }}>Review and manage pending PDF requests submitted by clubs and events.</Text>
       </div>
 
       <Row gutter={[24, 24]}>

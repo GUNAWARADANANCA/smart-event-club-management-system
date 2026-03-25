@@ -43,7 +43,7 @@ const UserPerformance = () => {
         </Col>
       </Row>
 
-      <Card title={<span style={{ color: '#000000' }}>Detailed Quiz History</span>} bordered={false}>
+      <Card title={<span style={{ color: '#FFFFFF' }}>Detailed Quiz History</span>} bordered={false} style={{ background: '#111827', border: '1px solid #1E293B' }}>
           <Table columns={columns} dataSource={data} rowKey="id" />
       </Card>
     </div>

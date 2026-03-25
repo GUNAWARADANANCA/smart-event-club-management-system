@@ -42,7 +42,7 @@ const CreateEvent = () => {
 
   return (
     <div>
-      <Title level={2}>Create New Event</Title>
+      <Title level={2} style={{ color: 'black' }}>Create New Event</Title>
       <Card style={{ maxWidth: 800, margin: '0 auto' }}>
         {conflictWarning && <Alert message="Warning" description="This venue has a scheduling conflict with another event." type="warning" showIcon style={{ marginBottom: 24 }} />}
         

@@ -36,7 +36,7 @@ const RequestManagement = () => {
       
       <div className="max-w-4xl mx-auto relative z-10">
         <div className="flex items-center gap-4 mb-8">
-          <Title level={4} className="m-0 !text-slate-800 tracking-tight font-extrabold uppercase tracking-widest text-xs border-b border-[#14B8A6]/30 pb-2">Request Management</Title>
+          <Title level={4} className="m-0 !text-[#14B8A6] tracking-tight font-extrabold uppercase tracking-widest text-xs border-b border-[#14B8A6]/30 pb-2">Request Management</Title>
         </div>
         
         <Form 

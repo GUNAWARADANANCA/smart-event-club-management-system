@@ -17,11 +17,12 @@
 
 
 
-/* Global Light Theme */
+/* Global Dark Theme */
 body {
-  background-color: #F8FAFC;
-  color: #0F172A;
+  background-color: #0F172A;
+  color: #F8FAFC;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
 }
 
 /* Teal Gradient Button Utility */
@@ -31,7 +32,7 @@ body {
   border-radius: 999px !important;
   font-weight: 600 !important;
   padding: 10px 24px !important;
-  box-shadow: var(--teal-shadow) !important;
+  box-shadow: 0 4px 14px rgba(31, 175, 154, 0.4) !important;
   border: none !important;
   transition: all 0.3s ease !important;
   display: inline-flex;

@@ -31,17 +31,17 @@ const FeedbackForm = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-[80vh] bg-[#F8FAFC] font-sans rounded-3xl overflow-hidden relative p-8 flex items-center justify-center">
+      <div className="min-h-[80vh] bg-white font-sans rounded-3xl overflow-hidden relative p-8 flex items-center justify-center">
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#14B8A6]/10 rounded-full blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#0F766E]/10 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div className="w-full max-w-md relative z-10 text-center">
-          <Card className="border border-[#1E293B] shadow-2xl rounded-3xl overflow-hidden bg-[#0F172A] p-12">
+          <Card className="border border-[#14B8A6]/20 shadow-2xl rounded-3xl overflow-hidden p-12" style={{ background: '#0f172a' }}>
             <div className="w-20 h-20 bg-[#14B8A6]/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <SmileOutlined className="text-5xl text-[#14B8A6]" />
             </div>
             <h2 className="text-3xl font-black text-white mb-4">Submitted Successfully!</h2>
-            <p className="text-gray-400 mb-8">
+            <p className="text-slate-400 mb-8">
               Thank you for sharing your thoughts. Your feedback helps us build a better experience for everyone.
             </p>
             <Button 
@@ -59,15 +59,16 @@ const FeedbackForm = () => {
   }
 
   return (
-    <div className="min-h-[80vh] bg-[#F8FAFC] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden relative p-8 flex items-center justify-center">
+    <div className="min-h-[80vh] bg-white font-sans selection:bg-[#1FAF9A]/30 rounded-3xl overflow-hidden relative p-8 flex items-center justify-center" style={{ background: '#f8fafc' }}>
       {/* Decorative Blur Orbs */}
       <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#14B8A6]/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#0F766E]/10 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="w-full max-w-2xl relative z-10">
         <Card 
-          className="border border-[#1E293B] shadow-2xl rounded-3xl overflow-hidden bg-[#0F172A]"
-          bodyStyle={{ padding: '3rem' }}
+          className="border border-[#14B8A6]/20 shadow-2xl rounded-3xl overflow-hidden"
+          bodyStyle={{ padding: '3rem', background: '#0f172a', borderRadius: '1.5rem' }}
+          style={{ background: '#0f172a' }}
         >
           <div className="text-center mb-10">
             <div className="inline-block px-4 py-1 rounded-full bg-[#14B8A6]/20 border border-[#14B8A6]/30 text-[#14B8A6] text-xs font-bold uppercase tracking-widest mb-6">
@@ -76,7 +77,7 @@ const FeedbackForm = () => {
             <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4 drop-shadow-md">
               Share Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#38bdf8] to-[#14B8A6]">Feedback</span>
             </h2>
-            <p className="text-gray-400 font-medium">
+            <p className="text-slate-400 font-medium">
               Help us improve your experience by providing your honest feedback and rating.
             </p>
           </div>
@@ -90,7 +91,7 @@ const FeedbackForm = () => {
           >
             <Form.Item
               name="rating"
-              label={<span className="text-gray-300 font-bold tracking-wide uppercase text-sm">How would you rate your experience?</span>}
+              label={<span className="text-white font-bold tracking-wide uppercase text-sm">How would you rate your experience?</span>}
               rules={[{ required: true, message: 'Please provide a rating' }]}
               className="text-center mb-8"
             >
@@ -103,16 +104,18 @@ const FeedbackForm = () => {
 
             <Form.Item
               name="category"
-              label={<span className="text-gray-300 font-bold tracking-wide uppercase text-sm">Feedback Category</span>}
+              label={<span className="text-white font-bold tracking-wide uppercase text-sm">Feedback Category</span>}
               rules={[{ required: true, message: 'Please select a category' }]}
             >
               <style>{`
                 .feedback-category-options .ant-radio-button-wrapper {
                   border-inline-start-width: 1px !important;
                   border-color: #334155 !important;
+                  background: #1e293b !important;
+                  color: #94a3b8 !important;
                 }
                 .feedback-category-options .ant-radio-button-wrapper-checked {
-                  background-color: rgba(20, 184, 166, 0.15) !important;
+                  background-color: rgba(20, 184, 166, 0.2) !important;
                   border-color: #14B8A6 !important;
                   color: #14B8A6 !important;
                   box-shadow: none !important;
@@ -121,8 +124,8 @@ const FeedbackForm = () => {
                   display: none !important;
                 }
                 .feedback-category-options .ant-radio-button-wrapper:hover {
-                  color: #38bdf8;
-                  border-color: #38bdf8;
+                  color: #38bdf8 !important;
+                  border-color: #38bdf8 !important;
                 }
               `}</style>
               <Radio.Group className="w-full feedback-category-options">
@@ -131,7 +134,7 @@ const FeedbackForm = () => {
                     <Radio.Button 
                       key={cat} 
                       value={cat} 
-                      className="h-12 flex items-center justify-center rounded-xl border border-[#334155] bg-[#1E293B] text-gray-400 font-bold text-sm transition-all text-center"
+                      className="h-12 flex items-center justify-center rounded-xl border font-bold text-sm transition-all text-center"
                     >
                       {cat}
                     </Radio.Button>
@@ -142,25 +145,27 @@ const FeedbackForm = () => {
 
             <Form.Item
               name="subject"
-              label={<span className="text-gray-300 font-bold tracking-wide uppercase text-sm">Subject</span>}
+              label={<span className="text-white font-bold tracking-wide uppercase text-sm">Subject</span>}
               rules={[{ required: true, message: 'Please enter a subject' }]}
             >
               <Input 
                 size="large" 
                 placeholder="Briefly describe your feedback" 
-                className="bg-[#1E293B] border-[#334155] text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl px-4 py-3 font-medium"
+                className="border-[#334155] text-white placeholder-slate-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl px-4 py-3 font-medium"
+                style={{ background: '#1e293b', color: '#f1f5f9' }}
               />
             </Form.Item>
 
             <Form.Item
               name="message"
-              label={<span className="text-gray-300 font-bold tracking-wide uppercase text-sm">Detailed Feedback</span>}
+              label={<span className="text-white font-bold tracking-wide uppercase text-sm">Detailed Feedback</span>}
               rules={[{ required: true, message: 'Please enter your feedback details' }]}
             >
               <TextArea 
                 rows={6} 
                 placeholder="Tell us exactly what you think..." 
-                className="bg-[#1E293B] border-[#334155] text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl p-4 text-base resize-none font-medium"
+                className="border-[#334155] text-white placeholder-slate-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl p-4 text-base resize-none font-medium"
+                style={{ background: '#1e293b', color: '#f1f5f9' }}
               />
             </Form.Item>
 

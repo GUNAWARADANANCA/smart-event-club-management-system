@@ -46,12 +46,16 @@ const Home = () => {
       </div>
 
       {/* Hero Section */}
-      <div style={{ padding: '80px 24px', textAlign: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #4c1d95 100%)', color: 'white' }}>
-        <Title style={{ color: 'white', fontSize: '3.5rem', marginBottom: 24 }}>Manage University Events with Ease</Title>
-        <Paragraph style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.2rem', maxWidth: 600, margin: '0 auto 40px auto' }}>
+      <div style={{ padding: '80px 24px', textAlign: 'center', background: '#f0f9ff', color: '#111' }}>
+        <h1 style={{ fontSize: '3.5rem', fontWeight: 900, marginBottom: 24, lineHeight: 1.15, letterSpacing: '-1px' }}>
+          <span style={{ color: '#0f172a' }}>Manage University </span>
+          <span style={{ background: 'linear-gradient(90deg, #0F766E 0%, #14B8A6 40%, #f59e0b 80%, #f97316 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Events</span>
+          <span style={{ color: '#0f172a' }}> with Ease</span>
+        </h1>
+        <Paragraph style={{ color: '#64748b', fontSize: '1.2rem', maxWidth: 600, margin: '0 auto 40px auto' }}>
           An all-in-one platform for students, clubs, and administrators. Handle event approvals, ticket sales, budgets, and certifications from a single dashboard.
         </Paragraph>
-        <Button type="primary" size="large" onClick={() => navigate('/register')} style={{ height: 50, padding: '0 32px', fontSize: 18, background: '#52c41a', borderColor: '#52c41a' }}>
+        <Button type="primary" size="large" onClick={() => navigate('/register')} style={{ height: 50, padding: '0 32px', fontSize: 18, background: '#0F766E', borderColor: '#0F766E' }}>
           Get Started Now <ArrowRightOutlined />
         </Button>
       </div>

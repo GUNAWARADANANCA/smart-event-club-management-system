@@ -39,9 +39,9 @@ const CreateQuiz = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative p-6 md:p-8">
+    <div className="min-h-screen font-sans selection:bg-[#1FAF9A]/30 rounded-3xl overflow-hidden relative p-6 md:p-8">
       {/* Ambient background glow */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#0F766E]/5 to-transparent pointer-events-none z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-[500px] pointer-events-none z-0"></div>
       
       <div className="max-w-4xl mx-auto relative z-10">
       <div className="flex items-center gap-4 mb-8">
@@ -50,7 +50,7 @@ const CreateQuiz = () => {
           onClick={() => navigate('/quizzes')}
           className="hover:scale-105 transition-transform btn-teal-secondary bg-white/10 border-white/20 text-white"
         />
-        <Title level={4} className="m-0 !text-slate-800 tracking-tight font-extrabold uppercase tracking-widest text-xs border-b border-[#14B8A6]/30 pb-2">Create New Quiz</Title>
+        <Title level={4} className="m-0 !text-[#94A3B8] tracking-tight font-extrabold uppercase tracking-widest text-xs border-b border-[#1FAF9A]/30 pb-2">Create New Quiz</Title>
       </div>
  
       <Form

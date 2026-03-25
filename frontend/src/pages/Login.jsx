@@ -36,10 +36,7 @@ const Login = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundImage: 'url(/gallery/hackathon.png)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
+      background: '#0a0a0a', // Solid dark background
       position: 'relative',
       padding: '20px'
     }}>
@@ -52,7 +49,7 @@ const Login = () => {
           padding: 12px 16px !important;
         }
         .glass-input.ant-input-affix-wrapper-focused, .glass-input.ant-input-focused, .glass-input.ant-input-affix-wrapper:hover, .glass-input.ant-input:hover {
-          border-color: #a78bfa !important;
+          border-color: #1FAF9A !important;
           background: rgba(0, 0, 0, 0.6) !important;
         }
         .glass-input input {
@@ -69,37 +66,29 @@ const Login = () => {
           color: white !important;
         }
         .glass-btn {
-          background: linear-gradient(135deg, #8b5cf6 0%, #4c1d95 100%) !important;
+          background: linear-gradient(135deg, #1FAF9A 0%, #1E8F7E 100%) !important;
           border: none !important;
           height: 50px !important;
           font-size: 18px !important;
           border-radius: 12px !important;
           font-weight: bold !important;
-          box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4) !important;
+          box-shadow: 0 4px 15px rgba(31, 175, 154, 0.4) !important;
           transition: all 0.3s ease !important;
         }
         .glass-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6) !important;
+          box-shadow: 0 6px 20px rgba(31, 175, 154, 0.6) !important;
         }
         .link-text {
-          color: #a78bfa;
+          color: #1FAF9A;
           transition: color 0.3s;
         }
         .link-text:hover {
-          color: #c4b5fd;
+          color: #22C1AA;
         }
       `}</style>
       
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(18,18,18,0.4) 100%)',
-        zIndex: 1
-      }} />
+
 
       <div style={{ zIndex: 2, width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Card 
@@ -122,7 +111,7 @@ const Login = () => {
             <Title level={2} style={{ color: '#fff', marginBottom: '8px', fontWeight: 700, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
               Welcome Back
             </Title>
-            <Text style={{ color: '#a78bfa', fontSize: '16px', letterSpacing: '0.5px' }}>
+            <Text style={{ color: '#1FAF9A', fontSize: '16px', letterSpacing: '0.5px' }}>
               Login to your account
             </Text>
           </div>

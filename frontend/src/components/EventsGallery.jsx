@@ -138,22 +138,22 @@ export default function EventsGallery() {
     : galleryData.filter(item => item.category === filter);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative">
+    <div className="min-h-screen bg-white font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative">
       
       {/* Ambient background glow */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#0F766E]/5 to-transparent pointer-events-none z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#14B8A6]/5 to-transparent pointer-events-none z-0"></div>
 
       <div className="relative z-10 p-6 md:p-8">
         {/* Local Navbar Area */}
-        <nav className="w-full bg-[#FFFFFF] shadow-sm backdrop-blur-2xl border border-[#E2E8F0] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl shadow-2xl sticky top-4 z-50">
-          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#14B8A6] tracking-tighter uppercase mb-4 md:mb-0">
+        <nav className="w-full bg-white shadow-md backdrop-blur-2xl border border-[#E2E8F0] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
+          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] tracking-tighter uppercase mb-4 md:mb-0">
             Uni Gallery
           </h1>
-          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-gray-500">
-            <span className="hover:text-slate-800 cursor-pointer transition-colors">News</span>
-            <span className="hover:text-slate-800 cursor-pointer transition-colors">Events</span>
-            <span className="text-slate-800 border-b-2 border-purple-500 pb-1">Gallery</span>
-            <span onClick={() => navigate('/ticket-sales')} className="hover:text-slate-800 cursor-pointer transition-colors">Ticket Sales</span>
+          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-500">
+            <span className="hover:text-slate-900 cursor-pointer transition-colors">News</span>
+            <span className="hover:text-slate-900 cursor-pointer transition-colors">Events</span>
+            <span className="text-slate-900 border-b-2 border-[#1FAF9A] pb-1">Gallery</span>
+            <span onClick={() => navigate('/ticket-sales')} className="hover:text-slate-900 cursor-pointer transition-colors">Ticket Sales</span>
           </div>
         </nav>
 
@@ -161,13 +161,13 @@ export default function EventsGallery() {
           
           {/* Page Heading */}
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-1 rounded-full bg-[#0F766E]/10 border border-[#14B8A6]/30 text-[#0F766E] text-xs font-bold uppercase tracking-widest mb-6">
+            <div className="inline-block px-4 py-1 rounded-full bg-[#1FAF9A]/10 border border-[#1FAF9A]/30 text-[#1FAF9A] text-xs font-bold uppercase tracking-widest mb-6">
               Officially Curated Albums
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-slate-800 uppercase tracking-tighter mb-6 drop-shadow-md">
-              Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#F97316]">Showcase</span>
+            <h2 className="text-5xl md:text-7xl font-black text-slate-900 uppercase tracking-tighter mb-6 drop-shadow-md">
+              Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] via-[#14B8A6] to-[#F97316]">Showcase</span>
             </h2>
-            <p className="text-lg md:text-xl text-gray-500 max-w-3xl mx-auto font-medium">
+            <p className="text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium">
               Relive the most unforgettable moments, explosive hackathons, and vibrant cultural nights hosted at our university.
             </p>
           </div>
@@ -180,8 +180,8 @@ export default function EventsGallery() {
                 onClick={() => setFilter(cat)}
                 className={`px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm transition-all duration-300 border backdrop-blur-sm ${
                   filter === cat 
-                  ? 'bg-gradient-to-r from-[#0F766E] to-[#14B8A6] text-white border-transparent shadow-md scale-105'
-                  : 'bg-[#1a1a1a] text-gray-500 border-[#E2E8F0] hover:bg-[#2a2a2a] hover:text-slate-800 hover:border-white/30'
+                  ? 'bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] text-white border-transparent shadow-md scale-105'
+                  : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300'
                 }`}
               >
                 {cat}
@@ -198,7 +198,7 @@ export default function EventsGallery() {
 
           {/* Empty State */}
           {filteredData.length === 0 && (
-            <div className="text-center text-gray-500 py-20 text-2xl font-black uppercase tracking-widest border-2 border-dashed border-gray-800 rounded-3xl mt-12">
+            <div className="text-center text-slate-400 py-20 text-2xl font-black uppercase tracking-widest border-2 border-dashed border-slate-200 rounded-3xl mt-12">
               No events found for this category.
             </div>
           )}

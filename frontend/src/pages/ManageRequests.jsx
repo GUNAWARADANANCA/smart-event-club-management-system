@@ -74,7 +74,7 @@ const ManageRequests = () => {
   ];
 
   return (
-    <div>
+    <div style={{ backgroundColor: '#FFFFFF', minHeight: '100%', borderRadius: 16, padding: '8px' }}>
       <div style={{ marginBottom: 16 }}>
         <Title level={2} style={{ color: '#000000' }}>Manage Requests</Title>
         <Text style={{ color: '#334155' }}>Review, approve, or reject student requests for events and clubs.</Text>
@@ -93,15 +93,15 @@ const ManageRequests = () => {
         ]}
       >
         {selectedRequest && (
-          <div style={{ fontSize: 16, color: '#0F172A' }}>
-            <p><strong>Student Name:</strong> <span style={{ color: '#0F766E' }}>{selectedRequest.fullName}</span></p>
-            <p><strong>Email:</strong> {selectedRequest.email}</p>
-            <p><strong>Academic Year:</strong> {selectedRequest.academicYear}</p>
-            <p><strong>Request Type:</strong> {selectedRequest.requestType}</p>
-            <p><strong>Status:</strong> <Tag color={selectedRequest.status === 'Approved' ? '#14B8A6' : selectedRequest.status === 'Rejected' ? '#F97316' : '#0F766E'}>{selectedRequest.status}</Tag></p>
+          <div style={{ fontSize: 16, color: '#FFFFFF' }}>
+            <p><strong style={{ color: '#FFFFFF' }}>Student Name:</strong> <span style={{ color: '#2DD4BF' }}>{selectedRequest.fullName}</span></p>
+            <p><strong style={{ color: '#FFFFFF' }}>Email:</strong> <span style={{ color: '#E2E8F0' }}>{selectedRequest.email}</span></p>
+            <p><strong style={{ color: '#FFFFFF' }}>Academic Year:</strong> <span style={{ color: '#E2E8F0' }}>{selectedRequest.academicYear}</span></p>
+            <p><strong style={{ color: '#FFFFFF' }}>Request Type:</strong> <span style={{ color: '#E2E8F0' }}>{selectedRequest.requestType}</span></p>
+            <p><strong style={{ color: '#FFFFFF' }}>Status:</strong> <Tag color={selectedRequest.status === 'Approved' ? '#14B8A6' : selectedRequest.status === 'Rejected' ? '#F97316' : '#0F766E'}>{selectedRequest.status}</Tag></p>
             <div style={{ marginTop: 24 }}>
-              <strong>Description:</strong>
-              <div style={{ padding: 16, background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 8, marginTop: 8, color: '#475569' }}>
+              <strong style={{ color: '#FFFFFF' }}>Description:</strong>
+              <div style={{ padding: 16, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, marginTop: 8, color: '#F1F5F9' }}>
                 {selectedRequest.description}
               </div>
             </div>

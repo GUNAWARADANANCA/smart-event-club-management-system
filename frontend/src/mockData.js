@@ -175,6 +175,36 @@ export const mockRequests = [
     description: 'Requesting permission to establish a new CyberSecurity Student Chapter under the IT faculty. We have 50 interested students.',
     status: 'Pending',
     submittedDate: '2026-03-20'
+  },
+  {
+    id: 'REQ-1002',
+    fullName: 'Brian Perera',
+    email: 'brian@my.sliit.lk',
+    academicYear: 'Year 3',
+    requestType: 'Event Approval Request',
+    description: 'Requesting approval to organize an Inter-Faculty Debate Competition in the main hall. Expected 120 participants across 6 faculties.',
+    status: 'Pending',
+    submittedDate: '2026-03-22'
+  },
+  {
+    id: 'REQ-1003',
+    fullName: 'Chamara Silva',
+    email: 'chamara@my.sliit.lk',
+    academicYear: 'Year 1',
+    requestType: 'Club Management Request',
+    description: 'Requesting to form a Photography Club focused on campus events documentation and creative digital media.',
+    status: 'Pending',
+    submittedDate: '2026-03-23'
+  },
+  {
+    id: 'REQ-1004',
+    fullName: 'Dinusha Fernando',
+    email: 'dinusha@my.sliit.lk',
+    academicYear: 'Year 4',
+    requestType: 'Event Approval Request',
+    description: 'Seeking approval for a Final Year Project Showcase event inviting industry professionals and alumni as judges.',
+    status: 'Pending',
+    submittedDate: '2026-03-24'
   }
 ];
 

@@ -102,7 +102,7 @@ const UpcomingEventsPortal = () => {
         <Badge.Ribbon text={status.label} color={status.color === 'gray' ? '#475569' : status.color}>
           <Card 
             hoverable 
-            style={{ height: '100%', flexDirection: 'column', backgroundColor: '#141414', borderColor: isFeatured ? '#F97316' : '#303030', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
+            style={{ height: '100%', flexDirection: 'column', backgroundColor: '#141414', borderColor: isFeatured ? '#F97316' : '#303030', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)' }}
             bodyStyle={{ display: 'flex', flexDirection: 'column', height: '100%' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12, marginTop: 12 }}>
@@ -147,7 +147,7 @@ const UpcomingEventsPortal = () => {
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: '#FFFFFF', minHeight: '100%', borderRadius: 16, padding: '8px' }}>
       <div style={{ marginBottom: 32, textAlign: 'center'}}>
         <Title level={2} style={{ color: '#14B8A6' }}>Upcoming Events Portal</Title>
         <Text type="secondary" style={{ fontSize: 16, color: '#000000' }}>

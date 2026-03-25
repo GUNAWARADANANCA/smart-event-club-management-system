@@ -41,7 +41,7 @@ const MainLayout = () => {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#F8FAFC' }}>
+    <Layout style={{ minHeight: '100vh', background: '#0F172A' }}>
       <Sider collapsible width={260} theme="dark" style={{ background: '#0F172A', position: 'fixed', height: '100vh', zIndex: 1000 }}>
         <div style={{ height: 48, margin: '24px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <h2 style={{ margin: 0, fontSize: '1.4rem', letterSpacing: '1px', color: '#14B8A6', fontWeight: 'bold' }}>UNI EVENT PRO</h2>
@@ -55,13 +55,13 @@ const MainLayout = () => {
           onClick={({ key }) => navigate(key)} 
         />
       </Sider>
-      <Layout style={{ background: 'transparent', marginLeft: 260 }}>
-        <Header style={{ padding: '0 32px', background: '#FFFFFF', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ color: '#0F172A', fontSize: '16px', fontWeight: 600 }}>
+      <Layout style={{ background: '#FFFFFF', marginLeft: 260 }}>
+        <Header style={{ padding: '0 32px', background: '#111827', borderBottom: '1px solid #1E293B', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 600 }}>
             Welcome back, {userName}
           </div>
         </Header>
-        <Content style={{ margin: '32px', overflow: 'initial' }}>
+        <Content style={{ margin: '32px', overflow: 'initial', background: '#FFFFFF' }}>
           <div style={{ minHeight: 360, borderRadius: borderRadiusLG }}>
             <Outlet />
           </div>
