@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const authRouter = require('./routes/auth');
 const eventsRouter = require('./routes/events');
+const ticketsRouter = require('./routes/tickets');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/tickets', ticketsRouter);
 app.use('/events', eventsRouter);
 
 app.use((req, res) => {

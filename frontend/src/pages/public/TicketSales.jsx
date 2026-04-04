@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, Tag, Modal, Form, Input, InputNumber, Button, Typography, message, Radio, Tooltip, Upload, Steps } from 'antd';
+import api from '@/lib/api';
 import { CarOutlined, CheckCircleFilled, CreditCardOutlined, BankOutlined, UploadOutlined, CheckOutlined, DownloadOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
-// Mock parking slot data
-const generateParkingSlots = () => {
+const buildParkingSlots = (occupiedIds) => {
+  const occupied = new Set(
+    (occupiedIds || [])
+      .map((id) => String(id).trim().toUpperCase())
+      .filter(Boolean)
+  );
   const slots = [];
   const rows = ['A', 'B', 'C', 'D'];
-  rows.forEach(row => {
+  rows.forEach((row) => {
     for (let i = 1; i <= 8; i++) {
       const id = `${row}${i}`;
-      const isOccupied = Math.random() < 0.4; // 40% occupied
-      slots.push({ id, row, number: i, occupied: isOccupied });
+      slots.push({ id, row, number: i, occupied: occupied.has(id) });
     }
   });
   return slots;
@@ -32,10 +36,44 @@ const TicketSales = () => {
   const [form] = Form.useForm();
   const [selectedPaymentType, setSelectedPaymentType] = useState('standard');
   const [selectedParkingSlot, setSelectedParkingSlot] = useState(null);
-  const [parkingSlots] = useState(generateParkingSlots);
+  const [occupiedParkingIds, setOccupiedParkingIds] = useState([]);
+  const [parkingFetchLoading, setParkingFetchLoading] = useState(false);
   const [paymentMethodForm, setPaymentMethodForm] = useState('card');
   const [currentStep, setCurrentStep] = useState(0);
   const [bookingConfirm, setBookingConfirm] = useState(null);
+
+  const parkingSlots = useMemo(
+    () => buildParkingSlots(occupiedParkingIds),
+    [occupiedParkingIds]
+  );
+
+  useEffect(() => {
+    if (!isModalOpen || currentStep !== 1) return undefined;
+    let cancelled = false;
+    (async () => {
+      setParkingFetchLoading(true);
+      try {
+        const { data } = await api.get('/api/tickets/parking/occupied');
+        if (!cancelled) {
+          const raw = data.occupiedSlotIds || [];
+          setOccupiedParkingIds(
+            raw.map((id) => String(id).trim().toUpperCase()).filter(Boolean)
+          );
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setOccupiedParkingIds([]);
+          message.warning('Could not load booked parking slots. Check the API is running.');
+        }
+      } finally {
+        if (!cancelled) setParkingFetchLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+      setParkingFetchLoading(false);
+    };
+  }, [isModalOpen, currentStep]);
 
   const handleNext = async () => {
     try {
@@ -89,7 +127,7 @@ const TicketSales = () => {
 
   const getSelectedTypeInfo = () => paymentTypes.find(t => t.value === selectedPaymentType);
 
-  const handleBookingSubmit = (values) => {
+  const handleBookingSubmit = async (values) => {
     const typeInfo = getSelectedTypeInfo();
     const qty = values.quantity || 1;
     const totalAmount = typeInfo.price * qty + (selectedParkingSlot ? 500 : 0);
@@ -106,6 +144,36 @@ const TicketSales = () => {
       total: totalAmount,
       qrData: `BOOKING:${bookingId}|EVENT:${selectedEvent.event}|NAME:${values.fullName}|PASS:${typeInfo.label}|QTY:${qty}|TOTAL:Rs.${totalAmount}`,
     };
+
+    try {
+      await api.post('/api/tickets', {
+        bookingId,
+        fullName: values.fullName,
+        email: values.email,
+        phone: values.phone,
+        quantity: qty,
+        event: selectedEvent.event,
+        passType: typeInfo.label,
+        passCode: selectedPaymentType,
+        parkingSlot: selectedParkingSlot,
+        totalAmount,
+        paymentMethod: values.paymentMethod,
+      });
+    } catch (err) {
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.details?.join?.(', ') ||
+        'Could not save your booking. Please try again.';
+      message.error(msg);
+      return;
+    }
+
+    if (selectedParkingSlot) {
+      const slotId = String(selectedParkingSlot).trim().toUpperCase();
+      setOccupiedParkingIds((prev) =>
+        prev.includes(slotId) ? prev : [...prev, slotId]
+      );
+    }
 
     // Save to localStorage for Finance dashboard
     const existing = JSON.parse(localStorage.getItem('ticketPurchases') || '[]');
@@ -334,7 +402,14 @@ const TicketSales = () => {
                     Parking Slots
                   </Text>
                   <Text className="text-xs text-gray-500">
-                    <span className="text-[#4CAF50] font-bold">{availableCount}</span> / {totalSlots} available
+                    {parkingFetchLoading ? (
+                      <span className="text-gray-400">Loading parking…</span>
+                    ) : (
+                      <>
+                        <span className="text-[#4CAF50] font-bold">{availableCount}</span> / {totalSlots}{' '}
+                        available
+                      </>
+                    )}
                     {selectedParkingSlot && (
                       <span className="ml-2 text-[#F97316] font-bold">• +Rs. 500.00</span>
                     )}
@@ -376,7 +451,16 @@ const TicketSales = () => {
                       }
 
                       return (
-                        <Tooltip key={slot.id} title={isOccupied ? `${slot.id} - Occupied` : `${slot.id} - Available`}>
+                        <Tooltip
+                          key={slot.id}
+                          title={
+                            isOccupied
+                              ? `${slot.id} — Booked (unavailable)`
+                              : isSelected
+                                ? `${slot.id} — Your selection`
+                                : `${slot.id} — Available`
+                          }
+                        >
                           <div
                             onClick={() => {
                               if (!isOccupied) {
