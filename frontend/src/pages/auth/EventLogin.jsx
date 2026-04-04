@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Calendar, Mail, ChevronRight, ShieldAlert, Lock } from 'lucide-react';
+import {
+  loginWithPassword,
+  persistAuthSession,
+  apiErrorMessage,
+  ROLES,
+} from '@/lib/auth';
 
 export default function EventLogin() {
-  const [email, setEmail] = useState('admin@finance.uni.edu');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -16,25 +21,29 @@ export default function EventLogin() {
       setError('Please fill in both email and password.');
       return;
     }
-    
+
     setLoading(true);
     setError('');
-    
-    setTimeout(() => {
-      if ((email === 'admin@finance.uni.edu' || email === 'admin@event.uni.edu') && password === 'admin123') {
-        localStorage.setItem('eventToken', 'dummy-token-event');
-        
-        const extractedName = email.split('@')[0];
-        const formattedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
-        localStorage.setItem('userName', formattedName);
-        localStorage.setItem('userRole', 'Event Admin');
-        
-        navigate('/events');
-      } else {
-        setError('Failed to login. Please check your credentials.');
+
+    try {
+      const data = await loginWithPassword(email, password);
+      if (data.user?.role !== ROLES.EVENT_ADMIN) {
+        setError(
+          'Only Event Administrators can sign in here. Ask your coordinator for an event admin account, or use the main Log in for a student account.'
+        );
+        return;
       }
+      persistAuthSession({
+        token: data.token,
+        email: data.user?.email || email,
+        authRole: ROLES.EVENT_ADMIN,
+      });
+      navigate('/events');
+    } catch (err) {
+      setError(apiErrorMessage(err, 'Failed to login. Please check your credentials.'));
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   };
 
   return (

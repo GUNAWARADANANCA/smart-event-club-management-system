@@ -1,9 +1,27 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CalendarOutlined, SafetyCertificateOutlined, DollarOutlined, ArrowRightOutlined, TeamOutlined, TrophyOutlined, FileProtectOutlined } from '@ant-design/icons';
+import { getAuthToken, clearAuthSession } from '@/lib/auth';
 
 const Home = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [loggedIn, setLoggedIn] = useState(() => Boolean(getAuthToken()));
+
+  useEffect(() => {
+    setLoggedIn(Boolean(getAuthToken()));
+  }, [location.pathname, location.key]);
+
+  const displayName =
+    localStorage.getItem('registeredDisplayName') ||
+    localStorage.getItem('userName') ||
+    'User';
+
+  const handleLogout = () => {
+    clearAuthSession();
+    setLoggedIn(false);
+    navigate('/', { replace: true });
+  };
 
   const modules = [
     {
@@ -59,20 +77,40 @@ const Home = () => {
           UniEvents
         </span>
         <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            type="button"
-            onClick={() => navigate('/login')}
-            className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:text-[#2E7D32] rounded-full transition-colors duration-200"
-          >
-            Log in
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/register')}
-            className="px-5 py-2.5 text-sm font-semibold rounded-full text-white bg-gradient-to-r from-[#43A047] to-[#4CAF50] shadow-md shadow-green-600/20 hover:shadow-lg hover:shadow-green-600/25 hover:-translate-y-0.5 transition-all duration-200"
-          >
-            Sign Up
-          </button>
+          {loggedIn ? (
+            <>
+              <span
+                className="text-sm font-semibold text-gray-800 max-w-[140px] sm:max-w-[200px] truncate px-1"
+                title={localStorage.getItem('userEmail') || displayName}
+              >
+                {displayName}
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="px-5 py-2.5 text-sm font-semibold rounded-full text-[#2E7D32] border-2 border-[#C8E6C9] bg-white hover:bg-[#E8F5E9] hover:border-[#A5D6A7] transition-all duration-200"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => navigate('/login')}
+                className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:text-[#2E7D32] rounded-full transition-colors duration-200"
+              >
+                Log in
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/register')}
+                className="px-5 py-2.5 text-sm font-semibold rounded-full text-white bg-gradient-to-r from-[#43A047] to-[#4CAF50] shadow-md shadow-green-600/20 hover:shadow-lg hover:shadow-green-600/25 hover:-translate-y-0.5 transition-all duration-200"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
       </nav>
 

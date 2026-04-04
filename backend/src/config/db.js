@@ -38,7 +38,10 @@ async function connectDb() {
     );
   }
 
+  const dbName = process.env.MONGO_DB_NAME?.trim() || 'itpm';
+
   await mongoose.connect(MONGO_URI, {
+    dbName,
     serverApi: {
       version: '1',
       strict: true,

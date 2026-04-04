@@ -134,7 +134,7 @@ const StudentRequestsSection = () => {
   ], [navigate]);
 
   return (
-    <div style={{ backgroundColor: '#FAFAFA', minHeight: '100%', borderRadius: 16, padding: '5px' }}>
+    <div style={{ }}>
       <div style={{ marginBottom: 16, display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
         <div>
           {/* <Title level={2} style={{ color: '#0F172A', marginBottom: 4 }}>Manage Requests</Title> */}

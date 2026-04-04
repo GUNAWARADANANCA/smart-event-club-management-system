@@ -1,38 +1,54 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserCircle, ChevronRight, GraduationCap, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, ChevronRight, GraduationCap, Lock, Eye, EyeOff } from 'lucide-react';
+import {
+  loginWithPassword,
+  persistAuthSession,
+  apiErrorMessage,
+  ROLES,
+} from '@/lib/auth';
 
 export default function QuizLogin() {
-  const [username, setUsername] = useState('student_01');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!username.trim()) {
-      setError('Please provide a username to access your performance.');
+    if (!email.trim()) {
+      setError('Please provide your email to access your performance.');
       return;
     }
     if (!password.trim()) {
-      setError('Please provide a password to access your performance.');
+      setError('Please provide your password to access your performance.');
       return;
     }
-    
+
     setLoading(true);
     setError('');
-    
-    // Simulate instant login as requested (no backend)
-    setTimeout(() => {
-      setLoading(false);
-      localStorage.setItem('quizToken', 'mock-token-quiz-123');
-      const formattedName = username.trim().charAt(0).toUpperCase() + username.trim().slice(1);
-      localStorage.setItem('userName', formattedName);
-      localStorage.setItem('userRole', 'Student');
+
+    try {
+      const data = await loginWithPassword(email.trim(), password);
+      if (data.user?.role !== ROLES.STUDENT) {
+        setError(
+          'This student portal is for regular student accounts only. Administrators should use the main Log in.'
+        );
+        return;
+      }
+      persistAuthSession({
+        token: data.token,
+        email: data.user?.email || email.trim(),
+        authRole: ROLES.STUDENT,
+      });
       navigate('/quizzes/performance');
-    }, 800);
+    } catch (err) {
+      setError(apiErrorMessage(err, 'Invalid email or password.'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,7 +65,7 @@ export default function QuizLogin() {
             <GraduationCap className="w-10 h-10 text-[#2E7D32]" />
           </div>
           <h1 className="text-4xl font-black text-slate-800 uppercase tracking-tighter mb-2 italic">Student Portal</h1>
-          <p className="text-gray-500 text-sm font-bold uppercase tracking-widest opacity-60">Mock Performance Login</p>
+          <p className="text-gray-500 text-sm font-bold uppercase tracking-widest opacity-60">Sign in with your account</p>
         </div>
 
         {error && (
@@ -60,17 +76,17 @@ export default function QuizLogin() {
 
         <form onSubmit={handleLogin} className="space-y-8">
           <div className="group">
-            <label className="block text-[10px] font-black text-[#2E7D32] uppercase tracking-[0.2em] mb-3 ml-1">Student Identification</label>
+            <label className="block text-[10px] font-black text-[#2E7D32] uppercase tracking-[0.2em] mb-3 ml-1">Email</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                <UserCircle className="w-5 h-5 text-[#2E7D32] opacity-40 group-focus-within:opacity-100 transition-opacity" />
+                <Mail className="w-5 h-5 text-[#2E7D32] opacity-40 group-focus-within:opacity-100 transition-opacity" />
               </div>
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-white/50 border-2 border-[#D1FAE5] rounded-2xl py-4 pl-14 pr-6 text-slate-800 font-bold placeholder-[#2E7D32]/25 focus:outline-none focus:border-[#4CAF50] focus:bg-white transition-all shadow-sm group-hover:shadow-md"
-                placeholder="Enter Student Username"
+                placeholder="you@university.edu"
               />
             </div>
           </div>
@@ -114,7 +130,7 @@ export default function QuizLogin() {
           </button>
           
           <p className="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-8">
-            Student portal &bull; No backend required
+            Student portal &bull; Secure authentication
           </p>
         </form>
       </div>

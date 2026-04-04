@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import {
+  signupWithPassword,
+  loginWithPassword,
+  persistAuthSession,
+  apiErrorMessage,
+  ROLES,
+} from '@/lib/auth';
 
 const { Title, Text } = Typography;
 
@@ -13,12 +19,32 @@ const Register = () => {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/users/register', values);
-      message.success('Registration successful! Please login.');
-      navigate('/login');
+      const signupData = await signupWithPassword(values.email, values.password);
+      if (values.name?.trim()) {
+        localStorage.setItem('registeredDisplayName', values.name.trim());
+      }
+      message.success(
+        signupData.message || 'Account created. Signing you in…'
+      );
+      try {
+        const loginData = await loginWithPassword(values.email, values.password);
+        persistAuthSession({
+          token: loginData.token,
+          email: loginData.user?.email || values.email,
+          authRole: loginData.user?.role || ROLES.STUDENT,
+        });
+        message.success('You are logged in.');
+        navigate('/');
+      } catch (loginErr) {
+        console.error(loginErr);
+        message.warning(
+          'Account saved. Please log in with the same email and password.'
+        );
+        navigate('/login', { state: { email: values.email } });
+      }
     } catch (error) {
       console.error(error);
-      message.error(error.response?.data?.message || 'Registration failed.');
+      message.error(apiErrorMessage(error, 'Registration failed.'));
     } finally {
       setLoading(false);
     }
@@ -75,7 +101,7 @@ const Register = () => {
               name="password"
               rules={[
                 { required: true, message: 'Please input your Password!' },
-                { min: 6, message: 'Password must be at least 6 characters!' }
+                { min: 8, message: 'Password must be at least 8 characters!' }
               ]}
             >
               <Input.Password 

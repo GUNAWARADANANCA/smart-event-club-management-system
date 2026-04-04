@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import {
+  loginWithPassword,
+  persistAuthSession,
+  apiErrorMessage,
+  ROLES,
+} from '@/lib/auth';
 
 const { Title, Text } = Typography;
 
@@ -10,23 +15,24 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || '/';
+  const prefilledEmail = location.state?.email || '';
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', values);
-      message.success('Login successful!');
-      
-      const extractedName = values.email.split('@')[0];
-      const formattedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
-      localStorage.setItem('userName', formattedName);
-      localStorage.setItem('userRole', 'General Context');
-      
+      const data = await loginWithPassword(values.email, values.password);
+      message.success(data.message || 'Login successful!');
+      const authRole = data.user?.role || ROLES.STUDENT;
+      persistAuthSession({
+        token: data.token,
+        email: data.user?.email || values.email,
+        authRole,
+      });
       navigate(from);
     } catch (error) {
       console.error(error);
-      message.error(error.response?.data?.message || 'Login failed.');
+      message.error(apiErrorMessage(error, 'Login failed.'));
     } finally {
       setLoading(false);
     }
@@ -55,7 +61,13 @@ const Login = () => {
               Login to your account
             </Text>
           </div>
-          <Form name="login" onFinish={onFinish} layout="vertical" size="large">
+          <Form
+            name="login"
+            onFinish={onFinish}
+            layout="vertical"
+            size="large"
+            initialValues={prefilledEmail ? { email: prefilledEmail } : undefined}
+          >
             <Form.Item
               name="email"
               rules={[

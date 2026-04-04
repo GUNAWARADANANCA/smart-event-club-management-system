@@ -3,6 +3,7 @@ import { Row, Col, Card, Statistic, Typography, Table, Button, Tag, Modal, Form,
 import { DollarOutlined, ArrowUpOutlined, ArrowDownOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockBudgets } from '@/data/mockData';
+import { getAuthRole, ROLES } from '@/lib/auth';
 
 const { Title } = Typography;
 
@@ -10,6 +11,9 @@ const FinanceManagement = () => {
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [salesActive, setSalesActive] = useState(false);
+  const [sponsorshipOpen, setSponsorshipOpen] = useState(false);
+
+  const isFinanceUser = getAuthRole() === ROLES.FINANCE_ADMIN;
 
   const handleSalesToggle = (checked) => {
     setSalesActive(checked);
@@ -18,6 +22,17 @@ const FinanceManagement = () => {
       navigate('/ticket-sales');
     } else {
       message.warning('Ticket sales for external users have been PAUSED.');
+    }
+  };
+
+  const handleSponsorshipToggle = (checked) => {
+    if (!isFinanceUser) return;
+    setSponsorshipOpen(checked);
+    if (checked) {
+      message.success('Call for sponsorships is now OPEN.');
+      navigate('/sponsorships');
+    } else {
+      message.warning('Call for sponsorships is now CLOSED.');
     }
   };
 
@@ -50,14 +65,50 @@ const FinanceManagement = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24, alignItems: 'center' }}>
         <Title level={2} style={{ margin: 0, color: '#1F2937' }}>Revenue Dashboard</Title>
         <Space size="middle">
-          <div style={{ padding: '6px 16px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 24, display: 'flex', alignItems: 'center', gap: 12, marginRight: 8 }}>
+          <div
+            style={{
+              padding: '6px 16px',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 24,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginRight: 8,
+            }}
+          >
             <span style={{ color: '#6B7280', letterSpacing: '0.5px' }}>External Ticket Sales:</span>
-            <Switch 
-              checked={salesActive} 
-              onChange={handleSalesToggle} 
-              checkedChildren="Active" 
-              unCheckedChildren="Closed" 
+            <Switch
+              checked={salesActive}
+              onChange={handleSalesToggle}
+              checkedChildren="Active"
+              unCheckedChildren="Closed"
               style={{ background: salesActive ? '#4CAF50' : '#C8E6C9' }}
+            />
+          </div>
+          <div
+            style={{
+              padding: '6px 16px',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 24,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginRight: 8,
+              opacity: isFinanceUser ? 1 : 0.55,
+            }}
+          >
+            <span style={{ color: '#6B7280', letterSpacing: '0.5px' }}>Call for Sponsorships:</span>
+            <Switch
+              checked={sponsorshipOpen}
+              onChange={handleSponsorshipToggle}
+              checkedChildren="Open"
+              unCheckedChildren="Closed"
+              disabled={!isFinanceUser}
+              style={{
+                background: sponsorshipOpen ? '#4CAF50' : '#9CA3AF',
+              }}
             />
           </div>
           <Button className="btn-teal-secondary" onClick={() => navigate('/finance/budget-approval')}>Approvals</Button>

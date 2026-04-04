@@ -1,17 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { getAuthToken, getAuthRole, ROLES } from '@/lib/auth';
 
 export default function FinanceProtectedRoute() {
-  const token = localStorage.getItem('financeToken');
+  const token = getAuthToken();
+  const role = getAuthRole();
 
-  // Immediately clear token when the admin navigates away from the Finance area
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem('financeToken');
-    };
-  }, []);
-  
   if (!token) {
+    return <Navigate to="/finance-login" replace />;
+  }
+  if (role !== ROLES.FINANCE_ADMIN) {
     return <Navigate to="/finance-login" replace />;
   }
 

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Space, Typography, Tag, message, Modal, Descriptions, Badge } from 'antd';
-import { FilePdfOutlined, SendOutlined } from '@ant-design/icons';
+import { FilePdfOutlined } from '@ant-design/icons';
 import { mockBudgets } from '@/data/mockData';
-import { sendProposalToFinance } from '@/store/proposalStore';
 
 const { Title } = Typography;
 
@@ -62,7 +61,6 @@ const BudgetApproval = () => {
   const [data, setData] = useState(mockBudgets);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
-  const [sentToFinance, setSentToFinance] = useState([]);
 
   const approveBudget = (id) => {
     setData(data.map(b => b.id === id ? { ...b, status: 'Approved' } : b));
@@ -74,25 +72,6 @@ const BudgetApproval = () => {
     setData(data.map(b => b.id === id ? { ...b, status: 'Rejected' } : b));
     if (selectedBudget) setSelectedBudget(prev => ({ ...prev, status: 'Rejected' }));
     message.success('Budget rejected.');
-  };
-
-  const sendToFinance = (budget) => {
-    sendProposalToFinance({
-      id: 'BUD-' + budget.id,
-      name: budget.event + ' Budget',
-      type: 'Event',
-      submittedDate: new Date().toLocaleDateString(),
-      status: 'Pending',
-      description: budget.introduction || budget.justification || '',
-      remarks: '',
-      equipmentCost: budget.equipmentCost,
-      laborCost: budget.laborCost,
-      materialsCost: budget.materialsCost,
-      miscellaneousCost: budget.miscellaneousCost,
-      source: 'BudgetApproval',
-    });
-    setSentToFinance(prev => [...prev, budget.id]);
-    message.success(`Budget proposal for "${budget.event}" sent to Finance!`);
   };
 
   const handleReview = (record) => {
@@ -125,17 +104,7 @@ const BudgetApproval = () => {
             </>
           )}
           {record.status === 'Approved' && (
-            <>
-              <Button icon={<FilePdfOutlined />} onClick={() => downloadBudgetPDF(record)} className="btn-teal-secondary">Download PDF</Button>
-              <Button
-                icon={<SendOutlined />}
-                onClick={() => sendToFinance(record)}
-                disabled={sentToFinance.includes(record.id)}
-                className="btn-teal-primary"
-              >
-                {sentToFinance.includes(record.id) ? 'Sent' : 'Send to Finance'}
-              </Button>
-            </>
+            <Button icon={<FilePdfOutlined />} onClick={() => downloadBudgetPDF(record)} className="btn-teal-secondary">Download PDF</Button>
           )}
         </Space>
       ),
@@ -154,18 +123,7 @@ const BudgetApproval = () => {
         footer={[
           <Button key="close" onClick={() => setIsModalOpen(false)}>Close</Button>,
           selectedBudget?.status === 'Approved' && (
-            <React.Fragment key="approved-actions">
-              <Button key="pdf" icon={<FilePdfOutlined />} onClick={() => downloadBudgetPDF(selectedBudget)} className="btn-teal-secondary">Download PDF</Button>
-              <Button
-                key="finance"
-                icon={<SendOutlined />}
-                onClick={() => sendToFinance(selectedBudget)}
-                disabled={sentToFinance.includes(selectedBudget?.id)}
-                className="btn-teal-primary"
-              >
-                {sentToFinance.includes(selectedBudget?.id) ? 'Sent to Finance' : 'Send to Finance'}
-              </Button>
-            </React.Fragment>
+            <Button key="pdf" icon={<FilePdfOutlined />} onClick={() => downloadBudgetPDF(selectedBudget)} className="btn-teal-secondary">Download PDF</Button>
           ),
           selectedBudget?.status === 'Pending' && (
             <React.Fragment key="pending-actions">
