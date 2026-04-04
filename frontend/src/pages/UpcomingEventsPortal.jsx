@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Row, Col, Card, Typography, Button, Modal, Form, Input, Tag, message, Space, Select, Empty, Badge } from 'antd';
-import { CalendarOutlined, TeamOutlined, EnvironmentOutlined, SearchOutlined, ClockCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { Row, Col, Typography, Button, Modal, Form, Input, Tag, message, Space, Select, Empty } from 'antd';
+import { CalendarOutlined, TeamOutlined, EnvironmentOutlined, SearchOutlined, ClockCircleOutlined, UserOutlined, FireOutlined, StarOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockEvents, mockMyEvents } from '../mockData';
 
@@ -14,7 +14,6 @@ const UpcomingEventsPortal = () => {
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [form] = Form.useForm();
-  
   const [searchText, setSearchText] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
   const [filterAudience, setFilterAudience] = useState('All');
@@ -24,42 +23,30 @@ const UpcomingEventsPortal = () => {
   const getEventStatus = (event) => {
     const isFull = event.registeredCount >= event.capacity;
     const isPastDL = new Date(event.deadline) < new Date('2026-03-21');
-    if (isFull) return { label: 'Event Full', color: 'red' };
-    if (isPastDL) return { label: 'Registration Closed', color: 'gray' };
-    return { label: 'Registration Open', color: 'green' };
+    if (isFull) return { label: 'Event Full', color: '#EF4444', bg: '#EF444422' };
+    if (isPastDL) return { label: 'Registration Closed', color: '#64748B', bg: '#64748B22' };
+    return { label: 'Registration Open', color: '#22c55e', bg: '#22c55e22' };
   };
 
   const publishedEvents = eventsData.filter(e => e.status === 'Approved');
   const featuredEvents = publishedEvents.filter(e => e.featured);
 
   let filteredEvents = publishedEvents.filter(e => {
-    const matchSearch = e.title.toLowerCase().includes(searchText.toLowerCase()) || 
-                        (e.organizer && e.organizer.toLowerCase().includes(searchText.toLowerCase())) ||
-                        (e.description && e.description.toLowerCase().includes(searchText.toLowerCase()));
-    const matchCat = filterCategory === 'All' ? true : e.category === filterCategory;
-    const matchAud = filterAudience === 'All' ? true : e.audience === filterAudience || (filterAudience === 'University Students Only' && e.audience?.includes('University'));
-    const matchMode = filterMode === 'All' ? true : e.mode === filterMode;
-    return matchSearch && matchCat && matchAud && matchMode && !e.featured; 
+    const matchSearch = e.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      (e.organizer && e.organizer.toLowerCase().includes(searchText.toLowerCase())) ||
+      (e.description && e.description.toLowerCase().includes(searchText.toLowerCase()));
+    const matchCat = filterCategory === 'All' || e.category === filterCategory;
+    const matchAud = filterAudience === 'All' || e.audience === filterAudience || (filterAudience === 'University Students Only' && e.audience?.includes('University'));
+    const matchMode = filterMode === 'All' || e.mode === filterMode;
+    return matchSearch && matchCat && matchAud && matchMode && !e.featured;
   });
 
-  if (sortBy === 'Date') {
-    filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-  } else if (sortBy === 'Popularity') {
-    filteredEvents.sort((a, b) => b.registeredCount - a.registeredCount);
-  } else if (sortBy === 'Closing Soon') {
-    filteredEvents.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
-  }
+  if (sortBy === 'Date') filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+  else if (sortBy === 'Popularity') filteredEvents.sort((a, b) => b.registeredCount - a.registeredCount);
+  else if (sortBy === 'Closing Soon') filteredEvents.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
-  const handleRegisterClick = (event) => {
-    setSelectedEvent(event);
-    form.resetFields();
-    setIsModalVisible(true);
-  };
-
-  const handleViewDetails = (event) => {
-    setSelectedEvent(event);
-    setIsDetailsVisible(true);
-  };
+  const handleRegisterClick = (event) => { setSelectedEvent(event); form.resetFields(); setIsModalVisible(true); };
+  const handleViewDetails = (event) => { setSelectedEvent(event); setIsDetailsVisible(true); };
 
   const onFinishRegistration = (values) => {
     const eventIndex = eventsData.findIndex(e => e.id === selectedEvent.id);
@@ -69,15 +56,10 @@ const UpcomingEventsPortal = () => {
       setEventsData(updatedEvents);
       mockMyEvents.push({ ...updatedEvents[eventIndex], registrationDate: '2026-03-21' });
     }
-    
-    // Generate a random ticket ID
     const generatedTicketId = Math.floor(100000 + Math.random() * 900000).toString();
-    
     message.success(`Successfully registered for ${selectedEvent.title}!`);
     setIsModalVisible(false);
     setIsDetailsVisible(false);
-    
-    // Redirect to the ticket page
     navigate('/finance/ticket', {
       state: {
         ticket: {
@@ -92,168 +74,213 @@ const UpcomingEventsPortal = () => {
     });
   };
 
+  const categoryColors = { Academic: '#6366f1', Sports: '#f59e0b', Cultural: '#ec4899', Workshop: '#14B8A6', default: '#94A3B8' };
+
   const renderEventCard = (event, isFeatured = false) => {
     const status = getEventStatus(event);
     const seatsLeft = event.capacity - event.registeredCount;
-    const isRegisterDisabled = status.label === 'Event Full' || status.label === 'Registration Closed';
-    
+    const isDisabled = status.label !== 'Registration Open';
+    const catColor = categoryColors[event.category] || categoryColors.default;
+    const fillPct = Math.round((event.registeredCount / event.capacity) * 100);
+
     return (
       <Col xs={24} sm={isFeatured ? 24 : 12} lg={isFeatured ? 12 : 8} key={event.id}>
-        <Badge.Ribbon text={status.label} color={status.color === 'gray' ? '#475569' : status.color}>
-          <Card 
-            hoverable 
-            style={{ height: '100%', flexDirection: 'column', backgroundColor: '#141414', borderColor: isFeatured ? '#F97316' : '#303030', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)' }}
-            bodyStyle={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12, marginTop: 12 }}>
-              <Title level={isFeatured ? 3 : 4} style={{ color: '#FFFFFF', margin: 0 }}>{event.title}</Title>
-            </div>
-            
-            <Space style={{ marginBottom: 16 }}>
-              <Tag color={event.audience?.includes('University') ? '#0F766E' : '#14B8A6'}>{event.audience?.includes('University') ? 'University Only' : 'Open to All'}</Tag>
-              <Tag color="#F97316">{event.mode}</Tag>
-              <Tag color="gold">{event.category}</Tag>
-            </Space>
-            
-            <div style={{ flex: 1, marginBottom: 16 }}>
-              <Paragraph type="secondary" ellipsis={{ rows: isFeatured ? 3 : 2 }} style={{ minHeight: isFeatured ? 66 : 44, color: '#E2E8F0' }}>
-                  {event.description}
-              </Paragraph>
-              
-              <Space direction="vertical" style={{ width: '100%', marginTop: 1 }}>
-                <Text style={{ color: '#FFFFFF' }}><CalendarOutlined style={{ color: '#14B8A6' }} /> <strong style={{ color: '#FFFFFF' }}>Date:</strong> {event.date} | <ClockCircleOutlined /> {event.time}</Text>
-                <Text style={{ color: '#FFFFFF' }}><UserOutlined style={{ color: '#F97316' }} /> <strong style={{ color: '#FFFFFF' }}>Deadline:</strong> {event.deadline}</Text>
-                <Text style={{ color: '#FFFFFF' }}><EnvironmentOutlined style={{ color: '#0F766E' }} /> <strong style={{ color: '#FFFFFF' }}>Venue:</strong> {event.venue}</Text>
-                <Text style={{ color: '#FFFFFF' }}><TeamOutlined style={{ color: '#F97316' }} /> <strong style={{ color: '#FFFFFF' }}>Organizer:</strong> {event.organizer}</Text>
-                <Text style={{ color: seatsLeft <= 10 && seatsLeft > 0 ? '#FCA5A5' : '#94A3B8' }}>🪑 {seatsLeft > 0 ? `${seatsLeft} seats left` : 'No seats available'}</Text>
-              </Space>
+        <div style={{
+          background: '#1E293B',
+          border: `1px solid ${isFeatured ? '#F9731633' : 'rgba(255,255,255,0.07)'}`,
+          borderRadius: 20,
+          overflow: 'hidden',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          transition: 'transform 0.2s, box-shadow 0.2s',
+          cursor: 'pointer',
+        }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.4)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+        >
+          {/* Top accent bar */}
+          <div style={{ height: 4, background: `linear-gradient(to right, ${catColor}, #14B8A6)` }} />
+
+          <div style={{ padding: '20px 22px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {/* Status + category row */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <span style={{ background: status.bg, color: status.color, borderRadius: 999, padding: '3px 12px', fontSize: 11, fontWeight: 700 }}>
+                {status.label}
+              </span>
+              <span style={{ background: `${catColor}22`, color: catColor, borderRadius: 999, padding: '3px 12px', fontSize: 11, fontWeight: 700 }}>
+                {event.category}
+              </span>
             </div>
 
-            <div style={{ display: 'flex', gap: 12 }}>
-              <Button block onClick={() => handleViewDetails(event)} style={{ borderColor: '#0F766E', color: '#0F766E', height: 40, fontSize: 16 }} ghost>
-                View Details
-              </Button>
-              <Button 
-                type="primary" block disabled={isRegisterDisabled} onClick={() => handleRegisterClick(event)}
-                style={{ background: isRegisterDisabled ? '#E2E8F0' : '#0F766E', borderColor: 'transparent', height: 40, fontSize: 16, color: isRegisterDisabled ? '#475569' : '#FFFFFF' }}
-              >
-                {isRegisterDisabled ? status.label : 'Register'}
-              </Button>
+            {/* Title */}
+            <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: isFeatured ? 20 : 16, lineHeight: 1.3, marginBottom: 8 }}>
+              {event.title}
             </div>
-          </Card>
-        </Badge.Ribbon>
+
+            {/* Tags */}
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+              <span style={{ background: '#0F766E22', color: '#14B8A6', borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 600 }}>
+                {event.audience?.includes('University') ? '🎓 University Only' : '🌐 Open to All'}
+              </span>
+              <span style={{ background: '#F9731622', color: '#F97316', borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 600 }}>
+                {event.mode}
+              </span>
+            </div>
+
+            {/* Description */}
+            <p style={{ color: '#94A3B8', fontSize: 13, lineHeight: 1.6, marginBottom: 14, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {event.description}
+            </p>
+
+            {/* Info rows */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 14 }}>
+              <span style={{ color: '#CBD5E1', fontSize: 13 }}><CalendarOutlined style={{ color: '#14B8A6', marginRight: 6 }} />{event.date} · {event.time}</span>
+              <span style={{ color: '#CBD5E1', fontSize: 13 }}><EnvironmentOutlined style={{ color: '#14B8A6', marginRight: 6 }} />{event.venue}</span>
+              <span style={{ color: '#CBD5E1', fontSize: 13 }}><TeamOutlined style={{ color: '#F97316', marginRight: 6 }} />{event.organizer}</span>
+              <span style={{ color: '#CBD5E1', fontSize: 13 }}><ClockCircleOutlined style={{ color: '#f59e0b', marginRight: 6 }} />Deadline: {event.deadline}</span>
+            </div>
+
+            {/* Seat progress */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                <span style={{ color: '#64748B', fontSize: 11 }}>🪑 {seatsLeft > 0 ? `${seatsLeft} seats left` : 'No seats available'}</span>
+                <span style={{ color: '#64748B', fontSize: 11 }}>{fillPct}% filled</span>
+              </div>
+              <div style={{ background: '#0F172A', borderRadius: 999, height: 5 }}>
+                <div style={{ width: `${fillPct}%`, height: '100%', borderRadius: 999, background: fillPct >= 90 ? '#EF4444' : '#14B8A6', transition: 'width 0.4s' }} />
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display: 'flex', gap: 10, marginTop: 'auto' }}>
+              <button onClick={() => handleViewDetails(event)}
+                style={{ flex: 1, padding: '10px 0', borderRadius: 12, border: '1px solid #334155', background: 'transparent', color: '#94A3B8', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
+                View Details
+              </button>
+              <button onClick={() => !isDisabled && handleRegisterClick(event)}
+                style={{ flex: 1, padding: '10px 0', borderRadius: 12, border: 'none', background: isDisabled ? '#1E293B' : 'linear-gradient(to right, #14B8A6, #0F766E)', color: isDisabled ? '#475569' : '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: isDisabled ? 'not-allowed' : 'pointer', border: isDisabled ? '1px solid #334155' : 'none' }}>
+                {isDisabled ? status.label : 'Register →'}
+              </button>
+            </div>
+          </div>
+        </div>
       </Col>
     );
   };
 
   return (
-    <div style={{ backgroundColor: '#FFFFFF', minHeight: '100%', borderRadius: 16, padding: '8px' }}>
-      <div style={{ marginBottom: 32, textAlign: 'center'}}>
-        <Title level={2} style={{ color: '#14B8A6' }}>Upcoming Events Portal</Title>
-        <Text type="secondary" style={{ fontSize: 16, color: '#000000' }}>
-          Discover, explore, and instantly register for the latest university events.
-        </Text>
+    <div style={{ background: '#0F172A', minHeight: '100vh', padding: '24px' }}>
+      {/* Header */}
+      <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div style={{ display: 'inline-block', background: '#14B8A622', border: '1px solid #14B8A644', borderRadius: 999, padding: '4px 16px', color: '#14B8A6', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 12 }}>
+          Live Now
+        </div>
+        <Title level={2} style={{ color: '#FFFFFF', margin: 0, marginBottom: 8 }}>Upcoming Events Portal</Title>
+        <Text style={{ color: '#64748B', fontSize: 15 }}>Discover, explore, and instantly register for the latest university events.</Text>
       </div>
 
+      {/* Featured */}
       {featuredEvents.length > 0 && (
         <div style={{ marginBottom: 40 }}>
-          <Title level={3} style={{ color: '#0F172A' }}>⭐ Featured Events</Title>
-          <Row gutter={[24, 24]}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <StarOutlined style={{ color: '#f59e0b', fontSize: 18 }} />
+            <span style={{ color: '#E2E8F0', fontWeight: 700, fontSize: 16 }}>Featured Events</span>
+          </div>
+          <Row gutter={[20, 20]}>
             {featuredEvents.map(event => renderEventCard(event, true))}
           </Row>
         </div>
       )}
 
       {/* Filters */}
-      <Card style={{ marginBottom: 32, background: '#FFFFFF', borderColor: '#E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-        <Row gutter={[16, 16]} align="middle">
+      <div style={{ background: '#1E293B', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '16px 20px', marginBottom: 32 }}>
+        <Row gutter={[12, 12]} align="middle">
           <Col xs={24} md={8}>
-            <Input placeholder="Search by title, organizer, or keywords..." prefix={<SearchOutlined />} size="large" value={searchText} onChange={e => setSearchText(e.target.value)} style={{ background: '#F8FAFC', borderColor: '#E2E8F0', color: '#0F172A' }} />
+            <div style={{ position: 'relative' }}>
+              <SearchOutlined style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#475569', zIndex: 1 }} />
+              <input
+                placeholder="Search events, organizers..."
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                style={{ width: '100%', background: '#0F172A', border: '1px solid #334155', borderRadius: 10, padding: '10px 12px 10px 36px', color: '#E2E8F0', fontSize: 14, outline: 'none' }}
+              />
+            </div>
           </Col>
-          <Col xs={12} sm={8} md={4}>
-            <Select value={filterCategory} onChange={setFilterCategory} size="large" style={{ width: '100%' }} className="green-select" popupClassName="green-dropdown">
-              <Option value="All">All Categories</Option>
-              <Option value="Academic">Academic</Option>
-              <Option value="Sports">Sports</Option>
-              <Option value="Cultural">Cultural</Option>
-              <Option value="Workshop">Workshop</Option>
-            </Select>
-          </Col>
-          <Col xs={12} sm={8} md={4}>
-            <Select value={filterAudience} onChange={setFilterAudience} size="large" style={{ width: '100%' }} className="green-select" popupClassName="green-dropdown">
-              <Option value="All">All Audience</Option>
-              <Option value="University Students Only">University Only</Option>
-              <Option value="Open to All">Open to All</Option>
-            </Select>
-          </Col>
-          <Col xs={12} sm={8} md={4}>
-            <Select value={filterMode} onChange={setFilterMode} size="large" style={{ width: '100%' }} className="green-select" popupClassName="green-dropdown">
-              <Option value="All">All Modes</Option>
-              <Option value="Physical">Physical</Option>
-              <Option value="Online">Online</Option>
-              <Option value="Hybrid">Hybrid</Option>
-            </Select>
-          </Col>
-          <Col xs={12} sm={8} md={4}>
-            <Select value={sortBy} onChange={setSortBy} size="large" style={{ width: '100%' }} className="green-select" popupClassName="green-dropdown">
-              <Option value="Date">Sort by Date</Option>
-              <Option value="Popularity">Sort by Popularity</Option>
-              <Option value="Closing Soon">Sort by Closing Soon</Option>
-            </Select>
-          </Col>
+          {[
+            { value: filterCategory, setter: setFilterCategory, options: ['All Categories', 'Academic', 'Sports', 'Cultural', 'Workshop'], map: v => v === 'All Categories' ? 'All' : v },
+            { value: filterAudience, setter: setFilterAudience, options: ['All Audience', 'University Students Only', 'Open to All'], map: v => v === 'All Audience' ? 'All' : v },
+            { value: filterMode, setter: setFilterMode, options: ['All Modes', 'Physical', 'Online', 'Hybrid'], map: v => v === 'All Modes' ? 'All' : v },
+            { value: sortBy, setter: setSortBy, options: ['Sort by Date', 'Sort by Popularity', 'Sort by Closing Soon'], map: v => v.replace('Sort by ', '') },
+          ].map((f, i) => (
+            <Col xs={12} md={4} key={i}>
+              <select
+                value={f.options.find(o => f.map(o) === f.value) || f.options[0]}
+                onChange={e => f.setter(f.map(e.target.value))}
+                style={{ width: '100%', background: '#0F172A', border: '1px solid #334155', borderRadius: 10, padding: '10px 12px', color: '#E2E8F0', fontSize: 13, outline: 'none', cursor: 'pointer' }}
+              >
+                {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </Col>
+          ))}
         </Row>
-      </Card>
+      </div>
 
-      <Title level={3} style={{ color: '#0F172A' }}>📅 All Events</Title>
+      {/* All Events */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+        <CalendarOutlined style={{ color: '#14B8A6', fontSize: 18 }} />
+        <span style={{ color: '#E2E8F0', fontWeight: 700, fontSize: 16 }}>All Events</span>
+        <span style={{ background: '#14B8A622', color: '#14B8A6', borderRadius: 999, padding: '2px 10px', fontSize: 12, fontWeight: 700 }}>{filteredEvents.length}</span>
+      </div>
+
       {filteredEvents.length === 0 ? (
-        <Empty description={<span style={{ color: '#475569' }}>No events found matching your criteria.</span>} style={{ margin: '60px 0' }} />
+        <div style={{ textAlign: 'center', padding: '60px 0', color: '#475569', border: '2px dashed #1E293B', borderRadius: 16 }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
+          <div style={{ fontSize: 16, fontWeight: 600 }}>No events found matching your criteria.</div>
+        </div>
       ) : (
-        <Row gutter={[24, 24]}>
+        <Row gutter={[20, 20]}>
           {filteredEvents.map(event => renderEventCard(event, false))}
         </Row>
       )}
 
-      {/* Full Details Modal */}
+      {/* Details Modal */}
       <Modal
-        title={<Title level={3} style={{ margin: 0, color: '#0F766E' }}>{selectedEvent?.title}</Title>}
+        title={<span style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 800 }}>{selectedEvent?.title}</span>}
         open={isDetailsVisible}
         onCancel={() => setIsDetailsVisible(false)}
         footer={[
-          <Button key="close" onClick={() => setIsDetailsVisible(false)}>Close</Button>,
-          <Button key="register" type="primary" disabled={selectedEvent && (getEventStatus(selectedEvent).label !== 'Registration Open')} onClick={() => {
-            setIsDetailsVisible(false);
-            handleRegisterClick(selectedEvent);
-          }} style={{ background: selectedEvent && getEventStatus(selectedEvent).label !== 'Registration Open' ? '#E2E8F0' : '#0F766E', borderColor: 'transparent', color: selectedEvent && getEventStatus(selectedEvent).label !== 'Registration Open' ? '#475569' : '#FFFFFF' }}>
+          <Button key="close" onClick={() => setIsDetailsVisible(false)} style={{ borderColor: '#334155', color: '#94A3B8' }}>Close</Button>,
+          <Button key="register" type="primary" disabled={selectedEvent && getEventStatus(selectedEvent).label !== 'Registration Open'}
+            onClick={() => { setIsDetailsVisible(false); handleRegisterClick(selectedEvent); }}
+            style={{ background: '#14B8A6', borderColor: '#14B8A6' }}>
             {selectedEvent ? (getEventStatus(selectedEvent).label !== 'Registration Open' ? getEventStatus(selectedEvent).label : 'Register Now') : 'Register'}
           </Button>
         ]}
-        width={800}
+        width={700}
+        className="dark-modal"
       >
         {selectedEvent && (
-          <div style={{ fontSize: 16 }}>
-            <Space style={{ marginBottom: 16, marginTop: 8 }}>
-              <Tag color={selectedEvent.audience.includes('University') ? '#0F766E' : '#14B8A6'}>{selectedEvent.audience}</Tag>
-              <Tag color="#F97316">{selectedEvent.mode}</Tag>
-              <Tag color="gold">{selectedEvent.category}</Tag>
-              <Tag color={getEventStatus(selectedEvent).color}>{getEventStatus(selectedEvent).label}</Tag>
-            </Space>
-
-            <Row gutter={[24, 24]}>
+          <div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
+              <span style={{ background: '#14B8A622', color: '#14B8A6', borderRadius: 999, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{selectedEvent.audience}</span>
+              <span style={{ background: '#F9731622', color: '#F97316', borderRadius: 999, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{selectedEvent.mode}</span>
+              <span style={{ background: '#6366f122', color: '#6366f1', borderRadius: 999, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{selectedEvent.category}</span>
+            </div>
+            <Row gutter={[16, 16]}>
               <Col span={12}>
-                <p><strong><CalendarOutlined /> Date & Time:</strong><br />{selectedEvent.date} @ {selectedEvent.time}</p>
-                <p><strong><EnvironmentOutlined /> Location/Link:</strong><br />{selectedEvent.venue}</p>
-                <p><strong><TeamOutlined /> Organizer:</strong><br />{selectedEvent.organizer}</p>
+                <p style={{ color: '#94A3B8', margin: '0 0 12px' }}><CalendarOutlined style={{ color: '#14B8A6', marginRight: 6 }} /><strong style={{ color: '#E2E8F0' }}>Date & Time</strong><br /><span style={{ paddingLeft: 20 }}>{selectedEvent.date} @ {selectedEvent.time}</span></p>
+                <p style={{ color: '#94A3B8', margin: '0 0 12px' }}><EnvironmentOutlined style={{ color: '#14B8A6', marginRight: 6 }} /><strong style={{ color: '#E2E8F0' }}>Venue</strong><br /><span style={{ paddingLeft: 20 }}>{selectedEvent.venue}</span></p>
+                <p style={{ color: '#94A3B8', margin: 0 }}><TeamOutlined style={{ color: '#F97316', marginRight: 6 }} /><strong style={{ color: '#E2E8F0' }}>Organizer</strong><br /><span style={{ paddingLeft: 20 }}>{selectedEvent.organizer}</span></p>
               </Col>
               <Col span={12}>
-                <p><strong><ClockCircleOutlined /> Deadline to Register:</strong><br />{selectedEvent.deadline}</p>
-                <p><strong>🪑 Seating Availability:</strong><br />{selectedEvent.capacity - selectedEvent.registeredCount} out of {selectedEvent.capacity} seats left</p>
-                <p><strong>📞 Contact Details:</strong><br />support@{selectedEvent.organizer.toLowerCase().replace(' ', '')}.edu</p>
+                <p style={{ color: '#94A3B8', margin: '0 0 12px' }}><ClockCircleOutlined style={{ color: '#f59e0b', marginRight: 6 }} /><strong style={{ color: '#E2E8F0' }}>Registration Deadline</strong><br /><span style={{ paddingLeft: 20 }}>{selectedEvent.deadline}</span></p>
+                <p style={{ color: '#94A3B8', margin: '0 0 12px' }}><strong style={{ color: '#E2E8F0' }}>🪑 Seats Available</strong><br /><span style={{ paddingLeft: 20 }}>{selectedEvent.capacity - selectedEvent.registeredCount} / {selectedEvent.capacity}</span></p>
               </Col>
             </Row>
-
-            <div style={{ marginTop: 24, padding: 16, background: '#F8FAFC', borderRadius: 8, border: '1px solid #E2E8F0' }}>
-              <Title level={4} style={{ color: '#0F172A' }}>About This Event</Title>
-              <Paragraph style={{ fontSize: 16, color: '#475569' }}>{selectedEvent.description}</Paragraph>
+            <div style={{ marginTop: 20, padding: 16, background: '#0F172A', borderRadius: 12, border: '1px solid #1E293B' }}>
+              <div style={{ color: '#E2E8F0', fontWeight: 700, marginBottom: 8 }}>About This Event</div>
+              <p style={{ color: '#94A3B8', margin: 0, lineHeight: 1.7 }}>{selectedEvent.description}</p>
             </div>
           </div>
         )}
@@ -261,60 +288,51 @@ const UpcomingEventsPortal = () => {
 
       {/* Registration Modal */}
       <Modal
-        title={`Register for ${selectedEvent?.title}`}
+        title={<span style={{ color: '#FFFFFF' }}>Register for {selectedEvent?.title}</span>}
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
+        className="dark-modal"
       >
-        <div style={{ marginBottom: 24 }}>
-          <Text type="secondary" style={{ fontSize: 14 }}>
-            {selectedEvent?.audience?.includes('University') 
-              ? '🔒 This event is heavily restricted to university students. A valid student email is firmly required to proceed.' 
-              : '🌐 This event is fully open to external students as well! All are welcome.'}
-          </Text>
+        <div style={{ background: '#0F172A', borderRadius: 10, padding: '10px 14px', marginBottom: 20, color: '#94A3B8', fontSize: 13 }}>
+          {selectedEvent?.audience?.includes('University')
+            ? '🔒 Restricted to university students. A valid student email is required.'
+            : '🌐 This event is open to all. Everyone is welcome!'}
         </div>
-
         <Form form={form} layout="vertical" onFinish={onFinishRegistration}>
-          <Form.Item
-            name="fullName"
-            label="Full Name"
-            rules={[
-              { required: true, message: 'Please enter your full name' },
-              { pattern: /^[A-Za-z\s]+$/, message: 'Name must contain letters only, no numbers allowed!' },
-              { pattern: /^[A-Z]/, message: 'First letter must be capital!' },
-            ]}
-          >
+          <Form.Item name="fullName" label={<span style={{ color: '#94A3B8' }}>Full Name</span>}
+            rules={[{ required: true }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only' }, { pattern: /^[A-Z]/, message: 'Must start with a capital letter' }]}>
             <Input size="large" />
           </Form.Item>
-          
-          <Form.Item
-            name="email"
-            label="Email Address"
-            rules={[
-              { required: true, message: 'Please enter your email' },
-              { type: 'email', message: 'Please enter a valid email' },
-              {
-                validator: (_, value) => {
-                  if (value && selectedEvent?.audience?.includes('University')) {
-                    if (!value.endsWith('@my.sliit.lk') && !value.endsWith('@sliit.lk')) {
-                      return Promise.reject(new Error('Restricted Event! Email must end in @my.sliit.lk or @sliit.lk'));
-                    }
-                  }
-                  return Promise.resolve();
+          <Form.Item name="email" label={<span style={{ color: '#94A3B8' }}>Email Address</span>}
+            rules={[{ required: true }, { type: 'email' }, {
+              validator: (_, value) => {
+                if (value && selectedEvent?.audience?.includes('University')) {
+                  if (!value.endsWith('@my.sliit.lk') && !value.endsWith('@sliit.lk'))
+                    return Promise.reject('Restricted! Use @my.sliit.lk or @sliit.lk');
                 }
+                return Promise.resolve();
               }
-            ]}
-          >
+            }]}>
             <Input size="large" placeholder={selectedEvent?.audience?.includes('University') ? 'student@my.sliit.lk' : 'example@gmail.com'} />
           </Form.Item>
-
-          <Form.Item style={{ marginBottom: 0, marginTop: 24 }}>
-            <Button type="primary" htmlType="submit" size="large" block style={{ background: '#0F766E', borderColor: '#0F766E', color: 'white', height: 48, fontSize: 16 }}>
-              Confirm Registration
+          <Form.Item style={{ marginBottom: 0, marginTop: 20 }}>
+            <Button type="primary" htmlType="submit" size="large" block style={{ background: '#14B8A6', borderColor: '#14B8A6', height: 48, fontWeight: 700 }}>
+              Confirm Registration →
             </Button>
           </Form.Item>
         </Form>
       </Modal>
+
+      <style>{`
+        .dark-modal .ant-modal-content { background: #1E293B !important; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08) !important; }
+        .dark-modal .ant-modal-header { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
+        .dark-modal .ant-modal-title { color: #FFFFFF !important; }
+        .dark-modal .ant-modal-close { color: #94A3B8 !important; }
+        .dark-modal .ant-form-item-label > label { color: #94A3B8 !important; }
+        .dark-modal .ant-input { background: #0F172A !important; border-color: #334155 !important; color: #FFFFFF !important; }
+        .dark-modal .ant-input::placeholder { color: #475569 !important; }
+      `}</style>
     </div>
   );
 };

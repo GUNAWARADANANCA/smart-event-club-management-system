@@ -1,52 +1,37 @@
 import React, { useState } from 'react';
-import { Table, Rate, Tag, Card, Typography, Space, Button } from 'antd';
-import { MessageSquare, Star, Filter, ArrowLeft } from 'lucide-react';
+import { Table, Rate, Tag, Card, Typography, Space, Button, Modal, Form, Input, Select, message } from 'antd';
+import { MessageSquare, Star, MessageCircle, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
+const { TextArea } = Input;
 
 const ViewFeedback = () => {
   const navigate = useNavigate();
+  const [feedbackModal, setFeedbackModal] = useState(false);
+  const [form] = Form.useForm();
+  const [feedbacks, setFeedbacks] = useState([
+    { key: '1', user: 'John Doe', rating: 5, category: 'General', subject: 'Excellent Platform', message: 'The event management system is very intuitive and easy to use. Great job!', date: '2026-03-22' },
+    { key: '2', user: 'Jane Smith', rating: 4, category: 'Feature Request', subject: 'More Customization', message: 'I would love to see more customization options for the event posters.', date: '2026-03-21' },
+    { key: '3', user: 'Robert Brown', rating: 3, category: 'Bug Report', subject: 'Loading issue', message: 'The dashboard takes a bit too long to load on mobile devices.', date: '2026-03-20' },
+    { key: '4', user: 'Alice Green', rating: 5, category: 'UI/UX', subject: 'Stunning Design', message: 'The new dark theme is absolutely beautiful. Very premium feel.', date: '2026-03-24' },
+  ]);
 
-  // Mock feedback data
-  const mockFeedbacks = [
-    {
-      key: '1',
-      user: 'John Doe',
-      rating: 5,
-      category: 'General',
-      subject: 'Excellent Platform',
-      message: 'The event management system is very intuitive and easy to use. Great job!',
-      date: '2026-03-22',
-    },
-    {
-      key: '2',
-      user: 'Jane Smith',
-      rating: 4,
-      category: 'Feature Request',
-      subject: 'More Customization',
-      message: 'I would love to see more customization options for the event posters.',
-      date: '2026-03-21',
-    },
-    {
-      key: '3',
-      user: 'Robert Brown',
-      rating: 3,
-      category: 'Bug Report',
-      subject: 'Loading issue',
-      message: 'The dashboard takes a bit too long to load on mobile devices.',
-      date: '2026-03-20',
-    },
-    {
-      key: '4',
-      user: 'Alice Green',
-      rating: 5,
-      category: 'UI/UX',
-      subject: 'Stunning Design',
-      message: 'The new dark theme is absolutely beautiful. Very premium feel.',
-      date: '2026-03-24',
-    },
-  ];
+  const handleSubmitFeedback = (values) => {
+    const newEntry = {
+      key: Date.now().toString(),
+      user: values.name || 'Anonymous',
+      rating: values.rating || 0,
+      category: values.category,
+      subject: values.subject,
+      message: values.message,
+      date: new Date().toISOString().split('T')[0],
+    };
+    setFeedbacks(prev => [newEntry, ...prev]);
+    message.success('Feedback submitted successfully!');
+    form.resetFields();
+    setFeedbackModal(false);
+  };
 
   const columns = [
     {
@@ -118,10 +103,11 @@ const ViewFeedback = () => {
             </Title>
           </div>
           <Button 
-            icon={<Filter size={18} />} 
-            className="rounded-xl border-[#E2E8F0] font-bold text-slate-600 hover:text-[#14B8A6] hover:border-[#14B8A6]"
+            icon={<MessageCircle size={18} />} 
+            onClick={() => setFeedbackModal(true)}
+            style={{ background: 'linear-gradient(to right, #14B8A6, #0F766E)', border: 'none', color: '#fff', fontWeight: 700, borderRadius: 12 }}
           >
-            Filter
+            Your Feedback
           </Button>
         </div>
 
@@ -153,7 +139,7 @@ const ViewFeedback = () => {
           
           <Table 
             columns={columns} 
-            dataSource={mockFeedbacks} 
+            dataSource={feedbacks} 
             pagination={{ pageSize: 5 }}
             className="dark-table"
             rowClassName="hover:bg-white/5 cursor-pointer transform transition-all"
@@ -162,7 +148,6 @@ const ViewFeedback = () => {
       </div>
 
       <style>{`
-        .dark-table .ant-table {
           background: transparent !important;
           color: white !important;
         }
@@ -199,6 +184,46 @@ const ViewFeedback = () => {
           border-color: rgba(255, 255, 255, 0.1) !important;
         }
       `}</style>
+
+      <Modal
+        open={feedbackModal}
+        onCancel={() => { setFeedbackModal(false); form.resetFields(); }}
+        footer={null}
+        centered
+        width={520}
+        styles={{ content: { background: '#1E293B', borderRadius: 16, padding: 32 }, header: { background: '#1E293B' } }}
+      >
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={{ color: '#fff', fontWeight: 800, fontSize: 22, margin: 0 }}>Share Your Feedback</h2>
+          <p style={{ color: '#94A3B8', marginTop: 4, fontSize: 13 }}>Help us improve your experience.</p>
+        </div>
+        <Form form={form} layout="vertical" onFinish={handleSubmitFeedback}>
+          <Form.Item name="name" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Your Name</span>}>
+            <Input placeholder="Enter your name" style={{ background: '#0F172A', border: '1px solid #334155', color: '#fff', borderRadius: 10 }} />
+          </Form.Item>
+          <Form.Item name="rating" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Rating</span>} rules={[{ required: true, message: 'Please give a rating' }]}>
+            <Rate style={{ color: '#14B8A6' }} />
+          </Form.Item>
+          <Form.Item name="category" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Category</span>} rules={[{ required: true, message: 'Please select a category' }]}>
+            <Select placeholder="Select category" dropdownStyle={{ background: '#1E293B' }}>
+              {['General', 'Bug Report', 'Feature Request', 'UI/UX'].map(c => (
+                <Select.Option key={c} value={c}>{c}</Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item name="subject" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Subject</span>} rules={[{ required: true, message: 'Please enter a subject' }]}>
+            <Input placeholder="Briefly describe your feedback" style={{ background: '#0F172A', border: '1px solid #334155', color: '#fff', borderRadius: 10 }} />
+          </Form.Item>
+          <Form.Item name="message" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Message</span>} rules={[{ required: true, message: 'Please enter your message' }]}>
+            <Input.TextArea rows={4} placeholder="Write your detailed feedback..." style={{ background: '#0F172A', border: '1px solid #334155', color: '#fff', borderRadius: 10 }} />
+          </Form.Item>
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Button htmlType="submit" block style={{ background: 'linear-gradient(to right, #14B8A6, #0F766E)', border: 'none', color: '#fff', fontWeight: 700, borderRadius: 10, height: 44, fontSize: 15 }}>
+              Submit Feedback
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

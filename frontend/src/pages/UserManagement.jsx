@@ -1,13 +1,49 @@
 import React from 'react';
 import { Form, Input, Button, Card, Typography, Select, message, ConfigProvider } from 'antd';
 import { mockRequests } from '../mockData';
+import { useNavigate } from 'react-router-dom';
+import { BookOpen, Users, GraduationCap } from 'lucide-react';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
 
+const hubCards = [
+  {
+    icon: BookOpen,
+    title: 'Lecture Panel',
+    desc: 'Browse and register for upcoming university lectures and academic sessions.',
+    color: '#6366F1',
+    gradient: 'linear-gradient(135deg, #6366F1, #4F46E5)',
+    glow: 'rgba(99,102,241,0.3)',
+    tag: 'Academic',
+    route: '/events/lecture-panel',
+  },
+  {
+    icon: Users,
+    title: 'Club & Society Leaders',
+    desc: 'Meet the elected leaders of all university clubs and societies.',
+    color: '#14B8A6',
+    gradient: 'linear-gradient(135deg, #14B8A6, #0F766E)',
+    glow: 'rgba(20,184,166,0.3)',
+    tag: 'Community',
+    route: '/club-leaders',
+  },
+  {
+    icon: GraduationCap,
+    title: 'SIS',
+    desc: 'Access the Student Information System for academic records and schedules.',
+    color: '#F59E0B',
+    gradient: 'linear-gradient(135deg, #F59E0B, #D97706)',
+    glow: 'rgba(245,158,11,0.3)',
+    tag: 'Student Portal',
+    route: '/sis',
+  },
+];
+
 const RequestManagement = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const onFinish = (values) => {
     const newRequest = {
@@ -30,73 +66,94 @@ const RequestManagement = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative p-6 md:p-8">
-      {/* Ambient background glow */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#0F766E]/5 to-transparent pointer-events-none z-0"></div>
-      
-      <div className="max-w-4xl mx-auto relative z-10">
-        <div className="flex items-center gap-4 mb-8">
-          <Title level={4} className="m-0 !text-[#14B8A6] tracking-tight font-extrabold uppercase tracking-widest text-xs border-b border-[#14B8A6]/30 pb-2">Request Management</Title>
+    <div style={{ minHeight: '100vh', background: '#0F172A', padding: '32px 24px' }}>
+      <div style={{ maxWidth: 860, margin: '0 auto' }}>
+
+        {/* User Hub Cards */}
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ display: 'inline-block', background: '#6366F122', border: '1px solid #6366F144', borderRadius: 999, padding: '4px 14px', color: '#6366F1', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 12 }}>
+            User Portals
+          </div>
+          <Title level={3} style={{ color: '#FFFFFF', margin: '0 0 20px' }}>Quick Access</Title>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            {hubCards.map(({ icon: Icon, title, desc, color, gradient, glow, tag, route }) => (
+              <div key={title} onClick={() => navigate(route)}
+                style={{ flex: '1 1 220px', background: '#1E293B', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 32px ${glow}`; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+              >
+                <div style={{ height: 3, background: gradient }} />
+                <div style={{ padding: '20px' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: `${color}22`, border: `1px solid ${color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                    <Icon size={20} color={color} />
+                  </div>
+                  <span style={{ background: `${color}22`, color, borderRadius: 999, padding: '2px 10px', fontSize: 10, fontWeight: 700, display: 'inline-block', marginBottom: 8 }}>{tag}</span>
+                  <div style={{ color: '#FFFFFF', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>{title}</div>
+                  <div style={{ color: '#64748B', fontSize: 12, lineHeight: 1.6, marginBottom: 14 }}>{desc}</div>
+                  <button style={{ width: '100%', padding: '8px 0', borderRadius: 10, background: gradient, border: 'none', color: '#FFFFFF', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>
+                    Open →
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        
-        <Form 
-          form={form} 
-          layout="vertical" 
-          onFinish={onFinish} 
+
+        {/* Page header */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ display: 'inline-block', background: '#14B8A622', border: '1px solid #14B8A644', borderRadius: 999, padding: '4px 14px', color: '#14B8A6', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 12 }}>
+            Request Management
+          </div>
+          <Title level={2} style={{ color: '#FFFFFF', margin: 0, marginBottom: 6 }}>Submit a New Request</Title>
+          <Text style={{ color: '#64748B', fontSize: 15 }}>Propose new university events or club activities for review.</Text>
+        </div>
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           size="large"
           autoComplete="off"
         >
-          <Card className="bg-[#0F172A] border-[#1E293B] shadow-2xl rounded-3xl mb-8 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#14B8A6]/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-[#14B8A6]/20 transition-colors duration-500 pointer-events-none"></div>
-            
-            <div className="mb-8">
-              <Title level={4} className="!text-white mb-2 relative z-10 font-bold uppercase tracking-widest text-xs border-b border-white/10 pb-2">
-                Request for Uni Events and Club Management
-              </Title>
-              <Text className="text-gray-400 text-sm block mt-2">
-                Submit your proposals for new university events or club activities here.
-              </Text>
+          <div style={{ background: '#1E293B', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 24, padding: '32px', position: 'relative', overflow: 'hidden' }}>
+            {/* Decorative glow */}
+            <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, background: '#14B8A610', borderRadius: '50%', filter: 'blur(40px)', pointerEvents: 'none' }} />
+
+            <div style={{ marginBottom: 28 }}>
+              <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: 18, marginBottom: 6 }}>Request for Uni Events and Club Management</div>
+              <div style={{ color: '#64748B', fontSize: 14 }}>Fill in the details below. All fields marked with * are required.</div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 24px' }}>
               <Form.Item
                 name="fullName"
-                label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Full Name</Text>}
+                label={<span style={{ color: '#94A3B8', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Full Name *</span>}
                 rules={[{ required: true, message: 'Please enter your full name' }]}
               >
-                <Input placeholder="John Doe" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
+                <Input placeholder="John Doe"
+                  style={{ background: '#0F172A', borderColor: '#334155', color: '#FFFFFF', borderRadius: 12, height: 44 }} />
               </Form.Item>
 
               <Form.Item
                 name="email"
-                label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">University Email</Text>}
+                label={<span style={{ color: '#94A3B8', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>University Email *</span>}
                 rules={[
-                  { required: true, message: 'Please enter your University Email' },
+                  { required: true, message: 'Please enter your university email' },
                   { type: 'email', message: 'Please enter a valid email address' },
-                  {
-                    validator: (_, value) => {
-                      if (value && !value.endsWith('@my.sliit.lk')) {
-                        return Promise.reject(new Error('Email must be a valid SLIIT student email ending with @my.sliit.lk'));
-                      }
-                      return Promise.resolve();
-                    }
-                  }
+                  { validator: (_, value) => value && !value.endsWith('@my.sliit.lk') ? Promise.reject('Must end with @my.sliit.lk') : Promise.resolve() }
                 ]}
               >
-                <Input placeholder="example@my.sliit.lk" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
+                <Input placeholder="example@my.sliit.lk"
+                  style={{ background: '#0F172A', borderColor: '#334155', color: '#FFFFFF', borderRadius: 12, height: 44 }} />
               </Form.Item>
 
               <Form.Item
                 name="academicYear"
-                label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Academic Year</Text>}
-                rules={[{ required: true, message: 'Please select your Academic Year' }]}
+                label={<span style={{ color: '#94A3B8', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Academic Year *</span>}
+                rules={[{ required: true, message: 'Please select your academic year' }]}
               >
-                <Select 
-                  placeholder="Select Academic Year"
-                  className="dark-select"
-                  popupClassName="dark-dropdown"
-                >
+                <Select placeholder="Select Academic Year" className="dark-select" popupClassName="dark-dropdown">
                   <Option value="Year 1">Year 1</Option>
                   <Option value="Year 2">Year 2</Option>
                   <Option value="Year 3">Year 3</Option>
@@ -106,42 +163,52 @@ const RequestManagement = () => {
 
               <Form.Item
                 name="requestType"
-                label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Request Type</Text>}
-                rules={[{ required: true, message: 'Please select a Request Type' }]}
+                label={<span style={{ color: '#94A3B8', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Request Type *</span>}
+                rules={[{ required: true, message: 'Please select a request type' }]}
               >
-                <Select 
-                  placeholder="Select Request Type"
-                  className="dark-select"
-                  popupClassName="dark-dropdown"
-                >
-                  <Option value="University Event Request">University Event Request</Option>
-                  <Option value="Club Management Request">Club Management Request</Option>
+                <Select placeholder="Select Request Type" className="dark-select" popupClassName="dark-dropdown">
+                  <Option value="University Event Request">🎓 University Event Request</Option>
+                  <Option value="Club Management Request">🏛️ Club Management Request</Option>
                 </Select>
               </Form.Item>
             </div>
 
             <Form.Item
               name="description"
-              label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest mt-4 block">Request Description</Text>}
-              rules={[{ required: true, message: 'Please provide a description of your request' }]}
+              label={<span style={{ color: '#94A3B8', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Request Description *</span>}
+              rules={[{ required: true, message: 'Please provide a description' }]}
             >
-              <TextArea rows={5} placeholder="Describe the event or club management request in detail..." className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl resize-none" />
+              <TextArea rows={5} placeholder="Describe the event or club management request in detail..."
+                style={{ background: '#0F172A', borderColor: '#334155', color: '#FFFFFF', borderRadius: 12, resize: 'none' }} />
             </Form.Item>
 
-            <Form.Item className="mt-8 mb-0">
-              <Button 
-                type="primary" 
-                htmlType="submit" 
-                size="large" 
-                block 
-                className="h-14 bg-gradient-to-r from-[#0F766E] to-[#14B8A6] hover:from-[#0F766E] hover:to-[#0d9488] border-0 rounded-2xl font-bold uppercase tracking-widest text-sm shadow-xl hover:shadow-2xl transition-all text-white"
-              >
-                Submit Request
+            {/* Info hint */}
+            <div style={{ background: '#14B8A610', border: '1px solid #14B8A630', borderRadius: 12, padding: '12px 16px', marginBottom: 24, color: '#94A3B8', fontSize: 13 }}>
+              💡 Your request will be reviewed by the event management team. You'll be notified once a decision is made.
+            </div>
+
+            <Form.Item style={{ marginBottom: 0 }}>
+              <Button type="primary" htmlType="submit" size="large" block
+                style={{ height: 52, background: 'linear-gradient(to right, #0F766E, #14B8A6)', border: 'none', borderRadius: 14, fontWeight: 700, fontSize: 15, letterSpacing: '0.5px' }}>
+                Submit Request →
               </Button>
             </Form.Item>
-          </Card>
+          </div>
         </Form>
       </div>
+
+      <style>{`
+        .dark-select .ant-select-selector { background: #0F172A !important; border-color: #334155 !important; color: #FFFFFF !important; border-radius: 12px !important; height: 44px !important; align-items: center !important; }
+        .dark-select .ant-select-selection-placeholder { color: #475569 !important; }
+        .dark-select .ant-select-arrow { color: #475569 !important; }
+        .dark-dropdown { background: #1E293B !important; border: 1px solid #334155 !important; border-radius: 12px !important; }
+        .dark-dropdown .ant-select-item { color: #E2E8F0 !important; }
+        .dark-dropdown .ant-select-item-option-active { background: #0F172A !important; }
+        .dark-dropdown .ant-select-item-option-selected { background: #14B8A622 !important; color: #14B8A6 !important; }
+        .ant-input::placeholder, .ant-input-affix-wrapper input::placeholder { color: #475569 !important; }
+        .ant-input:focus, .ant-input:hover { border-color: #14B8A6 !important; }
+        .ant-select-focused .ant-select-selector { border-color: #14B8A6 !important; box-shadow: none !important; }
+      `}</style>
     </div>
   );
 };

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserCircle, ChevronRight, GraduationCap } from 'lucide-react';
+import { UserCircle, ChevronRight, GraduationCap, Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function QuizLogin() {
   const [username, setUsername] = useState('student_01');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -12,6 +14,10 @@ export default function QuizLogin() {
     e.preventDefault();
     if (!username.trim()) {
       setError('Please provide a username to access your performance.');
+      return;
+    }
+    if (!password.trim()) {
+      setError('Please provide a password to access your performance.');
       return;
     }
     
@@ -66,6 +72,29 @@ export default function QuizLogin() {
                 className="w-full bg-white/50 border-2 border-[#D1FAE5] rounded-2xl py-4 pl-14 pr-6 text-slate-800 font-bold placeholder-[#0F766E]/20 focus:outline-none focus:border-[#1FAF9A] focus:bg-white transition-all shadow-sm group-hover:shadow-md"
                 placeholder="Enter Student Username"
               />
+            </div>
+          </div>
+
+          <div className="group">
+            <label className="block text-[10px] font-black text-[#0F766E] uppercase tracking-[0.2em] mb-3 ml-1">Password</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                <Lock className="w-5 h-5 text-[#0F766E] opacity-40 group-focus-within:opacity-100 transition-opacity" />
+              </div>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white/50 border-2 border-[#D1FAE5] rounded-2xl py-4 pl-14 pr-14 text-slate-800 font-bold placeholder-[#0F766E]/20 focus:outline-none focus:border-[#1FAF9A] focus:bg-white transition-all shadow-sm group-hover:shadow-md"
+                placeholder="Enter Password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-5 flex items-center text-[#0F766E] opacity-40 hover:opacity-100 transition-opacity"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
           </div>
 

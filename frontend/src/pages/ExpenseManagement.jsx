@@ -4,18 +4,27 @@ import { Table, Button, Space, Typography, Form, Input, InputNumber, Modal, Sele
 const { Title } = Typography;
 const { Option } = Select;
 
+const initialExpenses = [
+  { id: 1, event: 'Tech Symposium', item: 'Marketing Flyers', amount: 45000, date: '2026-03-10' },
+  { id: 2, event: 'Art Workshop', item: 'Paints & Canvas', amount: 90000, date: '2026-03-12' },
+];
+
+// seed localStorage if empty
+if (!localStorage.getItem('expenses')) {
+  localStorage.setItem('expenses', JSON.stringify(initialExpenses));
+}
+
 const ExpenseManagement = () => {
-  const [data, setData] = useState([
-    { id: 1, event: 'Tech Symposium', item: 'Marketing Flyers', amount: 45000, date: '2026-03-10' },
-    { id: 2, event: 'Art Workshop', item: 'Paints & Canvas', amount: 90000, date: '2026-03-12' },
-  ]);
+  const [data, setData] = useState(() => JSON.parse(localStorage.getItem('expenses') || '[]'));
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
 
   const handleOk = () => {
     form.validateFields().then(values => {
       const newExpense = { id: Date.now(), date: new Date().toISOString().split('T')[0], ...values };
-      setData([...data, newExpense]);
+      const updated = [...data, newExpense];
+      setData(updated);
+      localStorage.setItem('expenses', JSON.stringify(updated));
       message.success('Expense logged successfully');
       setIsModalVisible(false);
       form.resetFields();

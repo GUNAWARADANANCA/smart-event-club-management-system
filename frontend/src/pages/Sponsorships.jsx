@@ -16,8 +16,8 @@ export default function Sponsorships() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-white p-4 md:p-8 flex items-center justify-center rounded-3xl">
-      <div className="max-w-5xl w-full bg-[#FFFFFF]/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-[#E2E8F0]">
+    <div className="min-h-[80vh] bg-[#0F172A] p-4 md:p-8 flex items-center justify-center rounded-3xl">
+      <div className="max-w-5xl w-full bg-white/5 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-white/10">
         <div className="flex flex-col lg:flex-row">
           {/* Left Side: Brand/Event Info with strong gradient */}
           <div className="lg:w-5/12 p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-[#14B8A6] via-[#14B8A6] to-[#ffffff]">
@@ -59,9 +59,9 @@ export default function Sponsorships() {
           </div>
           
           {/* Right Side: Benefits and Call to Action */}
-          <div className="lg:w-7/12 p-8 lg:p-12 bg-[#F8FAFC] flex flex-col justify-between relative z-20 shadow-md">
+          <div className="lg:w-7/12 p-8 lg:p-12 bg-white/[0.03] flex flex-col justify-between relative z-20">
             <div>
-              <h3 className="text-2xl font-bold text-[#0F172A] mb-8 border-b border-[#E2E8F0] pb-4">Exclusive Sponsor Benefits</h3>
+              <h3 className="text-2xl font-bold text-white mb-8 border-b border-white/10 pb-4">Exclusive Sponsor Benefits</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-4 mb-10">
                 {[
                   'Premium double-booth location',
@@ -72,22 +72,22 @@ export default function Sponsorships() {
                   'Dedicated executive breakout room'
                 ].map((benefit, idx) => (
                   <div key={idx} className="flex items-start group">
-                    <CheckCircle2 className="w-5 h-5 mr-3 text-[#1FAF9A] flex-shrink-0 mt-0.5 group-hover:text-[#1FAF9A] transition-colors" />
-                    <span className="text-gray-600 group-hover:text-black transition-colors">{benefit}</span>
+                    <CheckCircle2 className="w-5 h-5 mr-3 text-[#1FAF9A] flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-300 group-hover:text-white transition-colors">{benefit}</span>
                   </div>
                 ))}
               </div>
             </div>
             
-            <div className="pt-8 border-t border-[#E2E8F0] mt-auto">
+            <div className="pt-8 border-t border-white/10 mt-auto">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="space-y-3 w-full sm:w-auto">
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Connect With Us</p>
-                  <div className="flex items-center text-gray-600 hover:text-[#0F766E] cursor-pointer transition-colors">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Connect With Us</p>
+                  <div className="flex items-center text-slate-400 hover:text-[#14B8A6] cursor-pointer transition-colors">
                     <Mail className="w-4 h-4 mr-3" />
                     <span className="text-sm font-medium">sponsor@tech2026.com</span>
                   </div>
-                  <div className="flex items-center text-gray-600 hover:text-[#0F766E] cursor-pointer transition-colors">
+                  <div className="flex items-center text-slate-400 hover:text-[#14B8A6] cursor-pointer transition-colors">
                     <Phone className="w-4 h-4 mr-3" />
                     <span className="text-sm font-medium">+1 (555) 123-4567</span>
                   </div>

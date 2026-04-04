@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, Button, Space, Typography, Tag, message, Modal, Descriptions, Badge } from 'antd';
 import { FilePdfOutlined, SendOutlined } from '@ant-design/icons';
 import { mockBudgets } from '../mockData';
+import { sendProposalToFinance } from '../proposalStore';
 
 const { Title } = Typography;
 
@@ -76,6 +77,20 @@ const BudgetApproval = () => {
   };
 
   const sendToFinance = (budget) => {
+    sendProposalToFinance({
+      id: 'BUD-' + budget.id,
+      name: budget.event + ' Budget',
+      type: 'Event',
+      submittedDate: new Date().toLocaleDateString(),
+      status: 'Pending',
+      description: budget.introduction || budget.justification || '',
+      remarks: '',
+      equipmentCost: budget.equipmentCost,
+      laborCost: budget.laborCost,
+      materialsCost: budget.materialsCost,
+      miscellaneousCost: budget.miscellaneousCost,
+      source: 'BudgetApproval',
+    });
     setSentToFinance(prev => [...prev, budget.id]);
     message.success(`Budget proposal for "${budget.event}" sent to Finance!`);
   };
@@ -128,8 +143,8 @@ const BudgetApproval = () => {
   ];
 
   return (
-    <div style={{ padding: '24px', background: '#FFFFFF', borderRadius: 16, border: '1px solid #E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-      <Title level={2} style={{ color: '#000000', marginBottom: 24 }}>Budget Approvals</Title>
+    <div style={{ minHeight: '100vh', padding: '24px', background: '#0F172A' }}>
+      <Title level={2} style={{ color: '#FFFFFF', marginBottom: 24 }}>Budget Approvals</Title>
       <Table columns={columns} dataSource={data} rowKey="id" />
 
       <Modal

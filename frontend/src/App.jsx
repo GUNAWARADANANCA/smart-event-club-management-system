@@ -39,10 +39,12 @@ import QuizResult from './pages/QuizResult';
 import Certificate from './pages/Certificate';
 import UserPerformance from './pages/UserPerformance';
 import CreateQuiz from './pages/CreateQuiz';
-import FeedbackForm from './pages/FeedbackForm';
+import PublicMeetings from './pages/PublicMeetings';
 import News from './pages/News';
 import EventGalleryDetail from './pages/EventGalleryDetail';
+import SecureMeetings from './pages/SecureMeetings';
 import ViewFeedback from './pages/ViewFeedback';
+import LecturePanel from './pages/LecturePanel';
 
 function App() {
   return (
@@ -62,14 +64,15 @@ function App() {
           <Route path="gallery" element={<EventsGallery />} />
           <Route path="gallery/:slug" element={<EventGalleryDetail />} />
           <Route path="news" element={<News />} />
+          <Route path="meetings" element={<PublicMeetings />} />
           <Route path="gallery/swimming-finals" element={<SwimmingGallery />} />
           <Route path="sponsorships" element={<Sponsorships />} />
           <Route path="ticket-sales" element={<TicketSales />} />
-          <Route path="feedback" element={<FeedbackForm />} />
           <Route path="view-feedback" element={<ViewFeedback />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="manage-requests" element={<ManageRequests />} />
           <Route path="portal" element={<UpcomingEventsPortal />} />
+          <Route path="events/lecture-panel" element={<LecturePanel />} />
           <Route path="my-events" element={<MyEvents />} />
           
           <Route element={<EventProtectedRoute />}>
@@ -87,6 +90,7 @@ function App() {
             <Route path="finance/ticket" element={<QRCodeTicket />} />
             <Route path="finance/expenses" element={<ExpenseManagement />} />
             <Route path="finance/requests" element={<FinanceRequests />} />
+            <Route path="finance/secure-meetings" element={<SecureMeetings />} />
           </Route>
           
           <Route path="quizzes" element={<QuizManagement />} />

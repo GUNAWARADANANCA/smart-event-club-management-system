@@ -7,12 +7,10 @@ import {
   Users,
   Database,
   Globe,
-  Heart,
   CalendarDays,
   CircleDollarSign,
   Award,
-  Video,
-  MessageCircle
+  MessageSquare
 } from 'lucide-react';
 
 const { Header, Content, Sider } = Layout;
@@ -32,12 +30,10 @@ const MainLayout = () => {
     { key: '/users', icon: <Users size={18} />, label: 'Event/Club Requests' },
     { key: '/manage-requests', icon: <Database size={18} />, label: 'Manage Requests' },
     { key: '/portal', icon: <Globe size={18} />, label: 'Events Portal' },
-    { key: '/my-events', icon: <Heart size={18} />, label: 'My Events' },
     { key: '/events', icon: <CalendarDays size={18} />, label: 'Events' },
     { key: '/finance', icon: <CircleDollarSign size={18} />, label: 'Finance' },
     { key: '/quizzes', icon: <Award size={18} />, label: 'Quiz & Certs' },
-    { key: '/feedback', icon: <MessageCircle size={18} />, label: 'Feedback & Rating' },
-    { key: '/view-feedback', icon: <Database size={18} />, label: 'View Feedback' },
+    { key: '/view-feedback', icon: <MessageSquare size={18} />, label: 'View Feedback' },
   ];
 
   return (

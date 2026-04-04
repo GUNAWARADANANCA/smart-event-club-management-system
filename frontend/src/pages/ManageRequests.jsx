@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, Tag, Space, Button, Modal, Typography, Card, message } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined, SendOutlined } from '@ant-design/icons';
 import { mockRequests } from '../mockData';
+import { sendProposalToFinance } from '../proposalStore';
 
 const { Title, Text } = Typography;
 
@@ -18,8 +19,18 @@ const ManageRequests = () => {
   };
 
   const handleSendProposal = (record) => {
+    sendProposalToFinance({
+      id: record.id,
+      name: record.fullName + ' — ' + record.requestType,
+      type: record.requestType.includes('Event') ? 'Event' : 'Club',
+      submittedDate: record.submittedDate,
+      status: 'Pending',
+      description: record.description,
+      remarks: '',
+      source: 'ManageRequests',
+    });
     setSentProposals(prev => [...prev, record.id]);
-    message.success(`Proposal for ${record.fullName} sent to Finance successfully!`);
+    message.success(`Proposal for ${record.fullName} sent to Finance!`);
   };
 
   const showDetails = (record) => {
@@ -87,14 +98,14 @@ const ManageRequests = () => {
   ];
 
   return (
-    <div style={{ backgroundColor: '#FFFFFF', minHeight: '100%', borderRadius: 16, padding: '8px' }}>
+    <div style={{ backgroundColor: '#0F172A', minHeight: '100%', borderRadius: 16, padding: '8px' }}>
       <div style={{ marginBottom: 16 }}>
-        <Title level={2} style={{ color: '#000000' }}>Manage Requests</Title>
-        <Text style={{ color: '#334155' }}>Review, approve, or reject student requests for events and clubs.</Text>
+        <Title level={2} style={{ color: '#FFFFFF' }}>Manage Requests</Title>
+        <Text style={{ color: '#94A3B8' }}>Review, approve, or reject student requests for events and clubs.</Text>
       </div>
 
-      <Card bordered={false} style={{ borderRadius: 12, backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-        <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 7 }} scroll={{ x: true }} />
+      <Card bordered={false} style={{ borderRadius: 12, backgroundColor: '#1E293B', borderColor: '#334155', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.4)' }}>
+        <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 7 }} scroll={{ x: true }} className="dark-table" />
       </Card>
 
       <Modal

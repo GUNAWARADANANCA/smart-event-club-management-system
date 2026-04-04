@@ -134,22 +134,23 @@ export default function EventsGallery() {
     : galleryData.filter(item => item.category === filter);
 
   return (
-    <div className="min-h-screen bg-white font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative">
+    <div className="min-h-screen bg-[#0F172A] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative">
       
       {/* Ambient background glow */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#14B8A6]/5 to-transparent pointer-events-none z-0"></div>
 
       <div className="relative z-10 p-6 md:p-8">
         {/* Local Navbar Area */}
-        <nav className="w-full bg-white shadow-md backdrop-blur-2xl border border-[#E2E8F0] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
+        <nav className="w-full bg-[#0F172A] shadow-md border border-white/10 px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
           <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] tracking-tighter uppercase mb-4 md:mb-0">
             Uni Gallery
           </h1>
-          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-500">
-            <span onClick={() => navigate('/news')} className="hover:text-slate-900 cursor-pointer transition-colors">News</span>
-            <span className="hover:text-slate-900 cursor-pointer transition-colors">Events</span>
-            <span className="text-slate-900 border-b-2 border-[#1FAF9A] pb-1">Gallery</span>
-            <span onClick={() => navigate('/ticket-sales')} className="hover:text-slate-900 cursor-pointer transition-colors">Ticket Sales</span>
+          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-400">
+            <span onClick={() => navigate('/news')} className="hover:text-white cursor-pointer transition-colors">News</span>
+            <span onClick={() => navigate('/meetings')} className="hover:text-white cursor-pointer transition-colors">Meetings</span>
+            <span className="text-[#14B8A6] border-b-2 border-[#1FAF9A] pb-1">Gallery</span>
+            <span onClick={() => navigate('/events/lecture-panel')} className="hover:text-white cursor-pointer transition-colors">Users</span>
+            <span onClick={() => navigate('/ticket-sales')} className="hover:text-white cursor-pointer transition-colors">Ticket Sales</span>
           </div>
         </nav>
 
@@ -160,10 +161,10 @@ export default function EventsGallery() {
             <div className="inline-block px-4 py-1 rounded-full bg-[#1FAF9A]/10 border border-[#1FAF9A]/30 text-[#1FAF9A] text-xs font-bold uppercase tracking-widest mb-6">
               Officially Curated Albums
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-slate-900 uppercase tracking-tighter mb-6 drop-shadow-md">
+            <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6 drop-shadow-md">
               Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] via-[#14B8A6] to-[#F97316]">Showcase</span>
             </h2>
-            <p className="text-lg md:text-xl text-slate-500 max-w-3xl mx-auto font-medium">
+            <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto font-medium">
               Relive the most unforgettable moments, explosive hackathons, and vibrant cultural nights hosted at our university.
             </p>
           </div>
@@ -177,7 +178,7 @@ export default function EventsGallery() {
                 className={`px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm transition-all duration-300 border backdrop-blur-sm ${
                   filter === cat 
                   ? 'bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] text-white border-transparent shadow-md scale-105'
-                  : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300'
+                  : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20'
                 }`}
               >
                 {cat}
@@ -194,7 +195,7 @@ export default function EventsGallery() {
 
           {/* Empty State */}
           {filteredData.length === 0 && (
-            <div className="text-center text-slate-400 py-20 text-2xl font-black uppercase tracking-widest border-2 border-dashed border-slate-200 rounded-3xl mt-12">
+            <div className="text-center text-slate-500 py-20 text-2xl font-black uppercase tracking-widest border-2 border-dashed border-white/10 rounded-3xl mt-12">
               No events found for this category.
             </div>
           )}

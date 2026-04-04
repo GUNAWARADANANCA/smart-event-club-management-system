@@ -73,7 +73,7 @@ export default function FeaturedEvents() {
                   {item.description}
                 </p>
                 <button 
-                  onClick={() => navigate('/portal')}
+                  onClick={() => navigate('/login', { state: { from: '/portal' } })}
                   className="w-full py-3 px-4 border border-purple-500 text-[#0F766E] rounded-xl font-bold hover:bg-[#0F766E] hover:text-slate-800 transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   View Details

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Typography, Tag, Row, Col, Modal, Input, message, Space, Descriptions } from 'antd';
-import { EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, FilePdfOutlined, DownloadOutlined } from '@ant-design/icons';
+import { EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, FilePdfOutlined, DownloadOutlined, SendOutlined, BarChartOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import { sentProposals } from '../proposalStore';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -87,6 +89,7 @@ const downloadBudgetPDF = (req) => {
 };
 
 const FinanceRequests = () => {
+  const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -94,61 +97,15 @@ const FinanceRequests = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // fetchRequests(); // No need for backend now
-    setRequests([
-      { 
-        id: 'FR-2026-001', 
-        name: 'Annual Tech Symposium Budget', 
-        type: 'Event', 
-        submittedDate: '2026-03-15', 
-        status: 'Pending', 
-        description: 'Budget request for venue booking, speaker fees, and marketing materials for the upcoming symposium.',
-        remarks: '',
-        equipmentCost: 80000,
-        laborCost: 120000,
-        materialsCost: 95000,
-        miscellaneousCost: 45000,
-      },
-      { 
-        id: 'FR-2026-002', 
-        name: 'Robotics Club Equipment', 
-        type: 'Club', 
-        submittedDate: '2026-03-18', 
-        status: 'Approved', 
-        description: 'Purchase of 10 Arduino and 5 Raspberry Pi kits for the upcoming workshops.',
-        remarks: 'Approved as per previous committee meeting.',
-        equipmentCost: 55000,
-        laborCost: 20000,
-        materialsCost: 30000,
-        miscellaneousCost: 10000,
-      },
-      { 
-        id: 'FR-2026-003', 
-        name: 'Cultural Night Performance Costumes', 
-        type: 'Event', 
-        submittedDate: '2026-03-20', 
-        status: 'Pending', 
-        description: 'Request for costume rentals and stage setup for the Annual Cultural Night.',
-        remarks: '',
-        equipmentCost: 25000,
-        laborCost: 40000,
-        materialsCost: 60000,
-        miscellaneousCost: 15000,
-      },
-      { 
-        id: 'FR-2026-004', 
-        name: 'Library Renovation Phase 1', 
-        type: 'Other', 
-        submittedDate: '2026-03-22', 
-        status: 'Pending', 
-        description: 'Initial budget request for library furniture replacement and painting as part of the phase 1 renovation plan.',
-        remarks: '',
-        equipmentCost: 200000,
-        laborCost: 150000,
-        materialsCost: 180000,
-        miscellaneousCost: 70000,
-      }
-    ]);
+    const base = [
+      { id: 'FR-2026-001', name: 'Annual Tech Symposium Budget', type: 'Event', submittedDate: '2026-03-15', status: 'Pending', description: 'Budget request for venue booking, speaker fees, and marketing materials for the upcoming symposium.', remarks: '', equipmentCost: 80000, laborCost: 120000, materialsCost: 95000, miscellaneousCost: 45000 },
+      { id: 'FR-2026-002', name: 'Robotics Club Equipment', type: 'Club', submittedDate: '2026-03-18', status: 'Approved', description: 'Purchase of 10 Arduino and 5 Raspberry Pi kits for the upcoming workshops.', remarks: 'Approved as per previous committee meeting.', equipmentCost: 55000, laborCost: 20000, materialsCost: 30000, miscellaneousCost: 10000 },
+      { id: 'FR-2026-003', name: 'Cultural Night Performance Costumes', type: 'Event', submittedDate: '2026-03-20', status: 'Pending', description: 'Request for costume rentals and stage setup for the Annual Cultural Night.', remarks: '', equipmentCost: 25000, laborCost: 40000, materialsCost: 60000, miscellaneousCost: 15000 },
+      { id: 'FR-2026-004', name: 'Library Renovation Phase 1', type: 'Other', submittedDate: '2026-03-22', status: 'Pending', description: 'Initial budget request for library furniture replacement and painting as part of the phase 1 renovation plan.', remarks: '', equipmentCost: 200000, laborCost: 150000, materialsCost: 180000, miscellaneousCost: 70000 },
+    ];
+    const merged = [...base];
+    sentProposals.forEach(p => { if (!merged.find(r => r.id === p.id)) merged.push(p); });
+    setRequests(merged);
     setLoading(false);
   }, []);
 
@@ -188,69 +145,111 @@ const FinanceRequests = () => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 32 }}>
-        <Title level={2} style={{ margin: 0, color: '#000000' }}>Finance Request Review</Title>
-        <Text style={{ fontSize: 16, color: '#475569' }}>Review and manage pending PDF requests submitted by clubs and events.</Text>
+    <div style={{ minHeight: '100vh', padding: '24px', background: '#0F172A' }}>
+      <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <Title level={2} style={{ margin: 0, color: '#FFFFFF' }}>Finance Request Review</Title>
+          <Text style={{ fontSize: 16, color: '#94A3B8' }}>Review and manage proposals received from Event Management and Budget Approval.</Text>
+        </div>
+        <Button
+          icon={<SendOutlined />}
+          className="btn-teal-secondary"
+          onClick={() => {
+            const base = [
+              { id: 'FR-2026-001', name: 'Annual Tech Symposium Budget', type: 'Event', submittedDate: '2026-03-15', status: 'Pending', description: 'Budget request for venue booking, speaker fees, and marketing materials for the upcoming symposium.', remarks: '', equipmentCost: 80000, laborCost: 120000, materialsCost: 95000, miscellaneousCost: 45000 },
+              { id: 'FR-2026-002', name: 'Robotics Club Equipment', type: 'Club', submittedDate: '2026-03-18', status: 'Approved', description: 'Purchase of 10 Arduino and 5 Raspberry Pi kits for the upcoming workshops.', remarks: 'Approved as per previous committee meeting.', equipmentCost: 55000, laborCost: 20000, materialsCost: 30000, miscellaneousCost: 10000 },
+              { id: 'FR-2026-003', name: 'Cultural Night Performance Costumes', type: 'Event', submittedDate: '2026-03-20', status: 'Pending', description: 'Request for costume rentals and stage setup for the Annual Cultural Night.', remarks: '', equipmentCost: 25000, laborCost: 40000, materialsCost: 60000, miscellaneousCost: 15000 },
+              { id: 'FR-2026-004', name: 'Library Renovation Phase 1', type: 'Other', submittedDate: '2026-03-22', status: 'Pending', description: 'Initial budget request for library furniture replacement and painting as part of the phase 1 renovation plan.', remarks: '', equipmentCost: 200000, laborCost: 150000, materialsCost: 180000, miscellaneousCost: 70000 },
+            ];
+            const merged = [...base];
+            sentProposals.forEach(p => { if (!merged.find(r => r.id === p.id)) merged.push(p); });
+            setRequests(merged);
+            message.success('Proposals refreshed!');
+          }}
+        >
+          Refresh Proposals
+        </Button>
       </div>
 
       <Row gutter={[24, 24]}>
-        {requests.map(req => (
-          <Col xs={24} md={12} lg={8} key={req.id}>
-            <Card 
-              hoverable
-              style={{ 
-                height: '100%', 
-                background: '#0F172A', 
-                border: '1px solid #1E293B',
-                borderRadius: 16,
-                display: 'flex', flexDirection: 'column'
-              }}
-              bodyStyle={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-                <div>
-                  <Title level={4} style={{ color: '#FFFFFF', margin: 0 }}>{req.name}</Title>
-                  <Text style={{ color: '#94A3B8' }}>{req.id}</Text>
+        {requests.map(req => {
+          const total = (req.equipmentCost || 0) + (req.laborCost || 0) + (req.materialsCost || 0) + (req.miscellaneousCost || 0);
+          const statusStyles = {
+            Approved: { color: '#22c55e', bg: '#22c55e18', bar: 'linear-gradient(to right, #22c55e, #14B8A6)' },
+            Rejected: { color: '#EF4444', bg: '#EF444418', bar: 'linear-gradient(to right, #EF4444, #f97316)' },
+            Cancelled: { color: '#64748B', bg: '#64748B18', bar: 'linear-gradient(to right, #64748B, #475569)' },
+            Pending: { color: '#f59e0b', bg: '#f59e0b18', bar: 'linear-gradient(to right, #f59e0b, #F97316)' },
+          };
+          const s = statusStyles[req.status] || statusStyles.Pending;
+          const typeColor = req.type === 'Event' ? '#14B8A6' : req.type === 'Club' ? '#6366f1' : '#94A3B8';
+
+          return (
+            <Col xs={24} md={12} lg={8} key={req.id}>
+              <div style={{ background: '#1E293B', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.4)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+              >
+                {/* Accent bar */}
+                <div style={{ height: 4, background: s.bar }} />
+
+                <div style={{ padding: '20px 22px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  {/* Header row */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                    <div style={{ flex: 1, paddingRight: 10 }}>
+                      <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: 15, lineHeight: 1.3, marginBottom: 4 }}>{req.name}</div>
+                      <div style={{ color: '#475569', fontSize: 12 }}>{req.id}</div>
+                    </div>
+                    <span style={{ background: s.bg, color: s.color, borderRadius: 999, padding: '3px 12px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                      {req.status}
+                    </span>
+                  </div>
+
+                  {/* Tags */}
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+                    <span style={{ background: `${typeColor}18`, color: typeColor, borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 600 }}>
+                      {req.type} Request
+                    </span>
+                    <span style={{ background: '#1E293B', color: '#64748B', border: '1px solid #334155', borderRadius: 999, padding: '2px 10px', fontSize: 11 }}>
+                      📅 {req.submittedDate}
+                    </span>
+                    {req.source && (
+                      <span style={{ background: req.source === 'BudgetApproval' ? '#fef3c722' : '#ede9fe22', color: req.source === 'BudgetApproval' ? '#f59e0b' : '#8b5cf6', borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 600 }}>
+                        {req.source === 'BudgetApproval' ? '📊 Budget' : '📋 Events'}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Description */}
+                  <p style={{ color: '#94A3B8', fontSize: 13, lineHeight: 1.6, marginBottom: 14, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
+                    {req.description}
+                  </p>
+
+                  {/* Budget total */}
+                  {total > 0 && (
+                    <div style={{ background: '#0F172A', borderRadius: 10, padding: '10px 14px', marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ color: '#64748B', fontSize: 12 }}>Total Budget</span>
+                      <span style={{ color: '#14B8A6', fontWeight: 800, fontSize: 15 }}>Rs. {total.toLocaleString()}</span>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <button onClick={() => handleViewPDF(req)}
+                      style={{ width: '100%', padding: '10px 0', borderRadius: 12, border: 'none', background: 'linear-gradient(to right, #14B8A6, #0F766E)', color: '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                      <EyeOutlined /> View PDF
+                    </button>
+                    {req.status === 'Pending' && (
+                      <button onClick={() => handleCancel(req.id)}
+                        style={{ width: '100%', padding: '9px 0', borderRadius: 12, border: '1px solid #EF444444', background: 'transparent', color: '#EF4444', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
+                        Cancel Request
+                      </button>
+                    )}
+                  </div>
                 </div>
-                {getStatusTag(req.status)}
               </div>
-              
-              <Space style={{ marginBottom: 16 }}>
-                <Tag className={`tag-teal-pill ${req.type === 'Event' ? 'active' : 'inactive'}`}>{req.type} Request</Tag>
-                <Tag className="tag-teal-pill inactive">{req.submittedDate}</Tag>
-              </Space>
-
-              <div style={{ flex: 1, marginBottom: 24 }}>
-                <Paragraph style={{ color: '#E2E8F0' }}>
-                  {req.description}
-                </Paragraph>
-              </div>
-
-              <Space direction="vertical" style={{ width: '100%' }}>
-                  <Button 
-                    className="btn-teal-primary"
-                    icon={<EyeOutlined />} 
-                    block 
-                    size="large"
-                    onClick={() => handleViewPDF(req)}
-                  >
-                    View PDF
-                  </Button>
-                {req.status === 'Pending' && (
-                  <Button 
-                    danger 
-                    block
-                    style={{ borderRadius: 8 }}
-                    onClick={() => handleCancel(req.id)}
-                  >
-                    Cancel Request
-                  </Button>
-                )}
-              </Space>
-            </Card>
-          </Col>
-        ))}
+            </Col>
+          );
+        })}
       </Row>
 
       <Modal

@@ -133,7 +133,7 @@ export default function EventGalleryDetail() {
         </h1>
         <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-500">
           <span onClick={() => navigate('/news')} className="hover:text-slate-900 cursor-pointer transition-colors">News</span>
-          <span onClick={() => navigate('/portal')} className="hover:text-slate-900 cursor-pointer transition-colors">Events</span>
+          <span onClick={() => navigate('/meetings')} className="hover:text-slate-900 cursor-pointer transition-colors">Meetings</span>
           <span onClick={() => navigate('/gallery')} className="text-slate-900 border-b-2 border-[#1FAF9A] pb-1 cursor-pointer">Gallery</span>
           <span onClick={() => navigate('/ticket-sales')} className="hover:text-slate-900 cursor-pointer transition-colors">Ticket Sales</span>
         </div>

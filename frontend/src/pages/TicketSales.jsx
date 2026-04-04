@@ -107,6 +107,21 @@ const TicketSales = () => {
       qrData: `BOOKING:${bookingId}|EVENT:${selectedEvent.event}|NAME:${values.fullName}|PASS:${typeInfo.label}|QTY:${qty}|TOTAL:Rs.${totalAmount}`,
     };
 
+    // Save to localStorage for Finance dashboard
+    const existing = JSON.parse(localStorage.getItem('ticketPurchases') || '[]');
+    existing.push({
+      id: bookingId,
+      event: selectedEvent.event,
+      buyer: values.fullName,
+      email: values.email,
+      phone: values.phone,
+      amount: totalAmount,
+      pass: typeInfo.label,
+      quantity: qty,
+      date: new Date().toISOString().split('T')[0],
+    });
+    localStorage.setItem('ticketPurchases', JSON.stringify(existing));
+
     setIsModalOpen(false);
     setBookingConfirm(confirmData);
   };
@@ -120,23 +135,23 @@ const TicketSales = () => {
   const totalSlots = parkingSlots.length;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative">
+    <div className="min-h-screen bg-[#0F172A] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative">
       
       {/* Ambient background glow */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#0F766E]/5 to-transparent pointer-events-none z-0"></div>
 
       <div className="relative z-10 p-6 md:p-8">
         {/* Local Navbar Area */}
-        <nav className="w-full bg-[#FFFFFF] shadow-sm backdrop-blur-2xl border border-[#E2E8F0] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl shadow-2xl sticky top-4 z-50">
+        <nav className="w-full bg-[#0F172A] shadow-sm border border-white/10 px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
           <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#14B8A6] tracking-tighter uppercase mb-4 md:mb-0">
             Uni Gallery
           </h1>
-          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-gray-500">
-            <span onClick={() => navigate('/')} className="hover:text-slate-800 cursor-pointer transition-colors">News</span>
-            <span onClick={() => navigate('/events')} className="hover:text-slate-800 cursor-pointer transition-colors">Events</span>
-            <span onClick={() => navigate('/gallery')} className="hover:text-slate-800 cursor-pointer transition-colors">Gallery</span>
-            <span onClick={() => navigate('/feedback')} className="hover:text-slate-800 cursor-pointer transition-colors">Feedback</span>
-            <span className="text-slate-800 border-b-2 border-[#14B8A6] pb-1">Ticket Sales</span>
+          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-400">
+            <span onClick={() => navigate('/news')} className="hover:text-white cursor-pointer transition-colors">News</span>
+            <span onClick={() => navigate('/meetings')} className="hover:text-white cursor-pointer transition-colors">Meetings</span>
+            <span onClick={() => navigate('/gallery')} className="hover:text-white cursor-pointer transition-colors">Gallery</span>
+            <span onClick={() => navigate('/feedback')} className="hover:text-white cursor-pointer transition-colors">Feedback</span>
+            <span className="text-[#14B8A6] border-b-2 border-[#14B8A6] pb-1">Ticket Sales</span>
           </div>
         </nav>
 
@@ -147,22 +162,22 @@ const TicketSales = () => {
             <div className="inline-block px-4 py-1 rounded-full bg-[#0F766E]/10 border border-[#14B8A6]/30 text-[#0F766E] text-xs font-bold uppercase tracking-widest mb-6">
               Track Performace & Revenue
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-slate-800 uppercase tracking-tighter mb-6 drop-shadow-md">
+            <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6 drop-shadow-md">
               Ticket <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#F97316]">Dashboard</span>
             </h2>
-            <p className="text-lg md:text-xl text-gray-500 max-w-3xl mx-auto font-medium">
+            <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto font-medium">
               Monitor your event ticket sales, track revenue, and analyze attendance all in one place.
             </p>
           </div>
 
           {/* Content Area */}
-          <div className="bg-white p-8 rounded-3xl shadow-xl border border-[#E2E8F0]">
+          <div className="bg-[#1E293B] p-8 rounded-3xl shadow-xl border border-white/10">
             <Table 
               columns={columns} 
               dataSource={data} 
               pagination={false}
               className="custom-ticket-table"
-              rowClassName="hover:bg-gray-50 transition-colors"
+              rowClassName="hover:bg-white/5 transition-colors"
             />
           </div>
 

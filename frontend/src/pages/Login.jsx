@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const { Title, Text } = Typography;
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/';
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
@@ -21,7 +23,7 @@ const Login = () => {
       localStorage.setItem('userName', formattedName);
       localStorage.setItem('userRole', 'General Context');
       
-      navigate('/'); // Assuming '/' is the dashboard or home
+      navigate(from);
     } catch (error) {
       console.error(error);
       message.error(error.response?.data?.message || 'Login failed.');
