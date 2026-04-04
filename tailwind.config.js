@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Josefin Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Outfit"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         'gallery-bg': '#F8FAFC',

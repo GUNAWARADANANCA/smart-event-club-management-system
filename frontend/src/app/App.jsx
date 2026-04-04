@@ -54,7 +54,7 @@ function App() {
         token: {
           colorPrimary: '#1FAF9A',
           colorBgContainer: '#111827',
-          fontFamily: "'Josefin Sans', system-ui, -apple-system, sans-serif",
+          fontFamily: "'Outfit', system-ui, -apple-system, sans-serif",
         },
       }}
     >
