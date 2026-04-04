@@ -178,3 +178,32 @@ body {
   border-color: var(--teal-primary) !important;
   box-shadow: 0 0 0 2px rgba(31, 175, 154, 0.2) !important;
 }
+
+/* Fix Ant Design input white background on focus/active/autofill */
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-number,
+.ant-input-number-input {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #fff !important;
+}
+
+.ant-input:hover,
+.ant-input:focus,
+.ant-input-affix-wrapper:hover,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.ant-input:-webkit-autofill,
+.ant-input:-webkit-autofill:hover,
+.ant-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #1e293b inset !important;
+  -webkit-text-fill-color: #fff !important;
+  caret-color: #fff !important;
+}
+
+.ant-input-number-input {
+  background-color: transparent !important;
+}

@@ -278,7 +278,11 @@ const UpcomingEventsPortal = () => {
           <Form.Item
             name="fullName"
             label="Full Name"
-            rules={[{ required: true, message: 'Please enter your full name' }]}
+            rules={[
+              { required: true, message: 'Please enter your full name' },
+              { pattern: /^[A-Za-z\s]+$/, message: 'Name must contain letters only, no numbers allowed!' },
+              { pattern: /^[A-Z]/, message: 'First letter must be capital!' },
+            ]}
           >
             <Input size="large" />
           </Form.Item>

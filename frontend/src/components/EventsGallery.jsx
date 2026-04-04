@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { message } from 'antd';
 
 // Hardcoded Dummy Data
 const galleryData = [
@@ -126,11 +125,8 @@ export default function EventsGallery() {
   const navigate = useNavigate();
 
   const handleViewGallery = (item) => {
-    if (item.title.includes('Swimming')) {
-      navigate('/gallery/swimming-finals');
-    } else {
-      message.info(`The extended gallery for ${item.title} is currently being processed.`);
-    }
+    const slug = item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    navigate(`/gallery/${slug}`);
   };
 
   const filteredData = filter === 'All' 
@@ -150,7 +146,7 @@ export default function EventsGallery() {
             Uni Gallery
           </h1>
           <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-500">
-            <span className="hover:text-slate-900 cursor-pointer transition-colors">News</span>
+            <span onClick={() => navigate('/news')} className="hover:text-slate-900 cursor-pointer transition-colors">News</span>
             <span className="hover:text-slate-900 cursor-pointer transition-colors">Events</span>
             <span className="text-slate-900 border-b-2 border-[#1FAF9A] pb-1">Gallery</span>
             <span onClick={() => navigate('/ticket-sales')} className="hover:text-slate-900 cursor-pointer transition-colors">Ticket Sales</span>

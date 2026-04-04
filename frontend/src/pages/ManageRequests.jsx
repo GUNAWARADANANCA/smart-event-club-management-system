@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Table, Tag, Space, Button, Modal, Typography, Card } from 'antd';
-import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined } from '@ant-design/icons';
+import { Table, Tag, Space, Button, Modal, Typography, Card, message } from 'antd';
+import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined, SendOutlined } from '@ant-design/icons';
 import { mockRequests } from '../mockData';
 
 const { Title, Text } = Typography;
@@ -9,15 +9,17 @@ const ManageRequests = () => {
   const [data, setData] = useState(mockRequests);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [sentProposals, setSentProposals] = useState([]);
 
   const handleStatusChange = (id, newStatus) => {
-    // Modify internal mock array so it persists on route change
     const requestIndex = mockRequests.findIndex(r => r.id === id);
-    if (requestIndex > -1) {
-      mockRequests[requestIndex].status = newStatus;
-    }
-    // Update local state to trigger re-render
+    if (requestIndex > -1) mockRequests[requestIndex].status = newStatus;
     setData([...mockRequests]);
+  };
+
+  const handleSendProposal = (record) => {
+    setSentProposals(prev => [...prev, record.id]);
+    message.success(`Proposal for ${record.fullName} sent to Finance successfully!`);
   };
 
   const showDetails = (record) => {
@@ -67,6 +69,17 @@ const ManageRequests = () => {
               <Button icon={<CheckCircleOutlined />} onClick={() => handleStatusChange(record.id, 'Approved')} size="small" className="btn-teal-primary">Approve</Button>
               <Button icon={<CloseCircleOutlined />} onClick={() => handleStatusChange(record.id, 'Rejected')} size="small" className="btn-teal-secondary">Reject</Button>
             </>
+          )}
+          {record.status === 'Approved' && (
+            <Button
+              icon={<SendOutlined />}
+              size="small"
+              className="btn-teal-primary"
+              disabled={sentProposals.includes(record.id)}
+              onClick={() => handleSendProposal(record)}
+            >
+              {sentProposals.includes(record.id) ? 'Sent' : 'Send Proposal'}
+            </Button>
           )}
         </Space>
       ),

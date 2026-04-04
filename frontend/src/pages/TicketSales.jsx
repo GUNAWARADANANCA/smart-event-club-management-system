@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, Tag, Modal, Form, Input, InputNumber, Button, Typography, message, Radio, Tooltip, Upload, Steps } from 'antd';
-import { CarOutlined, CheckCircleFilled, CloseCircleFilled, CreditCardOutlined, BankOutlined, UploadOutlined } from '@ant-design/icons';
+import { CarOutlined, CheckCircleFilled, CreditCardOutlined, BankOutlined, UploadOutlined, CheckOutlined, DownloadOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
@@ -35,6 +35,7 @@ const TicketSales = () => {
   const [parkingSlots] = useState(generateParkingSlots);
   const [paymentMethodForm, setPaymentMethodForm] = useState('card');
   const [currentStep, setCurrentStep] = useState(0);
+  const [bookingConfirm, setBookingConfirm] = useState(null);
 
   const handleNext = async () => {
     try {
@@ -90,19 +91,24 @@ const TicketSales = () => {
 
   const handleBookingSubmit = (values) => {
     const typeInfo = getSelectedTypeInfo();
-    const totalAmount = typeInfo.price * (values.quantity || 1) + (selectedParkingSlot ? 500 : 0);
-    
-    message.success(`Booking initiated for ${selectedEvent.event}!`);
+    const qty = values.quantity || 1;
+    const totalAmount = typeInfo.price * qty + (selectedParkingSlot ? 500 : 0);
+    const bookingId = `TKT-${Date.now().toString(36).toUpperCase()}`;
+
+    const confirmData = {
+      bookingId,
+      name: values.fullName,
+      email: values.email,
+      event: selectedEvent.event,
+      passType: typeInfo.label,
+      quantity: qty,
+      parking: selectedParkingSlot,
+      total: totalAmount,
+      qrData: `BOOKING:${bookingId}|EVENT:${selectedEvent.event}|NAME:${values.fullName}|PASS:${typeInfo.label}|QTY:${qty}|TOTAL:Rs.${totalAmount}`,
+    };
+
     setIsModalOpen(false);
-    navigate('/finance/payment', { 
-      state: { 
-        bookingDetails: values, 
-        event: selectedEvent,
-        paymentType: typeInfo,
-        parkingSlot: selectedParkingSlot,
-        totalAmount
-      } 
-    });
+    setBookingConfirm(confirmData);
   };
 
   const data = [
@@ -222,7 +228,11 @@ const TicketSales = () => {
               <Form.Item
                 name="fullName"
                 label={<span className="font-bold text-gray-300 uppercase text-xs tracking-widest">Full Name</span>}
-                rules={[{ required: true, message: 'Please enter your full name' }]}
+                rules={[
+                  { required: true, message: 'Please enter your full name' },
+                  { pattern: /^[A-Za-z\s]+$/, message: 'Name must contain letters only, no numbers allowed!' },
+                  { pattern: /^[A-Z]/, message: 'First letter must be capital!' },
+                ]}
               >
                 <Input size="large" placeholder="Enter your full name" className="rounded-xl bg-white/5 border-white/10 text-white hover:border-[#14B8A6] focus:border-[#14B8A6]" />
               </Form.Item>
@@ -244,7 +254,7 @@ const TicketSales = () => {
                   label={<span className="font-bold text-gray-300 uppercase text-xs tracking-widest">Phone Number</span>}
                   rules={[
                     { required: true, message: 'Required' },
-                    { pattern: /^[0-9]{10}$/, message: 'Must be 10 digits' }
+                    { pattern: /^0[0-9]{9}$/, message: 'Must be 10 digits and start with 0' }
                   ]}
                   className="flex-1"
                 >
@@ -446,8 +456,14 @@ const TicketSales = () => {
                   </Form.Item>
                   
                   <div className="flex gap-3">
-                      <Form.Item name="expiry" label={<span className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Expiry</span>} rules={[{ required: true }]} className="flex-1 mb-0">
-                        <Input placeholder="MM/YY" className="bg-white/5 border-white/10 text-white rounded-lg h-10 hover:border-[#14B8A6] focus:border-[#14B8A6]" />
+                      <Form.Item name="expiry" label={<span className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Expiry</span>} rules={[{ required: true, message: 'Required' }, { pattern: /^(0[1-9]|1[0-2])\/\d{2}$/, message: 'Use MM/YY format (e.g. 08/27)' }]} className="flex-1 mb-0">
+                        <Input placeholder="MM/YY" maxLength={5} className="bg-white/5 border-white/10 text-white rounded-lg h-10 hover:border-[#14B8A6] focus:border-[#14B8A6]"
+                          onChange={(e) => {
+                            let val = e.target.value.replace(/[^0-9]/g, '');
+                            if (val.length > 2) val = val.slice(0, 2) + '/' + val.slice(2, 4);
+                            form.setFieldValue('expiry', val);
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item name="cvv" label={<span className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">CVV</span>} rules={[{ required: true, len: 3 }]} className="flex-1 mb-0">
                         <Input placeholder="123" maxLength={3} className="bg-white/5 border-white/10 text-white rounded-lg h-10 hover:border-[#14B8A6] focus:border-[#14B8A6]" />
@@ -528,6 +544,79 @@ const TicketSales = () => {
 
         </main>
       </div>
+
+      {/* Booking Confirmation + QR Modal */}
+      {bookingConfirm && (
+        <Modal
+          open={!!bookingConfirm}
+          onCancel={() => setBookingConfirm(null)}
+          footer={null}
+          centered
+          width={480}
+          className="dark-modal"
+        >
+          <div className="text-center py-4">
+            {/* Success icon */}
+            <div className="w-16 h-16 rounded-full bg-[#14B8A6]/20 border-2 border-[#14B8A6] flex items-center justify-center mx-auto mb-4">
+              <CheckOutlined style={{ fontSize: 28, color: '#14B8A6' }} />
+            </div>
+
+            <h2 className="text-2xl font-black text-white mb-1">Booking Confirmed!</h2>
+            <p className="text-gray-400 text-sm mb-6">Your ticket has been reserved successfully.</p>
+
+            {/* QR Code via Google Charts API */}
+            <div className="bg-white p-4 rounded-2xl inline-block mb-6 shadow-lg">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(bookingConfirm.qrData)}`}
+                alt="Booking QR Code"
+                width={180}
+                height={180}
+                className="rounded-lg"
+              />
+            </div>
+
+            {/* Booking details */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-left mb-6 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400">Booking ID</span>
+                <span className="text-[#14B8A6] font-black tracking-wider">{bookingConfirm.bookingId}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400">Name</span>
+                <span className="text-white font-semibold">{bookingConfirm.name}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400">Event</span>
+                <span className="text-white font-semibold">{bookingConfirm.event}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400">Pass</span>
+                <span className="text-white font-semibold">{bookingConfirm.passType} × {bookingConfirm.quantity}</span>
+              </div>
+              {bookingConfirm.parking && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Parking</span>
+                  <span className="text-[#F97316] font-semibold">Slot {bookingConfirm.parking}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm border-t border-white/10 pt-2 mt-2">
+                <span className="text-white font-black uppercase text-xs tracking-widest">Total Paid</span>
+                <span className="text-[#14B8A6] font-black text-lg">Rs. {bookingConfirm.total}.00</span>
+              </div>
+            </div>
+
+            <p className="text-gray-500 text-xs mb-6">Show this QR code at the event entrance for check-in.</p>
+
+            <Button
+              onClick={() => setBookingConfirm(null)}
+              className="w-full h-12 rounded-xl font-bold uppercase tracking-widest text-white border-0"
+              style={{ background: 'linear-gradient(to right, #0F766E, #14B8A6)' }}
+            >
+              Done
+            </Button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

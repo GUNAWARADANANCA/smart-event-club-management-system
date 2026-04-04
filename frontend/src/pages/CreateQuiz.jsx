@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, Space, Typography, message, Divider, Select, InputNumber } from 'antd';
+import { Form, Input, Button, Card, Space, Typography, message, Divider, Select } from 'antd';
 import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
@@ -67,7 +67,10 @@ const CreateQuiz = () => {
             <Form.Item
               name="title"
               label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Quiz Title</Text>}
-              rules={[{ required: true, message: 'Please input quiz title!' }]}
+              rules={[
+                { required: true, message: 'Please input quiz title!' },
+                { pattern: /^[A-Za-z\s]+$/, message: 'Quiz title must contain letters only, no numbers allowed!' }
+              ]}
             >
               <Input placeholder="Enter quiz title" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
             </Form.Item>
@@ -95,13 +98,22 @@ const CreateQuiz = () => {
               label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Time Limit (minutes)</Text>}
               rules={[{ required: true, message: 'Please set a time limit!' }]}
             >
-              <InputNumber min={1} max={180} className="w-full bg-white/5 border-white/10 text-white rounded-xl h-10 hover:border-[#14B8A6] focus:border-[#14B8A6]" />
+              <Select
+                placeholder="Select time limit"
+                className="dark-select"
+                popupClassName="dark-dropdown"
+              >
+                {[5, 10, 15, 20, 30, 45, 60, 90, 120].map(t => (
+                  <Option key={t} value={t}>{t} minutes</Option>
+                ))}
+              </Select>
             </Form.Item>
           </div>
 
           <Form.Item
             name="description"
             label={<Text className="text-gray-300 font-semibold tracking-wide uppercase text-xs tracking-widest">Description</Text>}
+            rules={[{ pattern: /^[A-Za-z\s]+$/, message: 'Description must contain letters only, no numbers allowed!' }]}
           >
             <Input.TextArea placeholder="Enter quiz description" rows={3} className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl resize-none" />
           </Form.Item>
@@ -134,7 +146,10 @@ const CreateQuiz = () => {
                   <Form.Item
                     {...restField}
                     name={[name, 'text']}
-                    rules={[{ required: true, message: 'Missing question text' }]}
+                    rules={[
+                      { required: true, message: 'Missing question text' },
+                      { pattern: /^[A-Za-z\s]+$/, message: 'Question must contain letters only!' }
+                    ]}
                   >
                     <Input.TextArea placeholder="Type your question here..." className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl resize-none" />
                   </Form.Item>
@@ -144,7 +159,7 @@ const CreateQuiz = () => {
                       {...restField}
                       name={[name, 'option1']}
                       label={<Text className="text-gray-500 text-xs uppercase font-bold tracking-tight">Option 1</Text>}
-                      rules={[{ required: true, message: 'Missing option 1' }]}
+                      rules={[{ required: true, message: 'Missing option 1' }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only!' }]}
                     >
                       <Input placeholder="Option 1" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
                     </Form.Item>
@@ -152,7 +167,7 @@ const CreateQuiz = () => {
                       {...restField}
                       name={[name, 'option2']}
                       label={<Text className="text-gray-500 text-xs uppercase font-bold tracking-tight">Option 2</Text>}
-                      rules={[{ required: true, message: 'Missing option 2' }]}
+                      rules={[{ required: true, message: 'Missing option 2' }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only!' }]}
                     >
                       <Input placeholder="Option 2" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
                     </Form.Item>
@@ -160,7 +175,7 @@ const CreateQuiz = () => {
                       {...restField}
                       name={[name, 'option3']}
                       label={<Text className="text-gray-500 text-xs uppercase font-bold tracking-tight">Option 3</Text>}
-                      rules={[{ required: true, message: 'Missing option 3' }]}
+                      rules={[{ required: true, message: 'Missing option 3' }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only!' }]}
                     >
                       <Input placeholder="Option 3" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
                     </Form.Item>
@@ -168,7 +183,7 @@ const CreateQuiz = () => {
                       {...restField}
                       name={[name, 'option4']}
                       label={<Text className="text-gray-500 text-xs uppercase font-bold tracking-tight">Option 4</Text>}
-                      rules={[{ required: true, message: 'Missing option 4' }]}
+                      rules={[{ required: true, message: 'Missing option 4' }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only!' }]}
                     >
                       <Input placeholder="Option 4" className="bg-white/5 border-white/10 text-white placeholder-gray-500 hover:border-[#14B8A6] focus:border-[#14B8A6] rounded-xl h-10" />
                     </Form.Item>

@@ -1,10 +1,90 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Typography, Tag, Row, Col, Modal, Input, message, Space, Descriptions } from 'antd';
-import { EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, FilePdfOutlined } from '@ant-design/icons';
+import { EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, FilePdfOutlined, DownloadOutlined } from '@ant-design/icons';
 import api from '../api';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
+
+const downloadBudgetPDF = (req) => {
+  const equipment = req.equipmentCost || 0;
+  const labor = req.laborCost || 0;
+  const materials = req.materialsCost || 0;
+  const misc = req.miscellaneousCost || 0;
+  const total = equipment + labor + materials + misc;
+  const fmt = (n) => `Rs. ${Number(n).toLocaleString()}`;
+
+  const steps = [
+    { step: 1, label: 'Equipment & Technology', amount: equipment, desc: 'Hardware, devices, AV equipment, and technical tools required.' },
+    { step: 2, label: 'Labor & Human Resources', amount: labor, desc: 'Staff wages, contractor fees, and volunteer allowances.' },
+    { step: 3, label: 'Materials & Supplies', amount: materials, desc: 'Printed materials, stationery, decorations, and consumables.' },
+    { step: 4, label: 'Miscellaneous & Contingency', amount: misc, desc: 'Unforeseen expenses, transport, and emergency reserves.' },
+  ];
+
+  const stepsHTML = steps.map(s =>
+    '<tr>' +
+    '<td style="padding:12px 10px; border-bottom:1px solid #e2e8f0;">' +
+    '<div style="display:flex; align-items:center; gap:12px;">' +
+    '<div style="width:28px;height:28px;border-radius:50%;background:#0F766E;color:white;font-weight:bold;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + s.step + '</div>' +
+    '<div>' +
+    '<div style="font-weight:bold;color:#0f172a;">' + s.label + '</div>' +
+    '<div style="font-size:12px;color:#64748b;margin-top:2px;">' + s.desc + '</div>' +
+    '</div></div></td>' +
+    '<td style="padding:12px 10px; border-bottom:1px solid #e2e8f0; text-align:right; font-weight:bold; color:#0f172a; white-space:nowrap;">' + fmt(s.amount) + '</td>' +
+    '</tr>'
+  ).join('');
+
+  const totalRow = '<tr class="total-row"><td>Total Budget</td><td style="text-align:right;">' + fmt(total) + '</td></tr>';
+  const remarksSection = req.remarks ? '<h2>Admin Remarks</h2><div class="box">' + req.remarks + '</div>' : '';
+  const statusBg = req.status==='Approved'?'#d1fae5':req.status==='Rejected'?'#fee2e2':'#fef3c7';
+  const statusColor = req.status==='Approved'?'#065f46':req.status==='Rejected'?'#991b1b':'#92400e';
+
+  const html = `
+    <html>
+    <head>
+      <title>${req.name}</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 40px; color: #111; max-width: 800px; margin: 0 auto; }
+        h1 { color: #0F766E; border-bottom: 3px solid #0F766E; padding-bottom: 10px; }
+        h2 { color: #0F766E; margin-top: 28px; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .meta-row { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid #e2e8f0; font-size:14px; }
+        .badge { display:inline-block; padding:3px 14px; border-radius:999px; font-size:12px; font-weight:bold; background:${statusBg}; color:${statusColor}; }
+        .box { padding:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; margin-top:8px; font-size:14px; line-height:1.6; }
+        table { width:100%; border-collapse:collapse; margin-top:8px; }
+        .total-row td { padding:14px 10px; background:#f0fdf4; font-size:16px; font-weight:bold; color:#0F766E; }
+        .footer { margin-top:40px; font-size:11px; color:#94a3b8; border-top:1px solid #e2e8f0; padding-top:12px; }
+      </style>
+    </head>
+    <body>
+      <h1>Budget Proposal</h1>
+      <div class="meta-row"><span><strong>Request ID</strong></span><span>${req.id}</span></div>
+      <div class="meta-row"><span><strong>Name</strong></span><span>${req.name}</span></div>
+      <div class="meta-row"><span><strong>Type</strong></span><span>${req.type}</span></div>
+      <div class="meta-row"><span><strong>Submitted Date</strong></span><span>${req.submittedDate}</span></div>
+      <div class="meta-row"><span><strong>Status</strong></span><span class="badge">${req.status}</span></div>
+      <h2>Description</h2>
+      <div class="box">${req.description}</div>
+      <h2>Budget Breakdown</h2>
+      <table>
+        <thead>
+          <tr style="background:#0F766E;">
+            <th style="padding:10px;color:white;text-align:left;">Category</th>
+            <th style="padding:10px;color:white;text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>${stepsHTML}${totalRow}</tbody>
+      </table>
+      ${remarksSection}
+      <div class="footer">Downloaded on ${new Date().toLocaleDateString()} &nbsp;|&nbsp; Smart Event Club Management System</div>
+    </body>
+    </html>
+  `;
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  win.print();
+};
 
 const FinanceRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -23,7 +103,11 @@ const FinanceRequests = () => {
         submittedDate: '2026-03-15', 
         status: 'Pending', 
         description: 'Budget request for venue booking, speaker fees, and marketing materials for the upcoming symposium.',
-        remarks: '' 
+        remarks: '',
+        equipmentCost: 80000,
+        laborCost: 120000,
+        materialsCost: 95000,
+        miscellaneousCost: 45000,
       },
       { 
         id: 'FR-2026-002', 
@@ -32,7 +116,11 @@ const FinanceRequests = () => {
         submittedDate: '2026-03-18', 
         status: 'Approved', 
         description: 'Purchase of 10 Arduino and 5 Raspberry Pi kits for the upcoming workshops.',
-        remarks: 'Approved as per previous committee meeting.' 
+        remarks: 'Approved as per previous committee meeting.',
+        equipmentCost: 55000,
+        laborCost: 20000,
+        materialsCost: 30000,
+        miscellaneousCost: 10000,
       },
       { 
         id: 'FR-2026-003', 
@@ -41,7 +129,11 @@ const FinanceRequests = () => {
         submittedDate: '2026-03-20', 
         status: 'Pending', 
         description: 'Request for costume rentals and stage setup for the Annual Cultural Night.',
-        remarks: '' 
+        remarks: '',
+        equipmentCost: 25000,
+        laborCost: 40000,
+        materialsCost: 60000,
+        miscellaneousCost: 15000,
       },
       { 
         id: 'FR-2026-004', 
@@ -50,7 +142,11 @@ const FinanceRequests = () => {
         submittedDate: '2026-03-22', 
         status: 'Pending', 
         description: 'Initial budget request for library furniture replacement and painting as part of the phase 1 renovation plan.',
-        remarks: '' 
+        remarks: '',
+        equipmentCost: 200000,
+        laborCost: 150000,
+        materialsCost: 180000,
+        miscellaneousCost: 70000,
       }
     ]);
     setLoading(false);
@@ -220,31 +316,26 @@ const FinanceRequests = () => {
               </div>
 
               {selectedRequest.status === 'Pending' ? (
-                <Space style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-                  <Button 
-                    danger 
-                    icon={<CloseCircleOutlined />} 
-                    size="large"
-                    onClick={() => handleAction('Rejected')}
-                  >
-                    Reject
-                  </Button>
-                  <Button 
-                    type="primary" 
-                    icon={<CheckCircleOutlined />} 
-                    size="large"
-                    style={{ background: '#52c41a', borderColor: '#52c41a' }}
-                    onClick={() => handleAction('Approved')}
-                  >
-                    Approve
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  <Space style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                    <Button danger icon={<CloseCircleOutlined />} size="large" onClick={() => handleAction('Rejected')}>Reject</Button>
+                    <Button type="primary" icon={<CheckCircleOutlined />} size="large" style={{ background: '#52c41a', borderColor: '#52c41a' }} onClick={() => handleAction('Approved')}>Approve</Button>
+                  </Space>
+                  <Button block icon={<DownloadOutlined />} size="large" className="btn-teal-secondary" onClick={() => downloadBudgetPDF(selectedRequest)}>
+                    Download PDF
                   </Button>
                 </Space>
               ) : (
-                <div style={{ textAlign: 'right', padding: 16, background: '#141414', borderRadius: 8, border: '1px dashed #303030' }}>
-                  <Text strong>This request was previously {selectedRequest.status.toLowerCase()}.</Text>
-                  <br/>
-                  <Text type="secondary">Saved Remarks: {selectedRequest.remarks || 'None provided.'}</Text>
-                </div>
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  <div style={{ padding: 16, background: '#141414', borderRadius: 8, border: '1px dashed #303030' }}>
+                    <Text strong>This request was previously {selectedRequest.status.toLowerCase()}.</Text>
+                    <br/>
+                    <Text type="secondary">Saved Remarks: {selectedRequest.remarks || 'None provided.'}</Text>
+                  </div>
+                  <Button block icon={<DownloadOutlined />} size="large" className="btn-teal-secondary" onClick={() => downloadBudgetPDF(selectedRequest)}>
+                    Download PDF
+                  </Button>
+                </Space>
               )}
             </Col>
           </Row>

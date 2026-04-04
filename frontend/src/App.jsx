@@ -40,6 +40,8 @@ import Certificate from './pages/Certificate';
 import UserPerformance from './pages/UserPerformance';
 import CreateQuiz from './pages/CreateQuiz';
 import FeedbackForm from './pages/FeedbackForm';
+import News from './pages/News';
+import EventGalleryDetail from './pages/EventGalleryDetail';
 import ViewFeedback from './pages/ViewFeedback';
 
 function App() {
@@ -58,6 +60,8 @@ function App() {
         
         <Route element={<MainLayout />}>
           <Route path="gallery" element={<EventsGallery />} />
+          <Route path="gallery/:slug" element={<EventGalleryDetail />} />
+          <Route path="news" element={<News />} />
           <Route path="gallery/swimming-finals" element={<SwimmingGallery />} />
           <Route path="sponsorships" element={<Sponsorships />} />
           <Route path="ticket-sales" element={<TicketSales />} />
