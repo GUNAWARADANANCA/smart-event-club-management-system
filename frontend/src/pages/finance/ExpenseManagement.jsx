@@ -1,33 +1,47 @@
-import React, { useState } from 'react';
-import { Table, Button, Space, Typography, Form, Input, InputNumber, Modal, Select, message } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Table, Button, Typography, Form, Input, InputNumber, Modal, Select, message, Spin } from 'antd';
+import api from '@/lib/api';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const initialExpenses = [
-  { id: 1, event: 'Tech Symposium', item: 'Marketing Flyers', amount: 45000, date: '2026-03-10' },
-  { id: 2, event: 'Art Workshop', item: 'Paints & Canvas', amount: 90000, date: '2026-03-12' },
-];
-
-// seed localStorage if empty
-if (!localStorage.getItem('expenses')) {
-  localStorage.setItem('expenses', JSON.stringify(initialExpenses));
-}
-
 const ExpenseManagement = () => {
-  const [data, setData] = useState(() => JSON.parse(localStorage.getItem('expenses') || '[]'));
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
 
+  const fetchExpenses = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data: list } = await api.get('/api/expenses');
+      setData(Array.isArray(list) ? list : []);
+    } catch {
+      message.error('Could not load expenses from the server.');
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchExpenses();
+  }, [fetchExpenses]);
+
   const handleOk = () => {
-    form.validateFields().then(values => {
-      const newExpense = { id: Date.now(), date: new Date().toISOString().split('T')[0], ...values };
-      const updated = [...data, newExpense];
-      setData(updated);
-      localStorage.setItem('expenses', JSON.stringify(updated));
-      message.success('Expense logged successfully');
-      setIsModalVisible(false);
-      form.resetFields();
+    form.validateFields().then(async (values) => {
+      try {
+        await api.post('/api/expenses', {
+          ...values,
+          date: new Date().toISOString().split('T')[0],
+        });
+        message.success('Expense logged successfully');
+        setIsModalVisible(false);
+        form.resetFields();
+        await fetchExpenses();
+      } catch {
+        message.error('Could not save expense.');
+      }
     });
   };
 
@@ -35,23 +49,44 @@ const ExpenseManagement = () => {
     { title: 'Event', dataIndex: 'event', key: 'event' },
     { title: 'Item/Description', dataIndex: 'item', key: 'item' },
     { title: 'Date', dataIndex: 'date', key: 'date' },
-    { title: 'Amount (RS)', dataIndex: 'amount', key: 'amount', render: val => <span style={{ color: '#f5222d', fontWeight: 'bold' }}>RS -{val.toLocaleString()}</span> },
+    {
+      title: 'Amount (RS)',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (val) => (
+        <span style={{ color: '#f5222d', fontWeight: 'bold' }}>
+          RS -{Number(val || 0).toLocaleString()}
+        </span>
+      ),
+    },
   ];
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Title level={2} style={{ color: '#000000' }}>Expense Management</Title>
-        <Button className="btn-teal-primary" onClick={() => setIsModalVisible(true)}>Log New Expense</Button>
+        <Title level={2} style={{ color: '#000000' }}>
+          Expense Management
+        </Title>
+        <Button className="btn-teal-primary" onClick={() => setIsModalVisible(true)}>
+          Log New Expense
+        </Button>
       </div>
-      <Table columns={columns} dataSource={data} rowKey="id" />
+      <Spin spinning={loading}>
+        <Table columns={columns} dataSource={data} rowKey={(row) => row._id} />
+      </Spin>
 
-      <Modal title="Log Expense" open={isModalVisible} onOk={handleOk} onCancel={() => setIsModalVisible(false)} okButtonProps={{ className: 'btn-teal-primary' }}>
+      <Modal
+        title="Log Expense"
+        open={isModalVisible}
+        onOk={handleOk}
+        onCancel={() => setIsModalVisible(false)}
+        okButtonProps={{ className: 'btn-teal-primary' }}
+      >
         <Form form={form} layout="vertical">
           <Form.Item name="event" label="Associated Event" rules={[{ required: true }]}>
             <Select className="green-select" popupClassName="green-dropdown">
-                <Option value="Tech Symposium">Tech Symposium</Option>
-                <Option value="Art Workshop">Art Workshop</Option>
+              <Option value="Tech Symposium">Tech Symposium</Option>
+              <Option value="Art Workshop">Art Workshop</Option>
             </Select>
           </Form.Item>
           <Form.Item name="item" label="Description" rules={[{ required: true }]}>

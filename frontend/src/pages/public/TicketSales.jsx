@@ -175,21 +175,6 @@ const TicketSales = () => {
       );
     }
 
-    // Save to localStorage for Finance dashboard
-    const existing = JSON.parse(localStorage.getItem('ticketPurchases') || '[]');
-    existing.push({
-      id: bookingId,
-      event: selectedEvent.event,
-      buyer: values.fullName,
-      email: values.email,
-      phone: values.phone,
-      amount: totalAmount,
-      pass: typeInfo.label,
-      quantity: qty,
-      date: new Date().toISOString().split('T')[0],
-    });
-    localStorage.setItem('ticketPurchases', JSON.stringify(existing));
-
     setIsModalOpen(false);
     setBookingConfirm(confirmData);
   };

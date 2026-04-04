@@ -1,50 +1,79 @@
-import React, { useState } from 'react';
-import { Card, Button, Typography, Tag, Row, Col, Modal, Form, Input, Select, DatePicker, message, Space, Timeline } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Card, Button, Typography, Tag, Row, Col, Modal, Form, Input, Select, DatePicker, message, Space, Timeline, Spin, Empty } from 'antd';
 import { VideoCameraOutlined, LockOutlined, GlobalOutlined, PlusOutlined, LinkOutlined } from '@ant-design/icons';
+import api from '@/lib/api';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
-const mockMeetings = [
-  {
-    id: 'MTG-001',
-    title: 'University Core Committee Sync',
-    platform: 'Microsoft Teams',
-    date: '2026-03-22 10:00 AM',
-    accessType: 'Restricted',
-    status: 'Upcoming',
-    link: 'https://teams.microsoft.com/l/meetup-join/meeting_join_link',
-  },
-  {
-    id: 'MTG-002',
-    title: 'Robotics Club Architecture Review',
-    platform: 'Zoom',
-    date: '2026-03-23 02:00 PM',
-    accessType: 'University Students Only',
-    status: 'Upcoming',
-    link: 'https://zoom.us/j/123456789',
-  }
-];
+function formatScheduledAt(value) {
+  const d = value ? new Date(value) : null;
+  if (!d || Number.isNaN(d.getTime())) return '—';
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  let h = d.getHours();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  const min = String(d.getMinutes()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd} ${String(h).padStart(2, '0')}:${min} ${ampm}`;
+}
+
+const mapMeetingForUi = (m) => ({
+  _id: m._id,
+  title: m.title,
+  platform: m.platform,
+  date: formatScheduledAt(m.scheduledAt),
+  accessType: m.accessType,
+  status: m.status || 'Upcoming',
+  link: m.link,
+});
 
 const SecureMeetings = () => {
-  const [meetings, setMeetings] = useState(mockMeetings);
+  const [meetings, setMeetings] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
 
-  const handleScheduleSubmit = (values) => {
-    const newMeeting = {
-      id: `MTG-00${meetings.length + 1}`,
-      title: values.title,
-      platform: values.platform,
-      date: values.date.format('YYYY-MM-DD hh:mm A'),
-      accessType: values.accessType,
-      status: 'Upcoming',
-      link: values.link,
-    };
-    setMeetings([...meetings, newMeeting]);
-    message.success('Secure meeting scheduled successfully!');
-    setIsModalVisible(false);
-    form.resetFields();
+  const fetchMeetings = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get('/api/meetings');
+      const list = Array.isArray(data) ? data : [];
+      setMeetings(list.map(mapMeetingForUi));
+    } catch {
+      message.error('Could not load meetings from the server.');
+      setMeetings([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMeetings();
+  }, [fetchMeetings]);
+
+  const handleScheduleSubmit = async (values) => {
+    const scheduledAt =
+      typeof values.date?.toISOString === 'function'
+        ? values.date.toISOString()
+        : new Date(values.date).toISOString();
+
+    try {
+      await api.post('/api/meetings', {
+        title: values.title,
+        platform: values.platform,
+        scheduledAt,
+        link: values.link,
+        accessType: values.accessType,
+      });
+      message.success('Secure meeting scheduled successfully!');
+      setIsModalVisible(false);
+      form.resetFields();
+      await fetchMeetings();
+    } catch {
+      message.error('Could not save meeting.');
+    }
   };
 
   const handleJoinClick = (meeting) => {
@@ -79,45 +108,51 @@ const SecureMeetings = () => {
             bordered={false}
             style={{ background: '#FFFFFF', borderRadius: 16, border: '1px solid rgba(200, 230, 201, 0.9)' }}
           >
-            <Timeline style={{ marginTop: 20 }}>
-              {meetings.map((mtg, index) => (
-                <Timeline.Item key={index} color="#4CAF50">
-                  <div style={{
-                    padding: 16,
-                    background: '#FAFAFA',
-                    border: '1px solid rgba(200, 230, 201, 0.9)',
-                    borderRadius: 12,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}>
-                    <div>
-                      <Title level={5} style={{ color: '#1F2937', margin: 0, marginBottom: 4 }}>{mtg.title}</Title>
-                      <Space style={{ marginBottom: 8 }}>
-                        <Tag icon={<GlobalOutlined />} color="cyan">{mtg.platform}</Tag>
-                        <Tag icon={<LockOutlined />} color="processing">{mtg.accessType}</Tag>
-                      </Space>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                        <Text style={{ color: '#6B7280', fontWeight: '600' }}>{mtg.date}</Text>
-                        <Text style={{ color: '#9CA3AF' }}>·</Text>
-                        <a href={mtg.link} target="_blank" rel="noreferrer"
-                          style={{ color: '#2E7D32', fontSize: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <LinkOutlined /> {mtg.link}
-                        </a>
+            <Spin spinning={loading}>
+              {meetings.length === 0 && !loading ? (
+                <Empty description="No meetings scheduled yet" style={{ margin: '32px 0' }} />
+              ) : (
+                <Timeline style={{ marginTop: 20 }}>
+                  {meetings.map((mtg) => (
+                    <Timeline.Item key={mtg._id} color="#4CAF50">
+                      <div style={{
+                        padding: 16,
+                        background: '#FAFAFA',
+                        border: '1px solid rgba(200, 230, 201, 0.9)',
+                        borderRadius: 12,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <div>
+                          <Title level={5} style={{ color: '#1F2937', margin: 0, marginBottom: 4 }}>{mtg.title}</Title>
+                          <Space style={{ marginBottom: 8 }}>
+                            <Tag icon={<GlobalOutlined />} color="cyan">{mtg.platform}</Tag>
+                            <Tag icon={<LockOutlined />} color="processing">{mtg.accessType}</Tag>
+                          </Space>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                            <Text style={{ color: '#6B7280', fontWeight: '600' }}>{mtg.date}</Text>
+                            <Text style={{ color: '#9CA3AF' }}>·</Text>
+                            <a href={mtg.link} target="_blank" rel="noreferrer"
+                              style={{ color: '#2E7D32', fontSize: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <LinkOutlined /> {mtg.link}
+                            </a>
+                          </div>
+                        </div>
+                        <Button
+                          type="primary"
+                          shape="round"
+                          onClick={() => handleJoinClick(mtg)}
+                          style={{ background: '#4CAF50', borderColor: '#43A047', flexShrink: 0, marginLeft: 16 }}
+                        >
+                          Join Securely
+                        </Button>
                       </div>
-                    </div>
-                    <Button
-                      type="primary"
-                      shape="round"
-                      onClick={() => handleJoinClick(mtg)}
-                      style={{ background: '#4CAF50', borderColor: '#43A047', flexShrink: 0, marginLeft: 16 }}
-                    >
-                      Join Securely
-                    </Button>
-                  </div>
-                </Timeline.Item>
-              ))}
-            </Timeline>
+                    </Timeline.Item>
+                  ))}
+                </Timeline>
+              )}
+            </Spin>
           </Card>
         </Col>
 
@@ -140,7 +175,6 @@ const SecureMeetings = () => {
         </Col>
       </Row>
 
-      {/* Schedule Modal */}
       <Modal
         title={<span style={{ color: '#1F2937' }}>Schedule Secure Meeting</span>}
         open={isModalVisible}

@@ -26,6 +26,15 @@ router.get('/parking/occupied', async (req, res, next) => {
   }
 });
 
+router.get('/', async (req, res, next) => {
+  try {
+    const tickets = await Ticket.find().sort({ createdAt: -1 }).lean();
+    res.json(tickets);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/', async (req, res, next) => {
   try {
     const {

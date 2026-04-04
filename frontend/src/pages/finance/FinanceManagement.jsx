@@ -1,19 +1,65 @@
-import React, { useState } from 'react';
-import { Row, Col, Card, Statistic, Typography, Table, Button, Tag, Modal, Form, Input, Select, message, Switch, Space } from 'antd';
-import { DollarOutlined, ArrowUpOutlined, ArrowDownOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Row, Col, Card, Typography, Table, Button, Tag, Modal, message, Switch, Space, Spin } from 'antd';
+import { DollarOutlined, ArrowUpOutlined, ArrowDownOutlined, EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockBudgets } from '@/data/mockData';
 import { getAuthRole, ROLES } from '@/lib/auth';
+import api from '@/lib/api';
 
 const { Title } = Typography;
+
+const mapTicketToRow = (t) => ({
+  id: t.bookingId || t._id,
+  _id: t._id,
+  event: t.event,
+  buyer: t.fullName,
+  email: t.email,
+  pass: t.passType,
+  quantity: t.quantity,
+  amount: t.totalAmount,
+  date: t.createdAt
+    ? new Date(t.createdAt).toISOString().split('T')[0]
+    : '—',
+});
 
 const FinanceManagement = () => {
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [salesActive, setSalesActive] = useState(false);
   const [sponsorshipOpen, setSponsorshipOpen] = useState(false);
+  const [ticketRows, setTicketRows] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [dashboardLoading, setDashboardLoading] = useState(false);
 
   const isFinanceUser = getAuthRole() === ROLES.FINANCE_ADMIN;
+
+  const fetchDashboard = useCallback(async () => {
+    setDashboardLoading(true);
+    try {
+      const [ticketsRes, expensesRes] = await Promise.all([
+        api.get('/api/tickets'),
+        api.get('/api/expenses'),
+      ]);
+      const tList = Array.isArray(ticketsRes.data) ? ticketsRes.data : [];
+      const eList = Array.isArray(expensesRes.data) ? expensesRes.data : [];
+      setTicketRows(tList.map(mapTicketToRow));
+      setExpenses(eList);
+    } catch {
+      message.error('Could not load finance data from the server.');
+      setTicketRows([]);
+      setExpenses([]);
+    } finally {
+      setDashboardLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDashboard();
+  }, [fetchDashboard]);
+
+  useEffect(() => {
+    if (isModalVisible) fetchDashboard();
+  }, [isModalVisible, fetchDashboard]);
 
   const handleSalesToggle = (checked) => {
     setSalesActive(checked);
@@ -36,17 +82,9 @@ const FinanceManagement = () => {
     }
   };
 
-  const staticPurchases = [
-    { id: 'TP-001', event: 'Tech Symposium 2026', buyer: 'John Doe', amount: 45000, date: '2026-03-21' },
-    { id: 'TP-002', event: 'Annual Sports Meet', buyer: 'Jane Smith', amount: 15000, date: '2026-03-20' },
-    { id: 'TP-003', event: 'Cultural Fest', buyer: 'Mike Johnson', amount: 22500, date: '2026-03-19' },
-  ];
-
-  const livePurchases = JSON.parse(localStorage.getItem('ticketPurchases') || '[]');
-  const ticketPurchases = [...livePurchases, ...staticPurchases];
-
-  const totalRevenue = ticketPurchases.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
-  const totalExpenses = JSON.parse(localStorage.getItem('expenses') || '[]').reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+  const ticketRevenue = ticketRows.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  const totalRevenue = ticketRevenue;
+  const totalExpenses = expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
   const balance = totalRevenue - totalExpenses;
 
   const ticketColumns = [
@@ -118,50 +156,60 @@ const FinanceManagement = () => {
         </Space>
       </div>
 
-      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-        <Col xs={24} sm={8}>
-          <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #E8F5E9)', border: '1px solid #C8E6C9', borderRadius: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ background: '#22c55e22', borderRadius: 12, padding: '10px 12px' }}>
-                <DollarOutlined style={{ fontSize: 24, color: '#22c55e' }} />
+      <Spin spinning={dashboardLoading}>
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          <Col xs={24} sm={8}>
+            <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #E8F5E9)', border: '1px solid #C8E6C9', borderRadius: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div style={{ background: '#22c55e22', borderRadius: 12, padding: '10px 12px' }}>
+                  <DollarOutlined style={{ fontSize: 24, color: '#22c55e' }} />
+                </div>
+                <div>
+                  <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Money Collected</div>
+                  <div style={{ color: '#22c55e', fontSize: 26, fontWeight: 700 }}>Rs. {totalRevenue.toLocaleString()}</div>
+                  <div style={{ color: '#64748B', fontSize: 12 }}>Total ticket & event revenue</div>
+                </div>
               </div>
-              <div>
-                <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Money Collected</div>
-                <div style={{ color: '#22c55e', fontSize: 26, fontWeight: 700 }}>Rs. {totalRevenue.toLocaleString()}</div>
-                <div style={{ color: '#64748B', fontSize: 12 }}>Total ticket & event revenue</div>
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #FEF2F2)', border: '1px solid #FECACA', borderRadius: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div style={{ background: '#f8717122', borderRadius: 12, padding: '10px 12px' }}>
+                  <ArrowDownOutlined style={{ fontSize: 24, color: '#f87171' }} />
+                </div>
+                <div>
+                  <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Amount Spent</div>
+                  <div style={{ color: '#f87171', fontSize: 26, fontWeight: 700 }}>Rs. {totalExpenses.toLocaleString()}</div>
+                  <div style={{ color: '#64748B', fontSize: 12 }}>Approved expenses so far</div>
+                </div>
               </div>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={8}>
-          <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #FEF2F2)', border: '1px solid #FECACA', borderRadius: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ background: '#f8717122', borderRadius: 12, padding: '10px 12px' }}>
-                <ArrowDownOutlined style={{ fontSize: 24, color: '#f87171' }} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #E8F5E9)', border: '1px solid #A5D6A7', borderRadius: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div style={{ background: '#4CAF5022', borderRadius: 12, padding: '10px 12px' }}>
+                  <ArrowUpOutlined style={{ fontSize: 24, color: '#4CAF50' }} />
+                </div>
+                <div>
+                  <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Balance Remaining</div>
+                  <div
+                    style={{
+                      color: balance < 0 ? '#b91c1c' : '#2E7D32',
+                      fontSize: 26,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Rs. {balance.toLocaleString()}
+                  </div>
+                  <div style={{ color: '#64748B', fontSize: 12 }}>Available after all expenses</div>
+                </div>
               </div>
-              <div>
-                <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Amount Spent</div>
-                <div style={{ color: '#f87171', fontSize: 26, fontWeight: 700 }}>Rs. {totalExpenses.toLocaleString()}</div>
-                <div style={{ color: '#64748B', fontSize: 12 }}>Approved expenses so far</div>
-              </div>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={8}>
-          <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #E8F5E9)', border: '1px solid #A5D6A7', borderRadius: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ background: '#4CAF5022', borderRadius: 12, padding: '10px 12px' }}>
-                <ArrowUpOutlined style={{ fontSize: 24, color: '#4CAF50' }} />
-              </div>
-              <div>
-                <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Balance Remaining</div>
-                <div style={{ color: '#2E7D32', fontSize: 26, fontWeight: 700 }}>Rs. {balance.toLocaleString()}</div>
-                <div style={{ color: '#64748B', fontSize: 12 }}>Available after all expenses</div>
-              </div>
-            </div>
-          </Card>
-        </Col>
-      </Row>
+            </Card>
+          </Col>
+        </Row>
+      </Spin>
 
       <div style={{ marginTop: 24 }}>
         <Card title={<span style={{ color: '#1F2937' }}>Budget Proposals</span>} bordered={false} style={{ background: '#FFFFFF', border: '1px solid #C8E6C9' }}>
@@ -204,13 +252,15 @@ const FinanceManagement = () => {
         ]}
         className="glass-modal"
       >
-        <Table
-          dataSource={ticketPurchases}
-          columns={ticketColumns}
-          rowKey="id"
-          pagination={false}
-          scroll={{ x: true }}
-        />
+        <Spin spinning={dashboardLoading}>
+          <Table
+            dataSource={ticketRows}
+            columns={ticketColumns}
+            rowKey={(row) => row._id || row.id}
+            pagination={false}
+            scroll={{ x: true }}
+          />
+        </Spin>
       </Modal>
     </div>
   );
