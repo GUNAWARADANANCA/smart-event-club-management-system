@@ -46,18 +46,18 @@ const FinanceManagement = () => {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', padding: '24px', background: '#0F172A' }}>
+    <div style={{ minHeight: '100vh', padding: '24px', background: '#FAFAFA' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24, alignItems: 'center' }}>
-        <Title level={2} style={{ margin: 0, color: '#FFFFFF' }}>Revenue Dashboard</Title>
+        <Title level={2} style={{ margin: 0, color: '#1F2937' }}>Revenue Dashboard</Title>
         <Space size="middle">
           <div style={{ padding: '6px 16px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 24, display: 'flex', alignItems: 'center', gap: 12, marginRight: 8 }}>
-            <span style={{ color: '#94A3B8', letterSpacing: '0.5px' }}>External Ticket Sales:</span>
+            <span style={{ color: '#6B7280', letterSpacing: '0.5px' }}>External Ticket Sales:</span>
             <Switch 
               checked={salesActive} 
               onChange={handleSalesToggle} 
               checkedChildren="Active" 
               unCheckedChildren="Closed" 
-              style={{ background: salesActive ? '#14B8A6' : '#334155' }}
+              style={{ background: salesActive ? '#4CAF50' : '#C8E6C9' }}
             />
           </div>
           <Button className="btn-teal-secondary" onClick={() => navigate('/finance/budget-approval')}>Approvals</Button>
@@ -69,13 +69,13 @@ const FinanceManagement = () => {
 
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={8}>
-          <Card style={{ background: 'linear-gradient(135deg, #1E293B, #0F2A1A)', border: '1px solid #22c55e44', borderRadius: 16 }}>
+          <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #E8F5E9)', border: '1px solid #C8E6C9', borderRadius: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <div style={{ background: '#22c55e22', borderRadius: 12, padding: '10px 12px' }}>
                 <DollarOutlined style={{ fontSize: 24, color: '#22c55e' }} />
               </div>
               <div>
-                <div style={{ color: '#94A3B8', fontSize: 13, marginBottom: 2 }}>Money Collected</div>
+                <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Money Collected</div>
                 <div style={{ color: '#22c55e', fontSize: 26, fontWeight: 700 }}>Rs. {totalRevenue.toLocaleString()}</div>
                 <div style={{ color: '#64748B', fontSize: 12 }}>Total ticket & event revenue</div>
               </div>
@@ -83,13 +83,13 @@ const FinanceManagement = () => {
           </Card>
         </Col>
         <Col xs={24} sm={8}>
-          <Card style={{ background: 'linear-gradient(135deg, #1E293B, #2A0F0F)', border: '1px solid #f87171aa', borderRadius: 16 }}>
+          <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #FEF2F2)', border: '1px solid #FECACA', borderRadius: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <div style={{ background: '#f8717122', borderRadius: 12, padding: '10px 12px' }}>
                 <ArrowDownOutlined style={{ fontSize: 24, color: '#f87171' }} />
               </div>
               <div>
-                <div style={{ color: '#94A3B8', fontSize: 13, marginBottom: 2 }}>Amount Spent</div>
+                <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Amount Spent</div>
                 <div style={{ color: '#f87171', fontSize: 26, fontWeight: 700 }}>Rs. {totalExpenses.toLocaleString()}</div>
                 <div style={{ color: '#64748B', fontSize: 12 }}>Approved expenses so far</div>
               </div>
@@ -97,14 +97,14 @@ const FinanceManagement = () => {
           </Card>
         </Col>
         <Col xs={24} sm={8}>
-          <Card style={{ background: 'linear-gradient(135deg, #1E293B, #0F2A2A)', border: '1px solid #14B8A644', borderRadius: 16 }}>
+          <Card style={{ background: 'linear-gradient(135deg, #FFFFFF, #E8F5E9)', border: '1px solid #A5D6A7', borderRadius: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ background: '#14B8A622', borderRadius: 12, padding: '10px 12px' }}>
-                <ArrowUpOutlined style={{ fontSize: 24, color: '#14B8A6' }} />
+              <div style={{ background: '#4CAF5022', borderRadius: 12, padding: '10px 12px' }}>
+                <ArrowUpOutlined style={{ fontSize: 24, color: '#4CAF50' }} />
               </div>
               <div>
-                <div style={{ color: '#94A3B8', fontSize: 13, marginBottom: 2 }}>Balance Remaining</div>
-                <div style={{ color: '#14B8A6', fontSize: 26, fontWeight: 700 }}>Rs. {balance.toLocaleString()}</div>
+                <div style={{ color: '#6B7280', fontSize: 13, marginBottom: 2 }}>Balance Remaining</div>
+                <div style={{ color: '#2E7D32', fontSize: 26, fontWeight: 700 }}>Rs. {balance.toLocaleString()}</div>
                 <div style={{ color: '#64748B', fontSize: 12 }}>Available after all expenses</div>
               </div>
             </div>
@@ -113,7 +113,7 @@ const FinanceManagement = () => {
       </Row>
 
       <div style={{ marginTop: 24 }}>
-        <Card title={<span style={{ color: '#FFFFFF' }}>Budget Proposals</span>} bordered={false} style={{ background: '#1E293B', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <Card title={<span style={{ color: '#1F2937' }}>Budget Proposals</span>} bordered={false} style={{ background: '#FFFFFF', border: '1px solid #C8E6C9' }}>
           <Table 
             columns={[ 
               { title: 'ID', dataIndex: 'id', key: 'id' },
@@ -142,12 +142,12 @@ const FinanceManagement = () => {
       </Button>
 
       <Modal
-        title={<span style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>Ticket Purchases</span>}
+        title={<span style={{ color: '#1F2937', fontSize: 18, fontWeight: 'bold' }}>Ticket Purchases</span>}
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         width={900}
         footer={[
-          <Button key="close" type="primary" onClick={() => setIsModalVisible(false)} style={{ background: '#14B8A6', borderColor: '#14B8A6' }}>
+          <Button key="close" type="primary" onClick={() => setIsModalVisible(false)} style={{ background: '#4CAF50', borderColor: '#43A047' }}>
             Close
           </Button>
         ]}

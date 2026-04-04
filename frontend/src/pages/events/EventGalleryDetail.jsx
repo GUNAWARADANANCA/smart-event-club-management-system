@@ -116,7 +116,7 @@ export default function EventGalleryDetail() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <p className="text-slate-400 text-2xl font-black uppercase tracking-widest mb-6">Gallery not found</p>
-          <button onClick={() => navigate('/gallery')} className="px-8 py-3 rounded-full bg-[#1FAF9A] text-white font-bold uppercase tracking-widest text-sm">
+          <button onClick={() => navigate('/gallery')} className="px-8 py-3 rounded-full bg-gradient-to-r from-[#43A047] to-[#4CAF50] text-white font-bold uppercase tracking-widest text-sm shadow-md shadow-green-600/20">
             Back to Gallery
           </button>
         </div>
@@ -128,13 +128,13 @@ export default function EventGalleryDetail() {
     <div className="min-h-screen bg-white font-sans">
       {/* Navbar */}
       <nav className="w-full bg-white shadow-md border border-[#E2E8F0] px-8 py-5 flex justify-between items-center sticky top-0 z-50">
-        <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] tracking-tighter uppercase">
+        <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] to-[#4CAF50] tracking-tighter uppercase">
           Uni Gallery
         </h1>
         <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-500">
           <span onClick={() => navigate('/news')} className="hover:text-slate-900 cursor-pointer transition-colors">News</span>
           <span onClick={() => navigate('/meetings')} className="hover:text-slate-900 cursor-pointer transition-colors">Meetings</span>
-          <span onClick={() => navigate('/gallery')} className="text-slate-900 border-b-2 border-[#1FAF9A] pb-1 cursor-pointer">Gallery</span>
+          <span onClick={() => navigate('/gallery')} className="text-slate-900 border-b-2 border-[#4CAF50] pb-1 cursor-pointer">Gallery</span>
           <span onClick={() => navigate('/ticket-sales')} className="hover:text-slate-900 cursor-pointer transition-colors">Ticket Sales</span>
         </div>
       </nav>
@@ -157,7 +157,7 @@ export default function EventGalleryDetail() {
         {/* Back button */}
         <button
           onClick={() => navigate('/gallery')}
-          className="mb-10 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-500 hover:text-[#1FAF9A] transition-colors"
+          className="mb-10 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-500 hover:text-[#2E7D32] transition-colors"
         >
           ← Back to Gallery
         </button>

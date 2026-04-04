@@ -98,13 +98,13 @@ const ManageRequests = () => {
   ];
 
   return (
-    <div style={{ backgroundColor: '#0F172A', minHeight: '100%', borderRadius: 16, padding: '8px' }}>
+    <div style={{ backgroundColor: '#FAFAFA', minHeight: '100%', borderRadius: 16, padding: '8px' }}>
       <div style={{ marginBottom: 16 }}>
-        <Title level={2} style={{ color: '#FFFFFF' }}>Manage Requests</Title>
-        <Text style={{ color: '#94A3B8' }}>Review, approve, or reject student requests for events and clubs.</Text>
+        <Title level={2} style={{ color: '#0F172A', marginBottom: 4 }}>Manage Requests</Title>
+        <Text style={{ color: '#64748B' }}>Review, approve, or reject student requests for events and clubs.</Text>
       </div>
 
-      <Card bordered={false} style={{ borderRadius: 12, backgroundColor: '#1E293B', borderColor: '#334155', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.4)' }}>
+      <Card bordered={false} style={{ borderRadius: 12, backgroundColor: '#FFFFFF', borderColor: '#C8E6C9', boxShadow: '0 4px 14px rgba(46, 125, 50, 0.08)' }}>
         <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 7 }} scroll={{ x: true }} className="dark-table" />
       </Card>
 
@@ -117,15 +117,15 @@ const ManageRequests = () => {
         ]}
       >
         {selectedRequest && (
-          <div style={{ fontSize: 16, color: '#FFFFFF' }}>
-            <p><strong style={{ color: '#FFFFFF' }}>Student Name:</strong> <span style={{ color: '#2DD4BF' }}>{selectedRequest.fullName}</span></p>
-            <p><strong style={{ color: '#FFFFFF' }}>Email:</strong> <span style={{ color: '#E2E8F0' }}>{selectedRequest.email}</span></p>
-            <p><strong style={{ color: '#FFFFFF' }}>Academic Year:</strong> <span style={{ color: '#E2E8F0' }}>{selectedRequest.academicYear}</span></p>
-            <p><strong style={{ color: '#FFFFFF' }}>Request Type:</strong> <span style={{ color: '#E2E8F0' }}>{selectedRequest.requestType}</span></p>
-            <p><strong style={{ color: '#FFFFFF' }}>Status:</strong> <Tag color={selectedRequest.status === 'Approved' ? '#14B8A6' : selectedRequest.status === 'Rejected' ? '#F97316' : '#0F766E'}>{selectedRequest.status}</Tag></p>
+          <div style={{ fontSize: 16, color: '#1F2937' }}>
+            <p><strong style={{ color: '#0F172A' }}>Student Name:</strong> <span style={{ color: '#2E7D32' }}>{selectedRequest.fullName}</span></p>
+            <p><strong style={{ color: '#0F172A' }}>Email:</strong> <span style={{ color: '#475569' }}>{selectedRequest.email}</span></p>
+            <p><strong style={{ color: '#0F172A' }}>Academic Year:</strong> <span style={{ color: '#475569' }}>{selectedRequest.academicYear}</span></p>
+            <p><strong style={{ color: '#0F172A' }}>Request Type:</strong> <span style={{ color: '#475569' }}>{selectedRequest.requestType}</span></p>
+            <p><strong style={{ color: '#0F172A' }}>Status:</strong> <Tag color={selectedRequest.status === 'Approved' ? '#4CAF50' : selectedRequest.status === 'Rejected' ? '#F97316' : '#81C784'}>{selectedRequest.status}</Tag></p>
             <div style={{ marginTop: 24 }}>
-              <strong style={{ color: '#FFFFFF' }}>Description:</strong>
-              <div style={{ padding: 16, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, marginTop: 8, color: '#F1F5F9' }}>
+              <strong style={{ color: '#0F172A' }}>Description:</strong>
+              <div style={{ padding: 16, background: '#F7FCF7', border: '1px solid #C8E6C9', borderRadius: 8, marginTop: 8, color: '#1F2937' }}>
                 {selectedRequest.description}
               </div>
             </div>

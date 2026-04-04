@@ -34,7 +34,7 @@ export default function SwimmingGallery() {
         <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&q=80&w=1920" alt="Swimming Pool" className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay" />
         
         <div className="absolute top-8 left-8 z-20">
-          <button onClick={() => navigate('/gallery')} className="flex items-center text-[#14B8A6] hover:text-slate-800 transition-colors bg-[#F8FAFC] px-4 py-2 rounded-full border border-[#E2E8F0] backdrop-blur-sm cursor-pointer shadow-md">
+          <button onClick={() => navigate('/gallery')} className="flex items-center text-[#4CAF50] hover:text-slate-800 transition-colors bg-[#F8FAFC] px-4 py-2 rounded-full border border-[#E2E8F0] backdrop-blur-sm cursor-pointer shadow-md">
             <ArrowLeft className="w-5 h-5 mr-2" />
             <span className="font-semibold tracking-wide uppercase text-xs">Back to Gallery</span>
           </button>
@@ -69,7 +69,7 @@ export default function SwimmingGallery() {
                 </div>
                 <img src={ach.img} alt={ach.name} className="w-16 h-16 rounded-full object-cover border-[3px] border-blue-500/40 mb-5 shadow-md" />
                 <h3 className="text-xl font-black text-slate-800 mb-1 tracking-wide">{ach.name}</h3>
-                <p className="text-[#14B8A6] font-bold text-xs uppercase tracking-widest mb-5">{ach.event}</p>
+                <p className="text-[#4CAF50] font-bold text-xs uppercase tracking-widest mb-5">{ach.event}</p>
                 
                 <div className="flex items-center bg-[#F8FAFC] rounded-xl p-4 border border-[#E2E8F0] backdrop-blur-sm">
                   <Medal className={`w-6 h-6 mr-3 flex-shrink-0 ${ach.medal === 'Gold' ? 'text-yellow-400 drop-shadow-md' : 'text-gray-600'}`} />

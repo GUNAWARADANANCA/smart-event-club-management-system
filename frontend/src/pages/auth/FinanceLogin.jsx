@@ -37,7 +37,7 @@ export default function FinanceLogin() {
   };
 
   return (
-    <div className="min-h-screen font-sans flex items-center justify-center p-4 relative overflow-hidden" style={{ background: '#0F172A' }}>
+    <div className="min-h-screen font-sans flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-white via-[#F7FCF7] to-[#E8F5E9]">
       <style>{`
         @keyframes float1 { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-40px) translateX(20px)} }
         @keyframes float2 { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(30px) translateX(-25px)} }
@@ -46,30 +46,29 @@ export default function FinanceLogin() {
       `}</style>
 
       {/* Animated grid */}
-      <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(20,184,166,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(20,184,166,0.05) 1px,transparent 1px)', backgroundSize:'60px 60px', animation:'gridScroll 8s linear infinite', pointerEvents:'none' }} />
-      {/* Floating orbs */}
-      <div style={{ position:'absolute', top:'8%', left:'8%', width:320, height:320, borderRadius:'50%', background:'radial-gradient(circle,rgba(20,184,166,0.18) 0%,transparent 70%)', animation:'float1 8s ease-in-out infinite', pointerEvents:'none' }} />
-      <div style={{ position:'absolute', bottom:'8%', right:'8%', width:260, height:260, borderRadius:'50%', background:'radial-gradient(circle,rgba(249,115,22,0.12) 0%,transparent 70%)', animation:'float2 10s ease-in-out infinite', pointerEvents:'none' }} />
-      <div style={{ position:'absolute', top:'50%', right:'15%', width:180, height:180, borderRadius:'50%', background:'radial-gradient(circle,rgba(139,92,246,0.1) 0%,transparent 70%)', animation:'float3 7s ease-in-out infinite', pointerEvents:'none' }} />
-      <div style={{ position:'absolute', bottom:'30%', left:'12%', width:150, height:150, borderRadius:'50%', background:'radial-gradient(circle,rgba(20,184,166,0.1) 0%,transparent 70%)', animation:'float1 9s ease-in-out infinite 2s', pointerEvents:'none' }} />
+      <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(76,175,80,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(76,175,80,0.06) 1px,transparent 1px)', backgroundSize:'60px 60px', animation:'gridScroll 8s linear infinite', pointerEvents:'none' }} />
+      <div style={{ position:'absolute', top:'8%', left:'8%', width:320, height:320, borderRadius:'50%', background:'radial-gradient(circle,rgba(76,175,80,0.12) 0%,transparent 70%)', animation:'float1 8s ease-in-out infinite', pointerEvents:'none' }} />
+      <div style={{ position:'absolute', bottom:'8%', right:'8%', width:260, height:260, borderRadius:'50%', background:'radial-gradient(circle,rgba(249,115,22,0.08) 0%,transparent 70%)', animation:'float2 10s ease-in-out infinite', pointerEvents:'none' }} />
+      <div style={{ position:'absolute', top:'50%', right:'15%', width:180, height:180, borderRadius:'50%', background:'radial-gradient(circle,rgba(139,92,246,0.06) 0%,transparent 70%)', animation:'float3 7s ease-in-out infinite', pointerEvents:'none' }} />
+      <div style={{ position:'absolute', bottom:'30%', left:'12%', width:150, height:150, borderRadius:'50%', background:'radial-gradient(circle,rgba(76,175,80,0.08) 0%,transparent 70%)', animation:'float1 9s ease-in-out infinite 2s', pointerEvents:'none' }} />
 
       <div className="max-w-md w-full relative z-10">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-slate-400 hover:text-white text-sm font-bold uppercase tracking-widest mb-6 transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-[#2E7D32] text-sm font-bold uppercase tracking-widest mb-6 transition-colors"
         >
           <span className="text-lg">←</span> Back
         </button>
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#14B8A6] rounded-full mix-blend-multiply filter blur-3xl opacity-10 pointer-events-none"></div>
+        <div className="relative bg-white border border-[#C8E6C9] rounded-3xl p-8 shadow-xl shadow-green-900/10">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#4CAF50]/15 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-[#14B8A6]/10 rounded-2xl border border-[#14B8A6]/20 flex items-center justify-center mx-auto mb-6">
-              <Lock className="w-8 h-8 text-[#0F766E]" />
+          <div className="text-center mb-10 relative z-10">
+            <div className="w-16 h-16 bg-[#E8F5E9] rounded-2xl border border-[#C8E6C9] flex items-center justify-center mx-auto mb-6">
+              <Lock className="w-8 h-8 text-[#2E7D32]" />
             </div>
-            <h1 className="text-3xl font-black text-white uppercase tracking-wider mb-2">Finance Secure</h1>
-            <p className="text-slate-400 text-sm font-medium">Restricted Portal Authentication</p>
+            <h1 className="text-3xl font-black text-gray-900 uppercase tracking-wider mb-2">Finance Secure</h1>
+            <p className="text-gray-600 text-sm font-medium">Restricted Portal Authentication</p>
           </div>
 
           {error && (
@@ -81,32 +80,32 @@ export default function FinanceLogin() {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Admin Email</label>
+              <label className="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-2">Admin Email</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="w-5 h-5 text-slate-500" />
+                  <Mail className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-slate-600 focus:outline-none focus:border-[#14B8A6]/50 transition-colors"
+                  className="w-full bg-white border border-[#C8E6C9] rounded-xl py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4CAF50] focus:ring-2 focus:ring-[#4CAF50]/20 transition-all"
                   placeholder="admin@finance.uni.edu"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Password</label>
+              <label className="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-2">Password</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="w-5 h-5 text-slate-500" />
+                  <Lock className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-slate-600 focus:outline-none focus:border-[#14B8A6]/50 transition-colors"
+                  className="w-full bg-white border border-[#C8E6C9] rounded-xl py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4CAF50] focus:ring-2 focus:ring-[#4CAF50]/20 transition-all"
                   placeholder="••••••••••••"
                 />
               </div>
@@ -116,7 +115,7 @@ export default function FinanceLogin() {
               type="submit"
               disabled={loading}
               className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-sm flex items-center justify-center transition-all duration-300 ${
-                loading ? 'opacity-60 cursor-not-allowed bg-[#0F766E]' : 'bg-gradient-to-r from-[#0F766E] to-[#14B8A6] hover:shadow-lg hover:shadow-[#14B8A6]/30 hover:-translate-y-0.5 text-white'
+                loading ? 'opacity-60 cursor-not-allowed bg-[#43A047]' : 'bg-gradient-to-r from-[#43A047] to-[#4CAF50] hover:shadow-lg hover:shadow-green-600/25 hover:-translate-y-0.5 text-white'
               }`}
             >
               {loading ? (

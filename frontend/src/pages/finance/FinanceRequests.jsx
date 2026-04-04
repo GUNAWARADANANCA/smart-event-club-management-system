@@ -27,7 +27,7 @@ const downloadBudgetPDF = (req) => {
     '<tr>' +
     '<td style="padding:12px 10px; border-bottom:1px solid #e2e8f0;">' +
     '<div style="display:flex; align-items:center; gap:12px;">' +
-    '<div style="width:28px;height:28px;border-radius:50%;background:#0F766E;color:white;font-weight:bold;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + s.step + '</div>' +
+    '<div style="width:28px;height:28px;border-radius:50%;background:#2E7D32;color:white;font-weight:bold;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + s.step + '</div>' +
     '<div>' +
     '<div style="font-weight:bold;color:#0f172a;">' + s.label + '</div>' +
     '<div style="font-size:12px;color:#64748b;margin-top:2px;">' + s.desc + '</div>' +
@@ -47,13 +47,13 @@ const downloadBudgetPDF = (req) => {
       <title>${req.name}</title>
       <style>
         body { font-family: Arial, sans-serif; padding: 40px; color: #111; max-width: 800px; margin: 0 auto; }
-        h1 { color: #0F766E; border-bottom: 3px solid #0F766E; padding-bottom: 10px; }
-        h2 { color: #0F766E; margin-top: 28px; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; }
+        h1 { color: #2E7D32; border-bottom: 3px solid #4CAF50; padding-bottom: 10px; }
+        h2 { color: #2E7D32; margin-top: 28px; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; }
         .meta-row { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid #e2e8f0; font-size:14px; }
         .badge { display:inline-block; padding:3px 14px; border-radius:999px; font-size:12px; font-weight:bold; background:${statusBg}; color:${statusColor}; }
         .box { padding:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; margin-top:8px; font-size:14px; line-height:1.6; }
         table { width:100%; border-collapse:collapse; margin-top:8px; }
-        .total-row td { padding:14px 10px; background:#f0fdf4; font-size:16px; font-weight:bold; color:#0F766E; }
+        .total-row td { padding:14px 10px; background:#E8F5E9; font-size:16px; font-weight:bold; color:#2E7D32; }
         .footer { margin-top:40px; font-size:11px; color:#94a3b8; border-top:1px solid #e2e8f0; padding-top:12px; }
       </style>
     </head>
@@ -69,7 +69,7 @@ const downloadBudgetPDF = (req) => {
       <h2>Budget Breakdown</h2>
       <table>
         <thead>
-          <tr style="background:#0F766E;">
+          <tr style="background:#2E7D32;">
             <th style="padding:10px;color:white;text-align:left;">Category</th>
             <th style="padding:10px;color:white;text-align:right;">Amount</th>
           </tr>
@@ -145,11 +145,11 @@ const FinanceRequests = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', padding: '24px', background: '#0F172A' }}>
+    <div style={{ minHeight: '100vh', padding: '24px', background: '#FAFAFA' }}>
       <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <Title level={2} style={{ margin: 0, color: '#FFFFFF' }}>Finance Request Review</Title>
-          <Text style={{ fontSize: 16, color: '#94A3B8' }}>Review and manage proposals received from Event Management and Budget Approval.</Text>
+          <Title level={2} style={{ margin: 0, color: '#1F2937' }}>Finance Request Review</Title>
+          <Text style={{ fontSize: 16, color: '#6B7280' }}>Review and manage proposals received from Event Management and Budget Approval.</Text>
         </div>
         <Button
           icon={<SendOutlined />}
@@ -175,18 +175,18 @@ const FinanceRequests = () => {
         {requests.map(req => {
           const total = (req.equipmentCost || 0) + (req.laborCost || 0) + (req.materialsCost || 0) + (req.miscellaneousCost || 0);
           const statusStyles = {
-            Approved: { color: '#22c55e', bg: '#22c55e18', bar: 'linear-gradient(to right, #22c55e, #14B8A6)' },
+            Approved: { color: '#22c55e', bg: '#22c55e18', bar: 'linear-gradient(to right, #22c55e, #4CAF50)' },
             Rejected: { color: '#EF4444', bg: '#EF444418', bar: 'linear-gradient(to right, #EF4444, #f97316)' },
             Cancelled: { color: '#64748B', bg: '#64748B18', bar: 'linear-gradient(to right, #64748B, #475569)' },
             Pending: { color: '#f59e0b', bg: '#f59e0b18', bar: 'linear-gradient(to right, #f59e0b, #F97316)' },
           };
           const s = statusStyles[req.status] || statusStyles.Pending;
-          const typeColor = req.type === 'Event' ? '#14B8A6' : req.type === 'Club' ? '#6366f1' : '#94A3B8';
+          const typeColor = req.type === 'Event' ? '#4CAF50' : req.type === 'Club' ? '#6366f1' : '#94A3B8';
 
           return (
             <Col xs={24} md={12} lg={8} key={req.id}>
-              <div style={{ background: '#1E293B', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column', transition: 'transform 0.2s, box-shadow 0.2s' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.4)'; }}
+              <div style={{ background: '#FFFFFF', border: '1px solid rgba(200, 230, 201, 0.85)', borderRadius: 20, overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(46, 125, 50, 0.12)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
               >
                 {/* Accent bar */}
@@ -196,7 +196,7 @@ const FinanceRequests = () => {
                   {/* Header row */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                     <div style={{ flex: 1, paddingRight: 10 }}>
-                      <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: 15, lineHeight: 1.3, marginBottom: 4 }}>{req.name}</div>
+                      <div style={{ color: '#1F2937', fontWeight: 800, fontSize: 15, lineHeight: 1.3, marginBottom: 4 }}>{req.name}</div>
                       <div style={{ color: '#475569', fontSize: 12 }}>{req.id}</div>
                     </div>
                     <span style={{ background: s.bg, color: s.color, borderRadius: 999, padding: '3px 12px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
@@ -209,7 +209,7 @@ const FinanceRequests = () => {
                     <span style={{ background: `${typeColor}18`, color: typeColor, borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 600 }}>
                       {req.type} Request
                     </span>
-                    <span style={{ background: '#1E293B', color: '#64748B', border: '1px solid #334155', borderRadius: 999, padding: '2px 10px', fontSize: 11 }}>
+                    <span style={{ background: '#FFFFFF', color: '#64748B', border: '1px solid #C8E6C9', borderRadius: 999, padding: '2px 10px', fontSize: 11 }}>
                       📅 {req.submittedDate}
                     </span>
                     {req.source && (
@@ -220,22 +220,22 @@ const FinanceRequests = () => {
                   </div>
 
                   {/* Description */}
-                  <p style={{ color: '#94A3B8', fontSize: 13, lineHeight: 1.6, marginBottom: 14, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
+                  <p style={{ color: '#6B7280', fontSize: 13, lineHeight: 1.6, marginBottom: 14, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
                     {req.description}
                   </p>
 
                   {/* Budget total */}
                   {total > 0 && (
-                    <div style={{ background: '#0F172A', borderRadius: 10, padding: '10px 14px', marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ background: '#FAFAFA', borderRadius: 10, padding: '10px 14px', marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ color: '#64748B', fontSize: 12 }}>Total Budget</span>
-                      <span style={{ color: '#14B8A6', fontWeight: 800, fontSize: 15 }}>Rs. {total.toLocaleString()}</span>
+                      <span style={{ color: '#2E7D32', fontWeight: 800, fontSize: 15 }}>Rs. {total.toLocaleString()}</span>
                     </div>
                   )}
 
                   {/* Actions */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     <button onClick={() => handleViewPDF(req)}
-                      style={{ width: '100%', padding: '10px 0', borderRadius: 12, border: 'none', background: 'linear-gradient(to right, #14B8A6, #0F766E)', color: '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                      style={{ width: '100%', padding: '10px 0', borderRadius: 12, border: 'none', background: 'linear-gradient(to right, #4CAF50, #43A047)', color: '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                       <EyeOutlined /> View PDF
                     </button>
                     {req.status === 'Pending' && (
@@ -256,7 +256,7 @@ const FinanceRequests = () => {
         title={
           <Space>
             <FilePdfOutlined style={{ color: '#f5222d', fontSize: 24 }} />
-            <span style={{ fontSize: 20, color: '#FFFFFF' }}>Review Request: {selectedRequest?.name}</span>
+            <span style={{ fontSize: 20, color: '#1F2937' }}>Review Request: {selectedRequest?.name}</span>
           </Space>
         }
         open={isModalVisible}
@@ -273,8 +273,8 @@ const FinanceRequests = () => {
               {/* Dummy PDF Viewer */}
               <div style={{ 
                 height: '500px', 
-                background: '#1E293B', 
-                border: '1px solid #334155', 
+                background: '#FFFFFF', 
+                border: '1px solid #C8E6C9', 
                 borderRadius: 8,
                 display: 'flex', 
                 flexDirection: 'column',
@@ -283,33 +283,33 @@ const FinanceRequests = () => {
                 color: '#94A3B8'
               }}>
                 <FilePdfOutlined style={{ fontSize: 64, marginBottom: 16, color: '#ef4444' }} />
-                <Title level={4} style={{ color: '#FFFFFF' }}>{selectedRequest.name}</Title>
-                <Text style={{ color: '#CBD5E1' }}>Submitted Date: {selectedRequest.submittedDate}</Text>
+                <Title level={4} style={{ color: '#1F2937' }}>{selectedRequest.name}</Title>
+                <Text style={{ color: '#6B7280' }}>Submitted Date: {selectedRequest.submittedDate}</Text>
                 <Text style={{ marginTop: 16, color: '#94A3B8' }}>(PDF Document Viewer Embedded Here)</Text>
               </div>
             </Col>
             
             <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ flex: 1 }}>
-                <Title level={5} style={{ color: '#FFFFFF' }}>Request Details</Title>
-                <Descriptions column={1} size="small" style={{ marginBottom: 24 }} labelStyle={{ color: '#FFFFFF', fontWeight: 'bold' }} contentStyle={{ color: '#FFFFFF' }}>
+                <Title level={5} style={{ color: '#1F2937' }}>Request Details</Title>
+                <Descriptions column={1} size="small" style={{ marginBottom: 24 }} labelStyle={{ color: '#4B5563', fontWeight: 'bold' }} contentStyle={{ color: '#1F2937' }}>
                   <Descriptions.Item label="ID">{selectedRequest.id}</Descriptions.Item>
                   <Descriptions.Item label="Type">{selectedRequest.type}</Descriptions.Item>
                   <Descriptions.Item label="Status">{getStatusTag(selectedRequest.status)}</Descriptions.Item>
                 </Descriptions>
                 
-                <Title level={5} style={{ color: '#FFFFFF' }}>Original Description</Title>
-                <Paragraph style={{ color: '#E2E8F0', padding: 12, background: '#1E293B', borderRadius: 8, border: '1px solid #334155' }}>
+                <Title level={5} style={{ color: '#1F2937' }}>Original Description</Title>
+                <Paragraph style={{ color: '#374151', padding: 12, background: '#FFFFFF', borderRadius: 8, border: '1px solid #C8E6C9' }}>
                   {selectedRequest.description}
                 </Paragraph>
 
-                <Title level={5} style={{ color: '#FFFFFF' }}>Admin Remarks (Optional)</Title>
+                <Title level={5} style={{ color: '#1F2937' }}>Admin Remarks (Optional)</Title>
                 <TextArea 
                   rows={4} 
                   placeholder="Enter comments or justification for approval/rejection..." 
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
-                  style={{ background: '#1E293B', borderColor: '#334155', color: '#FFFFFF', marginBottom: 24 }}
+                  style={{ background: '#FFFFFF', borderColor: '#C8E6C9', color: '#1F2937', marginBottom: 24 }}
                   className="placeholder-gray-500"
                 />
               </div>
@@ -326,7 +326,7 @@ const FinanceRequests = () => {
                 </Space>
               ) : (
                 <Space direction="vertical" style={{ width: '100%' }}>
-                  <div style={{ padding: 16, background: '#141414', borderRadius: 8, border: '1px dashed #303030' }}>
+                  <div style={{ padding: 16, background: '#F7FCF7', borderRadius: 8, border: '1px dashed #C8E6C9' }}>
                     <Text strong>This request was previously {selectedRequest.status.toLowerCase()}.</Text>
                     <br/>
                     <Text type="secondary">Saved Remarks: {selectedRequest.remarks || 'None provided.'}</Text>
@@ -341,26 +341,6 @@ const FinanceRequests = () => {
         )}
       </Modal>
 
-      <style>{`
-        .glass-modal .ant-modal-content {
-          background: #0F172A !important;
-          border-radius: 16px;
-          border: 1px solid #1E293B !important;
-        }
-        .glass-modal .ant-modal-header {
-          background: transparent !important;
-          border-bottom: 1px solid #1E293B !important;
-        }
-        .glass-modal .ant-modal-title {
-          color: #FFFFFF !important;
-        }
-        .glass-modal .ant-modal-close {
-          color: #94A3B8 !important;
-        }
-        .glass-modal .ant-modal-close:hover {
-          color: #FFFFFF !important;
-        }
-      `}</style>
     </div>
   );
 };

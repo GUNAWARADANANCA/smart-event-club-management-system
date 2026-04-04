@@ -21,8 +21,8 @@ const newsData = [
     summary: 'A team of final-year computing students took first place at the Global AI Innovation Summit, impressing judges with their healthcare prediction model.',
     date: 'March 25, 2026',
     author: 'Academic Affairs',
-    color: 'from-[#1FAF9A] to-[#0e6251]',
-    accent: '#1FAF9A',
+    color: 'from-[#4CAF50] to-[#2E7D32]',
+    accent: '#4CAF50',
   },
   {
     id: 3,
@@ -102,33 +102,32 @@ export default function News() {
   const filtered = filter === 'All' ? newsData : newsData.filter(n => n.category === filter);
 
   return (
-    <div className="min-h-screen bg-[#0F172A] font-sans rounded-3xl overflow-hidden shadow-2xl relative">
-      <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-[#14B8A6]/5 to-transparent pointer-events-none z-0"></div>
+    <div className="min-h-screen bg-white font-sans rounded-3xl overflow-hidden shadow-lg shadow-green-900/5 relative">
+      <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-[#E8F5E9]/80 to-transparent pointer-events-none z-0" />
 
       <div className="relative z-10 p-6 md:p-8">
-        {/* Navbar */}
-        <nav className="w-full bg-[#0F172A] shadow-md border border-white/10 px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
-          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] tracking-tighter uppercase mb-4 md:mb-0">
+        <nav className="w-full bg-white shadow-md border border-[#C8E6C9] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
+          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] to-[#4CAF50] tracking-tighter uppercase mb-4 md:mb-0">
             Uni Gallery
           </h1>
-          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-400">
-            <span className="text-[#14B8A6] border-b-2 border-[#1FAF9A] pb-1">News</span>
-            <span onClick={() => navigate('/meetings')} className="hover:text-white cursor-pointer transition-colors">Meetings</span>
-            <span onClick={() => navigate('/gallery')} className="hover:text-white cursor-pointer transition-colors">Gallery</span>
-            <span onClick={() => navigate('/ticket-sales')} className="hover:text-white cursor-pointer transition-colors">Ticket Sales</span>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm font-bold uppercase tracking-widest text-gray-600">
+            <span className="text-[#2E7D32] border-b-2 border-[#4CAF50] pb-1">News</span>
+            <span onClick={() => navigate('/meetings')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Meetings</span>
+            <span onClick={() => navigate('/gallery')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Gallery</span>
+            <span onClick={() => navigate('/ticket-sales')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Ticket Sales</span>
           </div>
         </nav>
 
         <main className="max-w-[1400px] mx-auto pb-20">
           {/* Heading */}
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-1 rounded-full bg-[#1FAF9A]/10 border border-[#1FAF9A]/30 text-[#1FAF9A] text-xs font-bold uppercase tracking-widest mb-6">
+            <div className="inline-block px-4 py-1 rounded-full bg-[#E8F5E9] border border-[#C8E6C9] text-[#2E7D32] text-xs font-bold uppercase tracking-widest mb-6">
               Latest Updates
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6">
-              Campus <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] via-[#14B8A6] to-[#F97316]">News</span>
+            <h2 className="text-5xl md:text-7xl font-black text-gray-900 uppercase tracking-tighter mb-6">
+              Campus <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] via-[#4CAF50] to-[#F97316]">News</span>
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto font-medium">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto font-medium">
               Student achievements, sports victories, academic milestones, and everything happening on campus.
             </p>
           </div>
@@ -141,8 +140,8 @@ export default function News() {
                 onClick={() => setFilter(cat)}
                 className={`px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm transition-all duration-300 border ${
                   filter === cat
-                    ? 'bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] text-white border-transparent shadow-md scale-105'
-                    : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-[#43A047] to-[#4CAF50] text-white border-transparent shadow-md shadow-green-600/20 scale-105'
+                    : 'bg-white text-gray-600 border-[#C8E6C9] hover:bg-[#E8F5E9] hover:text-[#2E7D32]'
                 }`}
               >
                 {cat}
@@ -156,7 +155,7 @@ export default function News() {
               <div
                 key={item.id}
                 onClick={() => setSelected(item)}
-                className="group bg-[#1E293B] border border-white/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-[#14B8A6]/10 transition-all duration-300 cursor-pointer hover:-translate-y-1"
+                className="group bg-white border border-[#C8E6C9] rounded-3xl overflow-hidden shadow-sm hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 cursor-pointer hover:-translate-y-1"
               >
                 {/* Color Banner */}
                 <div className={`h-3 w-full bg-gradient-to-r ${item.color}`}></div>
@@ -166,15 +165,15 @@ export default function News() {
                       style={{ background: item.accent }}>
                       {item.tag}
                     </span>
-                    <span className="text-xs text-slate-400 font-medium">{item.date}</span>
+                    <span className="text-xs text-gray-500 font-medium">{item.date}</span>
                   </div>
-                  <h3 className="text-lg font-black text-white mb-3 leading-snug group-hover:text-[#1FAF9A] transition-colors">
+                  <h3 className="text-lg font-black text-gray-900 mb-3 leading-snug group-hover:text-[#2E7D32] transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-3">{item.summary}</p>
-                  <div className="flex justify-between items-center pt-4 border-t border-white/10">
-                    <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{item.author}</span>
-                    <span className="text-xs font-bold text-[#1FAF9A] uppercase tracking-wider group-hover:underline">Read More →</span>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">{item.summary}</p>
+                  <div className="flex justify-between items-center pt-4 border-t border-[#E8F5E9]">
+                    <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">{item.author}</span>
+                    <span className="text-xs font-bold text-[#2E7D32] uppercase tracking-wider group-hover:underline">Read More →</span>
                   </div>
                 </div>
               </div>
@@ -182,7 +181,7 @@ export default function News() {
           </div>
 
           {filtered.length === 0 && (
-            <div className="text-center text-slate-500 py-20 text-2xl font-black uppercase tracking-widest border-2 border-dashed border-white/10 rounded-3xl">
+            <div className="text-center text-gray-500 py-20 text-2xl font-black uppercase tracking-widest border-2 border-dashed border-[#C8E6C9] rounded-3xl bg-[#F7FCF7]">
               No news found for this category.
             </div>
           )}
@@ -191,25 +190,25 @@ export default function News() {
 
       {/* Modal */}
       {selected && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div className="bg-[#1E293B] rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-white/10" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
+          <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-[#C8E6C9]" onClick={e => e.stopPropagation()}>
             <div className={`h-2 w-full bg-gradient-to-r ${selected.color}`}></div>
             <div className="p-8">
               <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-white mb-4 inline-block"
                 style={{ background: selected.accent }}>
                 {selected.tag}
               </span>
-              <h2 className="text-2xl font-black text-white mt-3 mb-2 leading-snug">{selected.title}</h2>
-              <div className="flex gap-4 text-xs text-slate-400 font-semibold uppercase tracking-wider mb-6">
+              <h2 className="text-2xl font-black text-gray-900 mt-3 mb-2 leading-snug">{selected.title}</h2>
+              <div className="flex gap-4 text-xs text-gray-500 font-semibold uppercase tracking-wider mb-6">
                 <span>{selected.date}</span>
                 <span>·</span>
                 <span>{selected.author}</span>
               </div>
-              <p className="text-slate-300 leading-relaxed text-base">{selected.summary}</p>
+              <p className="text-gray-700 leading-relaxed text-base">{selected.summary}</p>
               <button
                 onClick={() => setSelected(null)}
-                className="mt-8 w-full py-3 rounded-2xl font-bold uppercase tracking-widest text-sm text-white transition-all"
-                style={{ background: `linear-gradient(to right, #1FAF9A, #14B8A6)` }}
+                className="mt-8 w-full py-3 rounded-2xl font-bold uppercase tracking-widest text-sm text-white transition-all hover:opacity-95 shadow-md shadow-green-600/20"
+                style={{ background: `linear-gradient(to right, #43A047, #4CAF50)` }}
               >
                 Close
               </button>

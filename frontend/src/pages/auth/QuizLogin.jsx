@@ -38,15 +38,15 @@ export default function QuizLogin() {
   return (
     <div className="min-h-screen bg-[#F0FDF4] font-sans flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#1FAF9A] rounded-full blur-[120px] -mr-48 -mt-48 opacity-20"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#1FAF9A] rounded-full blur-[120px] -ml-48 -mb-48 opacity-20"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#4CAF50] rounded-full blur-[120px] -mr-48 -mt-48 opacity-15"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#81C784] rounded-full blur-[120px] -ml-48 -mb-48 opacity-20"></div>
       
       <div className="max-w-md w-full bg-white/80 backdrop-blur-2xl border border-[#D1FAE5] rounded-[2.5rem] p-10 shadow-2xl relative z-10 overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[#1FAF9A] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#4CAF50] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
         
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-[#1FAF9A]/10 rounded-3xl border border-[#1FAF9A]/20 flex items-center justify-center mx-auto mb-6 shadow-sm rotate-3 hover:rotate-0 transition-transform duration-500">
-            <GraduationCap className="w-10 h-10 text-[#0F766E]" />
+          <div className="w-20 h-20 bg-[#4CAF50]/10 rounded-3xl border border-[#C8E6C9] flex items-center justify-center mx-auto mb-6 shadow-sm rotate-3 hover:rotate-0 transition-transform duration-500">
+            <GraduationCap className="w-10 h-10 text-[#2E7D32]" />
           </div>
           <h1 className="text-4xl font-black text-slate-800 uppercase tracking-tighter mb-2 italic">Student Portal</h1>
           <p className="text-gray-500 text-sm font-bold uppercase tracking-widest opacity-60">Mock Performance Login</p>
@@ -60,38 +60,38 @@ export default function QuizLogin() {
 
         <form onSubmit={handleLogin} className="space-y-8">
           <div className="group">
-            <label className="block text-[10px] font-black text-[#0F766E] uppercase tracking-[0.2em] mb-3 ml-1">Student Identification</label>
+            <label className="block text-[10px] font-black text-[#2E7D32] uppercase tracking-[0.2em] mb-3 ml-1">Student Identification</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                <UserCircle className="w-5 h-5 text-[#0F766E] opacity-40 group-focus-within:opacity-100 transition-opacity" />
+                <UserCircle className="w-5 h-5 text-[#2E7D32] opacity-40 group-focus-within:opacity-100 transition-opacity" />
               </div>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-white/50 border-2 border-[#D1FAE5] rounded-2xl py-4 pl-14 pr-6 text-slate-800 font-bold placeholder-[#0F766E]/20 focus:outline-none focus:border-[#1FAF9A] focus:bg-white transition-all shadow-sm group-hover:shadow-md"
+                className="w-full bg-white/50 border-2 border-[#D1FAE5] rounded-2xl py-4 pl-14 pr-6 text-slate-800 font-bold placeholder-[#2E7D32]/25 focus:outline-none focus:border-[#4CAF50] focus:bg-white transition-all shadow-sm group-hover:shadow-md"
                 placeholder="Enter Student Username"
               />
             </div>
           </div>
 
           <div className="group">
-            <label className="block text-[10px] font-black text-[#0F766E] uppercase tracking-[0.2em] mb-3 ml-1">Password</label>
+            <label className="block text-[10px] font-black text-[#2E7D32] uppercase tracking-[0.2em] mb-3 ml-1">Password</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                <Lock className="w-5 h-5 text-[#0F766E] opacity-40 group-focus-within:opacity-100 transition-opacity" />
+                <Lock className="w-5 h-5 text-[#2E7D32] opacity-40 group-focus-within:opacity-100 transition-opacity" />
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/50 border-2 border-[#D1FAE5] rounded-2xl py-4 pl-14 pr-14 text-slate-800 font-bold placeholder-[#0F766E]/20 focus:outline-none focus:border-[#1FAF9A] focus:bg-white transition-all shadow-sm group-hover:shadow-md"
+                className="w-full bg-white/50 border-2 border-[#D1FAE5] rounded-2xl py-4 pl-14 pr-14 text-slate-800 font-bold placeholder-[#2E7D32]/25 focus:outline-none focus:border-[#4CAF50] focus:bg-white transition-all shadow-sm group-hover:shadow-md"
                 placeholder="Enter Password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-5 flex items-center text-[#0F766E] opacity-40 hover:opacity-100 transition-opacity"
+                className="absolute inset-y-0 right-0 pr-5 flex items-center text-[#2E7D32] opacity-40 hover:opacity-100 transition-opacity"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -114,7 +114,7 @@ export default function QuizLogin() {
           </button>
           
           <p className="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-8">
-            Cohesive Teal Theme &bull; No Backend Required
+            Student portal &bull; No backend required
           </p>
         </form>
       </div>

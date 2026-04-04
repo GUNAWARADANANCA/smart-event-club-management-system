@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider } from 'antd';
 import MainLayout from '@/components/layout/MainLayout';
 import Login from '@/pages/auth/Login';
 import UserManagement from '@/pages/user/UserManagement';
@@ -50,15 +50,21 @@ function App() {
   return (
     <ConfigProvider
       theme={{
-        algorithm: theme.darkAlgorithm,
         token: {
-          colorPrimary: '#1FAF9A',
-          colorBgContainer: '#111827',
+          colorPrimary: '#4CAF50',
+          colorSuccess: '#4CAF50',
+          colorBgContainer: '#FFFFFF',
+          colorBgLayout: '#FAFAFA',
+          colorText: '#1F2937',
+          colorTextSecondary: '#4B5563',
+          colorBorder: '#C8E6C9',
+          colorBorderSecondary: '#E8F5E9',
+          borderRadius: 10,
           fontFamily: "'Outfit', system-ui, -apple-system, sans-serif",
         },
       }}
     >
-      <div style={{ minHeight: '100vh', backgroundColor: '#0F172A' }}>
+      <div style={{ minHeight: '100vh', backgroundColor: '#FFFFFF' }}>
         <BrowserRouter>
           <Routes>
         <Route path="/" element={<Home />} />

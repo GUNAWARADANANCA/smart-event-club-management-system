@@ -14,11 +14,11 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#000' }}>
-      <Card style={{ width: 400, boxShadow: '0 8px 24px rgba(0,0,0,0.5)', borderRadius: 12, borderColor: '#303030' }}>
+    <div className="page-auth">
+      <Card style={{ width: '100%', maxWidth: 400, boxShadow: '0 12px 40px rgba(46, 125, 50, 0.1)', borderRadius: 16, border: '1px solid #C8E6C9' }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <Title level={3}>Forgot Password</Title>
-          <Text type="secondary">Enter your email to receive a reset link</Text>
+          <Title level={3} style={{ color: '#1F2937' }}>Forgot Password</Title>
+          <Text type="secondary" style={{ color: '#4B5563' }}>Enter your email to receive a reset link</Text>
         </div>
         <Form name="forgot" onFinish={onFinish} layout="vertical">
           <Form.Item
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
             </Button>
           </Form.Item>
           <div style={{ textAlign: 'center' }}>
-            <span style={{ cursor: 'pointer', color: '#a78bfa' }} onClick={() => navigate('/login')}>Back to Log in</span>
+            <span style={{ cursor: 'pointer', color: '#2E7D32', fontWeight: 600 }} onClick={() => navigate('/login')}>Back to Log in</span>
           </div>
         </Form>
       </Card>

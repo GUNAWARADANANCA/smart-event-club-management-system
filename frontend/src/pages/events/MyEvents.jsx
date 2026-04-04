@@ -16,7 +16,7 @@ const MyEvents = () => {
   };
 
   const columns = [
-    { title: 'Event Title', dataIndex: 'title', key: 'title', render: text => <strong style={{ color: '#FFFFFF' }}>{text}</strong> },
+    { title: 'Event Title', dataIndex: 'title', key: 'title', render: text => <strong style={{ color: '#0F172A' }}>{text}</strong> },
     { title: 'Date Registered', dataIndex: 'registrationDate', key: 'registrationDate' },
     { title: 'Event Date', dataIndex: 'date', key: 'date' },
     { title: 'Mode', dataIndex: 'mode', key: 'mode', render: mode => <Tag className="tag-teal-pill active">{mode}</Tag> },
@@ -49,7 +49,7 @@ const MyEvents = () => {
       {myEventsState.length === 0 ? (
         <Empty 
           description={<span style={{ color: '#94A3B8' }}>You haven't registered for any events yet.</span>} 
-          style={{ margin: '60px 0', padding: 40, background: '#111827', borderRadius: 12, border: '1px solid #1E293B' }} 
+          style={{ margin: '60px 0', padding: 40, background: '#FFFFFF', borderRadius: 12, border: '1px solid #C8E6C9', boxShadow: '0 4px 14px rgba(46, 125, 50, 0.06)' }} 
         >
           <Button className="btn-teal-primary" onClick={() => navigate('/portal')} style={{ marginTop: 16 }}>Browse Upcoming Events</Button>
         </Empty>

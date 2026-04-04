@@ -134,23 +134,21 @@ export default function EventsGallery() {
     : galleryData.filter(item => item.category === filter);
 
   return (
-    <div className="min-h-screen bg-[#0F172A] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative">
+    <div className="min-h-screen bg-white font-sans selection:bg-[#4CAF50]/25 rounded-3xl overflow-hidden shadow-lg shadow-green-900/5 relative">
       
-      {/* Ambient background glow */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#14B8A6]/5 to-transparent pointer-events-none z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#E8F5E9]/80 to-transparent pointer-events-none z-0" />
 
       <div className="relative z-10 p-6 md:p-8">
-        {/* Local Navbar Area */}
-        <nav className="w-full bg-[#0F172A] shadow-md border border-white/10 px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
-          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] tracking-tighter uppercase mb-4 md:mb-0">
+        <nav className="w-full bg-white shadow-md border border-[#C8E6C9] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
+          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] to-[#4CAF50] tracking-tighter uppercase mb-4 md:mb-0">
             Uni Gallery
           </h1>
-          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-400">
-            <span onClick={() => navigate('/news')} className="hover:text-white cursor-pointer transition-colors">News</span>
-            <span onClick={() => navigate('/meetings')} className="hover:text-white cursor-pointer transition-colors">Meetings</span>
-            <span className="text-[#14B8A6] border-b-2 border-[#1FAF9A] pb-1">Gallery</span>
-            <span onClick={() => navigate('/events/lecture-panel')} className="hover:text-white cursor-pointer transition-colors">Users</span>
-            <span onClick={() => navigate('/ticket-sales')} className="hover:text-white cursor-pointer transition-colors">Ticket Sales</span>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm font-bold uppercase tracking-widest text-gray-600">
+            <span onClick={() => navigate('/news')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">News</span>
+            <span onClick={() => navigate('/meetings')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Meetings</span>
+            <span className="text-[#2E7D32] border-b-2 border-[#4CAF50] pb-1">Gallery</span>
+            <span onClick={() => navigate('/events/lecture-panel')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Users</span>
+            <span onClick={() => navigate('/ticket-sales')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Ticket Sales</span>
           </div>
         </nav>
 
@@ -158,13 +156,13 @@ export default function EventsGallery() {
           
           {/* Page Heading */}
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-1 rounded-full bg-[#1FAF9A]/10 border border-[#1FAF9A]/30 text-[#1FAF9A] text-xs font-bold uppercase tracking-widest mb-6">
+            <div className="inline-block px-4 py-1 rounded-full bg-[#E8F5E9] border border-[#C8E6C9] text-[#2E7D32] text-xs font-bold uppercase tracking-widest mb-6">
               Officially Curated Albums
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6 drop-shadow-md">
-              Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1FAF9A] via-[#14B8A6] to-[#F97316]">Showcase</span>
+            <h2 className="text-5xl md:text-7xl font-black text-gray-900 uppercase tracking-tighter mb-6">
+              Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] via-[#4CAF50] to-[#F97316]">Showcase</span>
             </h2>
-            <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto font-medium">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium">
               Relive the most unforgettable moments, explosive hackathons, and vibrant cultural nights hosted at our university.
             </p>
           </div>
@@ -175,10 +173,10 @@ export default function EventsGallery() {
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
-                className={`px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm transition-all duration-300 border backdrop-blur-sm ${
+                className={`px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm transition-all duration-300 border ${
                   filter === cat 
-                  ? 'bg-gradient-to-r from-[#1FAF9A] to-[#14B8A6] text-white border-transparent shadow-md scale-105'
-                  : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20'
+                  ? 'bg-gradient-to-r from-[#43A047] to-[#4CAF50] text-white border-transparent shadow-md shadow-green-600/20 scale-105'
+                  : 'bg-white text-gray-600 border-[#C8E6C9] hover:bg-[#E8F5E9] hover:text-[#2E7D32] hover:border-[#A5D6A7]'
                 }`}
               >
                 {cat}
@@ -195,7 +193,7 @@ export default function EventsGallery() {
 
           {/* Empty State */}
           {filteredData.length === 0 && (
-            <div className="text-center text-slate-500 py-20 text-2xl font-black uppercase tracking-widest border-2 border-dashed border-white/10 rounded-3xl mt-12">
+            <div className="text-center text-gray-500 py-20 text-2xl font-black uppercase tracking-widest border-2 border-dashed border-[#C8E6C9] rounded-3xl mt-12 bg-[#F7FCF7]">
               No events found for this category.
             </div>
           )}

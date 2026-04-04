@@ -20,7 +20,7 @@ const generateParkingSlots = () => {
 };
 
 const paymentTypes = [
-  { value: 'standard', label: 'Standard', price: 1000, color: '#14B8A6', perks: 'General seating' },
+  { value: 'standard', label: 'Standard', price: 1000, color: '#4CAF50', perks: 'General seating' },
   { value: 'vip', label: 'VIP', price: 2500, color: '#F97316', perks: 'Front row + Snacks' },
   { value: 'vvip', label: 'VVIP', price: 5000, color: '#8B5CF6', perks: 'VIP Lounge + Merch' },
 ];
@@ -53,8 +53,8 @@ const TicketSales = () => {
   };
 
   const columns = [
-    { title: 'Event', dataIndex: 'event', key: 'event', className: 'font-bold text-white' },
-    { title: 'Tickets Sold', dataIndex: 'sold', key: 'sold', className: 'text-gray-300 font-medium' },
+    { title: 'Event', dataIndex: 'event', key: 'event', className: 'font-bold text-gray-900' },
+    { title: 'Tickets Sold', dataIndex: 'sold', key: 'sold', className: 'text-gray-600 font-medium' },
     { title: 'Revenue', dataIndex: 'revenue', key: 'revenue', className: 'text-green-400 font-bold' },
     { 
       title: 'Status', 
@@ -79,7 +79,7 @@ const TicketSales = () => {
             form.resetFields();
             setIsModalOpen(true);
           }}
-          className="px-4 py-2 bg-gradient-to-r from-[#0F766E] to-[#14B8A6] text-white rounded-xl font-bold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 transform active:scale-95"
+          className="px-4 py-2 bg-gradient-to-r from-[#43A047] to-[#4CAF50] text-white rounded-xl font-bold text-sm shadow-md shadow-green-600/15 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 transform active:scale-95"
         >
           Book Ticket
         </button>
@@ -135,23 +135,20 @@ const TicketSales = () => {
   const totalSlots = parkingSlots.length;
 
   return (
-    <div className="min-h-screen bg-[#0F172A] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative">
-      
-      {/* Ambient background glow */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#0F766E]/5 to-transparent pointer-events-none z-0"></div>
+    <div className="min-h-screen bg-white font-sans selection:bg-[#4CAF50]/25 rounded-3xl overflow-hidden shadow-lg shadow-green-900/5 relative">
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#E8F5E9]/90 to-transparent pointer-events-none z-0" />
 
       <div className="relative z-10 p-6 md:p-8">
-        {/* Local Navbar Area */}
-        <nav className="w-full bg-[#0F172A] shadow-sm border border-white/10 px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
-          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#14B8A6] tracking-tighter uppercase mb-4 md:mb-0">
+        <nav className="w-full bg-white shadow-sm border border-[#C8E6C9] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
+          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] to-[#4CAF50] tracking-tighter uppercase mb-4 md:mb-0">
             Uni Gallery
           </h1>
-          <div className="flex gap-6 text-sm font-bold uppercase tracking-widest text-slate-400">
-            <span onClick={() => navigate('/news')} className="hover:text-white cursor-pointer transition-colors">News</span>
-            <span onClick={() => navigate('/meetings')} className="hover:text-white cursor-pointer transition-colors">Meetings</span>
-            <span onClick={() => navigate('/gallery')} className="hover:text-white cursor-pointer transition-colors">Gallery</span>
-            <span onClick={() => navigate('/feedback')} className="hover:text-white cursor-pointer transition-colors">Feedback</span>
-            <span className="text-[#14B8A6] border-b-2 border-[#14B8A6] pb-1">Ticket Sales</span>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm font-bold uppercase tracking-widest text-gray-600">
+            <span onClick={() => navigate('/news')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">News</span>
+            <span onClick={() => navigate('/meetings')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Meetings</span>
+            <span onClick={() => navigate('/gallery')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Gallery</span>
+            <span onClick={() => navigate('/feedback')} className="hover:text-[#2E7D32] cursor-pointer transition-colors">Feedback</span>
+            <span className="text-[#2E7D32] border-b-2 border-[#4CAF50] pb-1">Ticket Sales</span>
           </div>
         </nav>
 
@@ -159,30 +156,30 @@ const TicketSales = () => {
           
           {/* Page Heading */}
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-1 rounded-full bg-[#0F766E]/10 border border-[#14B8A6]/30 text-[#0F766E] text-xs font-bold uppercase tracking-widest mb-6">
+            <div className="inline-block px-4 py-1 rounded-full bg-[#E8F5E9] border border-[#C8E6C9] text-[#2E7D32] text-xs font-bold uppercase tracking-widest mb-6">
               Track Performace & Revenue
             </div>
-            <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6 drop-shadow-md">
-              Ticket <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#F97316]">Dashboard</span>
+            <h2 className="text-5xl md:text-7xl font-black text-gray-900 uppercase tracking-tighter mb-6">
+              Ticket <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] via-[#4CAF50] to-[#F97316]">Dashboard</span>
             </h2>
-            <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto font-medium">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium">
               Monitor your event ticket sales, track revenue, and analyze attendance all in one place.
             </p>
           </div>
 
           {/* Content Area */}
-          <div className="bg-[#1E293B] p-8 rounded-3xl shadow-xl border border-white/10">
+          <div className="bg-white p-8 rounded-3xl shadow-lg border border-[#C8E6C9] shadow-green-900/5">
             <Table 
               columns={columns} 
               dataSource={data} 
               pagination={false}
               className="custom-ticket-table"
-              rowClassName="hover:bg-white/5 transition-colors"
+              rowClassName="transition-colors"
             />
           </div>
 
           <Modal
-            title={<Title level={3} className="m-0 text-[#14B8A6]">Book Your Tickets</Title>}
+            title={<Title level={3} className="m-0 text-[#2E7D32]">Book Your Tickets</Title>}
             open={isModalOpen}
             onCancel={() => setIsModalOpen(false)}
             footer={null}
@@ -190,9 +187,9 @@ const TicketSales = () => {
             width={640}
             className="booking-modal dark-modal"
           >
-            <div className="mb-8 p-6 bg-gradient-to-br from-[#0F766E] to-[#14B8A6] rounded-2xl shadow-xl transform transition-all">
-              <Text className="block mb-2 text-xs uppercase font-black tracking-[0.2em] text-white/70">Proceeding with</Text>
-              <Text strong className="text-2xl text-white drop-shadow-md tracking-tight">{selectedEvent?.event}</Text>
+            <div className="mb-8 p-6 bg-gradient-to-br from-[#43A047] to-[#4CAF50] rounded-2xl shadow-lg shadow-green-600/20 transform transition-all">
+              <Text className="block mb-2 text-xs uppercase font-black tracking-[0.2em] text-white/90">Proceeding with</Text>
+              <Text strong className="text-2xl text-white tracking-tight">{selectedEvent?.event}</Text>
             </div>
             
             <Form
@@ -212,7 +209,7 @@ const TicketSales = () => {
                   letter-spacing: 0.05em;
                 }
                 .booking-wizard-steps .ant-steps-item-active .ant-steps-item-title {
-                  color: #14B8A6 !important;
+                  color: #4CAF50 !important;
                 }
                 .booking-wizard-steps .ant-steps-item-wait .ant-steps-item-icon {
                   border-color: #4b5563 !important;
@@ -222,10 +219,10 @@ const TicketSales = () => {
                   color: #9ca3af !important;
                 }
                 .booking-wizard-steps .ant-steps-item-finish .ant-steps-item-icon {
-                  border-color: #14B8A6 !important;
+                  border-color: #4CAF50 !important;
                 }
                 .booking-wizard-steps .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
-                  color: #14B8A6 !important;
+                  color: #4CAF50 !important;
                 }
               `}</style>
               <Steps 
@@ -242,31 +239,31 @@ const TicketSales = () => {
               <div style={{ display: currentStep === 0 ? 'block' : 'none' }}>
               <Form.Item
                 name="fullName"
-                label={<span className="font-bold text-gray-300 uppercase text-xs tracking-widest">Full Name</span>}
+                label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Full Name</span>}
                 rules={[
                   { required: true, message: 'Please enter your full name' },
                   { pattern: /^[A-Za-z\s]+$/, message: 'Name must contain letters only, no numbers allowed!' },
                   { pattern: /^[A-Z]/, message: 'First letter must be capital!' },
                 ]}
               >
-                <Input size="large" placeholder="Enter your full name" className="rounded-xl bg-white/5 border-white/10 text-white hover:border-[#14B8A6] focus:border-[#14B8A6]" />
+                <Input size="large" placeholder="Enter your full name" className="rounded-xl bg-white border border-[#C8E6C9] text-gray-900 hover:border-[#4CAF50] focus:border-[#4CAF50]" />
               </Form.Item>
 
               <Form.Item
                 name="email"
-                label={<span className="font-bold text-gray-300 uppercase text-xs tracking-widest">Email Address</span>}
+                label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Email Address</span>}
                 rules={[
                   { required: true, message: 'Required' },
                   { type: 'email', message: 'Enter a valid email' }
                 ]}
               >
-                <Input size="large" placeholder="example@email.com" className="rounded-xl bg-white/5 border-white/10 text-white hover:border-[#14B8A6] focus:border-[#14B8A6]" />
+                <Input size="large" placeholder="example@email.com" className="rounded-xl bg-white border border-[#C8E6C9] text-gray-900 hover:border-[#4CAF50] focus:border-[#4CAF50]" />
               </Form.Item>
 
               <div className="flex gap-4">
                 <Form.Item
                   name="phone"
-                  label={<span className="font-bold text-gray-300 uppercase text-xs tracking-widest">Phone Number</span>}
+                  label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Phone Number</span>}
                   rules={[
                     { required: true, message: 'Required' },
                     { pattern: /^0[0-9]{9}$/, message: 'Must be 10 digits and start with 0' }
@@ -277,7 +274,7 @@ const TicketSales = () => {
                     size="large"
                     placeholder="07XXXXXXXX"
                     maxLength={10}
-                    className="rounded-xl bg-white/5 border-white/10 text-white hover:border-[#14B8A6] focus:border-[#14B8A6]"
+                    className="rounded-xl bg-white border border-[#C8E6C9] text-gray-900 hover:border-[#4CAF50] focus:border-[#4CAF50]"
                     onChange={(e) => {
                       const numericOnly = e.target.value.replace(/[^0-9]/g, '');
                       form.setFieldValue('phone', numericOnly);
@@ -287,10 +284,10 @@ const TicketSales = () => {
 
                 <Form.Item
                   name="quantity"
-                  label={<span className="font-bold text-gray-300 uppercase text-xs tracking-widest">Tickets</span>}
+                  label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Tickets</span>}
                   rules={[{ required: true }]}
                 >
-                  <InputNumber min={1} max={10} size="large" className="w-full rounded-xl bg-white/5 border-white/10 text-white hover:border-[#14B8A6] focus:border-[#14B8A6]" />
+                  <InputNumber min={1} max={10} size="large" className="w-full rounded-xl bg-white border border-[#C8E6C9] text-gray-900 hover:border-[#4CAF50] focus:border-[#4CAF50]" />
                 </Form.Item>
               </div>
 
@@ -300,7 +297,7 @@ const TicketSales = () => {
               <div style={{ display: currentStep === 1 ? 'block' : 'none' }}>
               {/* ===== PAYMENT TYPE SELECTION ===== */}
               <div className="mb-6">
-                <Text className="block font-bold text-gray-300 uppercase text-xs tracking-widest mb-3">Select Pass Type</Text>
+                <Text className="block font-bold text-gray-600 uppercase text-xs tracking-widest mb-3">Select Pass Type</Text>
                 <div className="grid grid-cols-3 gap-3">
                   {paymentTypes.map(type => {
                     const isSelected = selectedPaymentType === type.value;
@@ -318,7 +315,7 @@ const TicketSales = () => {
                         <div className="text-2xl font-black tracking-tight" style={{ color: type.color }}>
                           Rs. {type.price}
                         </div>
-                        <div className="text-white font-bold text-sm mt-1">{type.label}</div>
+                        <div className="text-gray-900 font-bold text-sm mt-1">{type.label}</div>
                         <div className="text-gray-500 text-xs mt-1">{type.perks}</div>
                         {isSelected && (
                           <CheckCircleFilled style={{ color: type.color, fontSize: 18, marginTop: 8 }} />
@@ -332,23 +329,23 @@ const TicketSales = () => {
               {/* ===== PARKING SLOT AVAILABILITY ===== */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-3">
-                  <Text className="font-bold text-gray-300 uppercase text-xs tracking-widest">
-                    <CarOutlined className="mr-2 text-[#14B8A6]" />
+                  <Text className="font-bold text-gray-600 uppercase text-xs tracking-widest">
+                    <CarOutlined className="mr-2 text-[#4CAF50]" />
                     Parking Slots
                   </Text>
                   <Text className="text-xs text-gray-500">
-                    <span className="text-[#14B8A6] font-bold">{availableCount}</span> / {totalSlots} available
+                    <span className="text-[#4CAF50] font-bold">{availableCount}</span> / {totalSlots} available
                     {selectedParkingSlot && (
                       <span className="ml-2 text-[#F97316] font-bold">• +Rs. 500.00</span>
                     )}
                   </Text>
                 </div>
 
-                <div className="p-4 rounded-2xl border border-white/10 bg-white/[0.02]">
+                <div className="p-4 rounded-2xl border border-[#C8E6C9] bg-[#F7FCF7]">
                   {/* Legend */}
                   <div className="flex gap-4 mb-3 justify-center">
                     <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                      <span className="w-3 h-3 rounded bg-[#14B8A6]/30 border border-[#14B8A6]/50 inline-block"></span> Available
+                      <span className="w-3 h-3 rounded bg-[#4CAF50]/30 border border-[#4CAF50]/50 inline-block"></span> Available
                     </div>
                     <div className="flex items-center gap-1.5 text-xs text-gray-400">
                       <span className="w-3 h-3 rounded bg-red-500/30 border border-red-500/50 inline-block"></span> Occupied
@@ -364,9 +361,9 @@ const TicketSales = () => {
                       const isSelected = selectedParkingSlot === slot.id;
                       const isOccupied = slot.occupied;
                       
-                      let bgColor = 'rgba(20, 184, 166, 0.15)';
-                      let borderColor = 'rgba(20, 184, 166, 0.35)';
-                      let textColor = '#14B8A6';
+                      let bgColor = 'rgba(76, 175, 80, 0.12)';
+                      let borderColor = 'rgba(76, 175, 80, 0.35)';
+                      let textColor = '#4CAF50';
                       
                       if (isOccupied) {
                         bgColor = 'rgba(239, 68, 68, 0.15)';
@@ -420,15 +417,15 @@ const TicketSales = () => {
               {/* ===== PAYMENT METHOD SELECTION ===== */}
               <Form.Item
                 name="paymentMethod"
-                label={<span className="font-bold text-gray-300 uppercase text-xs tracking-widest">Select Payment Method</span>}
+                label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Select Payment Method</span>}
                 rules={[{ required: true, message: 'Please select a payment method' }]}
                 className="mb-8"
                 initialValue="card"
               >
                 <style>{`
                   .ticket-payment-options .ant-radio-button-wrapper-checked {
-                    background-color: #14B8A6 !important;
-                    border-color: #14B8A6 !important;
+                    background-color: #4CAF50 !important;
+                    border-color: #4CAF50 !important;
                     color: white !important;
                   }
                   .ticket-payment-options .ant-radio-button-wrapper-checked::before {
@@ -436,22 +433,22 @@ const TicketSales = () => {
                     display: none !important;
                   }
                   .ticket-payment-options .ant-radio-button-wrapper:hover {
-                    color: #14B8A6;
+                    color: #4CAF50;
                   }
                   .ticket-payment-options .ant-radio-button-wrapper:focus-within,
                   .ticket-payment-options .ant-radio-button-wrapper:focus {
-                    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.4) !important;
-                    border-inline-start-color: #14B8A6 !important;
+                    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.35) !important;
+                    border-inline-start-color: #4CAF50 !important;
                   }
                 `}</style>
                 <Radio.Group 
                   className="w-full flex gap-4 ticket-payment-options"
                   onChange={(e) => setPaymentMethodForm(e.target.value)}
                 >
-                  <Radio.Button value="card" className="flex-1 h-12 flex items-center justify-center font-bold rounded-xl border-white/20 bg-white/5 text-gray-400 transition-all">
+                  <Radio.Button value="card" className="flex-1 h-12 flex items-center justify-center font-bold rounded-xl border-[#C8E6C9] bg-white text-gray-600 transition-all">
                     <CreditCardOutlined className="mr-2" /> Card
                   </Radio.Button>
-                  <Radio.Button value="bank" className="flex-1 h-12 flex items-center justify-center font-bold rounded-xl border-white/20 bg-white/5 text-gray-400 transition-all">
+                  <Radio.Button value="bank" className="flex-1 h-12 flex items-center justify-center font-bold rounded-xl border-[#C8E6C9] bg-white text-gray-600 transition-all">
                     <BankOutlined className="mr-2" /> Bank Deposit
                   </Radio.Button>
                 </Radio.Group>
@@ -459,20 +456,20 @@ const TicketSales = () => {
 
               {/* ===== CONDITIONAL PAYMENT DETAILS ===== */}
               {paymentMethodForm === 'card' && (
-                <div className="p-5 bg-white/[0.02] border border-white/10 rounded-2xl mb-6 shadow-inner">
-                  <Text className="text-white mb-4 block text-sm font-bold"><CreditCardOutlined className="mr-2 text-[#14B8A6]" /> Card Details</Text>
+                <div className="p-5 bg-[#F7FCF7] border border-[#C8E6C9] rounded-2xl mb-6 shadow-inner">
+                  <Text className="text-gray-900 mb-4 block text-sm font-bold"><CreditCardOutlined className="mr-2 text-[#4CAF50]" /> Card Details</Text>
                   
-                  <Form.Item name="cardName" label={<span className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Name on Card</span>} rules={[{ required: true, message: 'Required' }]} className="mb-3">
-                    <Input placeholder="John Doe" className="bg-white/5 border-white/10 text-white rounded-lg h-10 hover:border-[#14B8A6] focus:border-[#14B8A6]" />
+                  <Form.Item name="cardName" label={<span className="text-gray-500 text-[10px] uppercase font-bold tracking-widest">Name on Card</span>} rules={[{ required: true, message: 'Required' }]} className="mb-3">
+                    <Input placeholder="John Doe" className="bg-white border-[#C8E6C9] text-gray-900 rounded-lg h-10 hover:border-[#4CAF50] focus:border-[#4CAF50]" />
                   </Form.Item>
                   
-                  <Form.Item name="cardNumber" label={<span className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Card Number</span>} rules={[{ required: true, len: 16, message: '16 digits' }]} className="mb-3">
-                    <Input placeholder="1234 5678 9101 1121" maxLength={16} className="bg-white/5 border-white/10 text-white rounded-lg h-10 hover:border-[#14B8A6] focus:border-[#14B8A6]" />
+                  <Form.Item name="cardNumber" label={<span className="text-gray-500 text-[10px] uppercase font-bold tracking-widest">Card Number</span>} rules={[{ required: true, len: 16, message: '16 digits' }]} className="mb-3">
+                    <Input placeholder="1234 5678 9101 1121" maxLength={16} className="bg-white border-[#C8E6C9] text-gray-900 rounded-lg h-10 hover:border-[#4CAF50] focus:border-[#4CAF50]" />
                   </Form.Item>
                   
                   <div className="flex gap-3">
-                      <Form.Item name="expiry" label={<span className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Expiry</span>} rules={[{ required: true, message: 'Required' }, { pattern: /^(0[1-9]|1[0-2])\/\d{2}$/, message: 'Use MM/YY format (e.g. 08/27)' }]} className="flex-1 mb-0">
-                        <Input placeholder="MM/YY" maxLength={5} className="bg-white/5 border-white/10 text-white rounded-lg h-10 hover:border-[#14B8A6] focus:border-[#14B8A6]"
+                      <Form.Item name="expiry" label={<span className="text-gray-500 text-[10px] uppercase font-bold tracking-widest">Expiry</span>} rules={[{ required: true, message: 'Required' }, { pattern: /^(0[1-9]|1[0-2])\/\d{2}$/, message: 'Use MM/YY format (e.g. 08/27)' }]} className="flex-1 mb-0">
+                        <Input placeholder="MM/YY" maxLength={5} className="bg-white border-[#C8E6C9] text-gray-900 rounded-lg h-10 hover:border-[#4CAF50] focus:border-[#4CAF50]"
                           onChange={(e) => {
                             let val = e.target.value.replace(/[^0-9]/g, '');
                             if (val.length > 2) val = val.slice(0, 2) + '/' + val.slice(2, 4);
@@ -480,45 +477,45 @@ const TicketSales = () => {
                           }}
                         />
                       </Form.Item>
-                      <Form.Item name="cvv" label={<span className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">CVV</span>} rules={[{ required: true, len: 3 }]} className="flex-1 mb-0">
-                        <Input placeholder="123" maxLength={3} className="bg-white/5 border-white/10 text-white rounded-lg h-10 hover:border-[#14B8A6] focus:border-[#14B8A6]" />
+                      <Form.Item name="cvv" label={<span className="text-gray-500 text-[10px] uppercase font-bold tracking-widest">CVV</span>} rules={[{ required: true, len: 3 }]} className="flex-1 mb-0">
+                        <Input placeholder="123" maxLength={3} className="bg-white border-[#C8E6C9] text-gray-900 rounded-lg h-10 hover:border-[#4CAF50] focus:border-[#4CAF50]" />
                       </Form.Item>
                   </div>
                 </div>
               )}
 
               {paymentMethodForm === 'bank' && (
-                <div className="p-5 bg-white/[0.02] border border-white/10 rounded-2xl mb-6 shadow-inner">
-                  <Text className="text-white mb-4 block text-sm font-bold"><BankOutlined className="mr-2 text-[#F97316]" /> Bank Deposit Info</Text>
-                  <div className="space-y-2 bg-[#0f172a] p-3 rounded-lg border border-white/5 mb-4 text-xs">
-                    <div className="flex justify-between"><Text type="secondary">Bank:</Text><Text strong className="text-white">Bank of Ceylon (BOC)</Text></div>
-                    <div className="flex justify-between"><Text type="secondary">Branch:</Text><Text strong className="text-white">University Branch</Text></div>
-                    <div className="flex justify-between"><Text type="secondary">Name:</Text><Text strong className="text-white">Smart Event Club</Text></div>
-                    <div className="flex justify-between"><Text type="secondary">Acc. Number:</Text><Text strong className="text-white">0084 1234 5678</Text></div>
+                <div className="p-5 bg-[#F7FCF7] border border-[#C8E6C9] rounded-2xl mb-6 shadow-inner">
+                  <Text className="text-gray-900 mb-4 block text-sm font-bold"><BankOutlined className="mr-2 text-[#F97316]" /> Bank Deposit Info</Text>
+                  <div className="space-y-2 bg-white p-3 rounded-lg border border-[#C8E6C9] mb-4 text-xs">
+                    <div className="flex justify-between"><Text type="secondary">Bank:</Text><Text strong className="text-gray-900">Bank of Ceylon (BOC)</Text></div>
+                    <div className="flex justify-between"><Text type="secondary">Branch:</Text><Text strong className="text-gray-900">University Branch</Text></div>
+                    <div className="flex justify-between"><Text type="secondary">Name:</Text><Text strong className="text-gray-900">Smart Event Club</Text></div>
+                    <div className="flex justify-between"><Text type="secondary">Acc. Number:</Text><Text strong className="text-gray-900">0084 1234 5678</Text></div>
                   </div>
-                  <Form.Item name="slip" label={<span className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Upload Deposit Slip</span>} rules={[{ required: true, message: 'Please upload the slip' }]} className="mb-0">
+                  <Form.Item name="slip" label={<span className="text-gray-500 text-[10px] uppercase font-bold tracking-widest">Upload Deposit Slip</span>} rules={[{ required: true, message: 'Please upload the slip' }]} className="mb-0">
                     <Upload action="/upload" listType="picture" maxCount={1}>
-                      <Button icon={<UploadOutlined />} className="w-full h-10 bg-white/5 border-dashed border-white/20 text-gray-400 hover:text-[#14B8A6] hover:border-[#14B8A6] rounded-lg transition-all hover:bg-white/10">Click to Upload Slip</Button>
+                      <Button icon={<UploadOutlined />} className="w-full h-10 bg-white border-dashed border-[#C8E6C9] text-gray-600 hover:text-[#2E7D32] hover:border-[#4CAF50] rounded-lg transition-all hover:bg-[#E8F5E9]">Click to Upload Slip</Button>
                     </Upload>
                   </Form.Item>
                 </div>
               )}
 
               {/* ===== TOTAL SUMMARY ===== */}
-              <div className="mb-6 p-4 rounded-2xl border border-white/10 bg-white/[0.03]">
+              <div className="mb-6 p-4 rounded-2xl border border-[#C8E6C9] bg-[#E8F5E9]/50">
                 <div className="flex justify-between items-center">
-                  <Text className="text-gray-400 text-sm">Pass: {getSelectedTypeInfo()?.label}</Text>
-                  <Text className="text-white font-bold">Rs. {getSelectedTypeInfo()?.price}.00</Text>
+                  <Text className="text-gray-600 text-sm">Pass: {getSelectedTypeInfo()?.label}</Text>
+                  <Text className="text-gray-900 font-bold">Rs. {getSelectedTypeInfo()?.price}.00</Text>
                 </div>
                 {selectedParkingSlot && (
                   <div className="flex justify-between items-center mt-1">
-                    <Text className="text-gray-400 text-sm">Parking ({selectedParkingSlot})</Text>
-                    <Text className="text-white font-bold">Rs. 500.00</Text>
+                    <Text className="text-gray-600 text-sm">Parking ({selectedParkingSlot})</Text>
+                    <Text className="text-gray-900 font-bold">Rs. 500.00</Text>
                   </div>
                 )}
-                <div className="border-t border-white/10 mt-2 pt-2 flex justify-between items-center">
-                  <Text className="text-white font-black uppercase text-xs tracking-widest">Total</Text>
-                  <Text className="text-[#14B8A6] font-black text-xl">
+                <div className="border-t border-[#C8E6C9] mt-2 pt-2 flex justify-between items-center">
+                  <Text className="text-gray-900 font-black uppercase text-xs tracking-widest">Total</Text>
+                  <Text className="text-[#4CAF50] font-black text-xl">
                     Rs. {getSelectedTypeInfo()?.price + (selectedParkingSlot ? 500 : 0)}.00
                   </Text>
                 </div>
@@ -527,11 +524,11 @@ const TicketSales = () => {
               </div>
 
               {/* WIZARD NAVIGATION CONTROLS */}
-              <div className="flex justify-between items-center mt-8 pt-4 border-t border-white/10">
+              <div className="flex justify-between items-center mt-8 pt-4 border-t border-[#E8F5E9]">
                 <Button 
                   onClick={handlePrev} 
                   disabled={currentStep === 0}
-                  className={`h-12 px-8 rounded-xl font-bold transition-all border-0 ${currentStep === 0 ? 'opacity-0 cursor-default hidden' : 'bg-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
+                  className={`h-12 px-8 rounded-xl font-bold transition-all border-0 ${currentStep === 0 ? 'opacity-0 cursor-default hidden' : 'bg-transparent text-gray-500 hover:text-[#2E7D32] hover:bg-[#E8F5E9]'}`}
                 >
                   BACK
                 </Button>
@@ -540,7 +537,7 @@ const TicketSales = () => {
                   <Button 
                     type="primary" 
                     onClick={handleNext}
-                    className="h-12 px-10 bg-[#14B8A6] hover:bg-[#0F766E] border-0 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all ml-auto text-white"
+                    className="h-12 px-10 bg-[#4CAF50] hover:bg-[#43A047] border-0 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all ml-auto text-white"
                   >
                     CONTINUE TO NEXT
                   </Button>
@@ -572,12 +569,12 @@ const TicketSales = () => {
         >
           <div className="text-center py-4">
             {/* Success icon */}
-            <div className="w-16 h-16 rounded-full bg-[#14B8A6]/20 border-2 border-[#14B8A6] flex items-center justify-center mx-auto mb-4">
-              <CheckOutlined style={{ fontSize: 28, color: '#14B8A6' }} />
+            <div className="w-16 h-16 rounded-full bg-[#4CAF50]/20 border-2 border-[#4CAF50] flex items-center justify-center mx-auto mb-4">
+              <CheckOutlined style={{ fontSize: 28, color: '#4CAF50' }} />
             </div>
 
-            <h2 className="text-2xl font-black text-white mb-1">Booking Confirmed!</h2>
-            <p className="text-gray-400 text-sm mb-6">Your ticket has been reserved successfully.</p>
+            <h2 className="text-2xl font-black text-gray-900 mb-1">Booking Confirmed!</h2>
+            <p className="text-gray-600 text-sm mb-6">Your ticket has been reserved successfully.</p>
 
             {/* QR Code via Google Charts API */}
             <div className="bg-white p-4 rounded-2xl inline-block mb-6 shadow-lg">
@@ -591,32 +588,32 @@ const TicketSales = () => {
             </div>
 
             {/* Booking details */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-left mb-6 space-y-2">
+            <div className="bg-[#F7FCF7] border border-[#C8E6C9] rounded-2xl p-4 text-left mb-6 space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Booking ID</span>
-                <span className="text-[#14B8A6] font-black tracking-wider">{bookingConfirm.bookingId}</span>
+                <span className="text-gray-600">Booking ID</span>
+                <span className="text-[#2E7D32] font-black tracking-wider">{bookingConfirm.bookingId}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Name</span>
-                <span className="text-white font-semibold">{bookingConfirm.name}</span>
+                <span className="text-gray-600">Name</span>
+                <span className="text-gray-900 font-semibold">{bookingConfirm.name}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Event</span>
-                <span className="text-white font-semibold">{bookingConfirm.event}</span>
+                <span className="text-gray-600">Event</span>
+                <span className="text-gray-900 font-semibold">{bookingConfirm.event}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Pass</span>
-                <span className="text-white font-semibold">{bookingConfirm.passType} × {bookingConfirm.quantity}</span>
+                <span className="text-gray-600">Pass</span>
+                <span className="text-gray-900 font-semibold">{bookingConfirm.passType} × {bookingConfirm.quantity}</span>
               </div>
               {bookingConfirm.parking && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Parking</span>
+                  <span className="text-gray-600">Parking</span>
                   <span className="text-[#F97316] font-semibold">Slot {bookingConfirm.parking}</span>
                 </div>
               )}
-              <div className="flex justify-between text-sm border-t border-white/10 pt-2 mt-2">
-                <span className="text-white font-black uppercase text-xs tracking-widest">Total Paid</span>
-                <span className="text-[#14B8A6] font-black text-lg">Rs. {bookingConfirm.total}.00</span>
+              <div className="flex justify-between text-sm border-t border-[#C8E6C9] pt-2 mt-2">
+                <span className="text-gray-900 font-black uppercase text-xs tracking-widest">Total Paid</span>
+                <span className="text-[#4CAF50] font-black text-lg">Rs. {bookingConfirm.total}.00</span>
               </div>
             </div>
 
@@ -625,7 +622,7 @@ const TicketSales = () => {
             <Button
               onClick={() => setBookingConfirm(null)}
               className="w-full h-12 rounded-xl font-bold uppercase tracking-widest text-white border-0"
-              style={{ background: 'linear-gradient(to right, #0F766E, #14B8A6)' }}
+              style={{ background: 'linear-gradient(to right, #43A047, #66BB6A)' }}
             >
               Done
             </Button>

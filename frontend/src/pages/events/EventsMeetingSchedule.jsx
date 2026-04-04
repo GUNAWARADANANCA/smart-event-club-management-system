@@ -63,7 +63,7 @@ const EventsMeetingSchedule = () => {
     return (
       <Timeline style={{ marginTop: 20 }}>
         {filteredMeetings.map((mtg, index) => (
-          <Timeline.Item key={index} color={type === 'event' ? '#14B8A6' : '#F59E0B'}>
+          <Timeline.Item key={index} color={type === 'event' ? '#4CAF50' : '#F59E0B'}>
             <div style={{ 
               padding: 16, 
               background: '#F8FAFC', 
@@ -91,7 +91,7 @@ const EventsMeetingSchedule = () => {
                 shape="round"
                 href={mtg.link}
                 target="_blank"
-                style={{ background: '#14B8A6', borderColor: '#14B8A6' }}
+                style={{ background: '#4CAF50', borderColor: '#43A047' }}
               >
                 Join Meeting
               </Button>
@@ -113,7 +113,7 @@ const EventsMeetingSchedule = () => {
           type="primary" 
           icon={<PlusOutlined />} 
           size="large" 
-          style={{ background: '#14B8A6', borderColor: '#0F766E' }}
+          style={{ background: '#4CAF50', borderColor: '#43A047' }}
           onClick={() => setIsModalVisible(true)}
         >
           Schedule Meeting
@@ -205,7 +205,7 @@ const EventsMeetingSchedule = () => {
           </Row>
 
           <Form.Item style={{ marginBottom: 0, marginTop: 24 }}>
-            <Button type="primary" htmlType="submit" size="large" block style={{ background: '#14B8A6', borderColor: '#0F766E', color: 'black', fontWeight: 'bold' }} loading={loading}>
+            <Button type="primary" htmlType="submit" size="large" block style={{ background: '#4CAF50', borderColor: '#43A047', color: '#fff', fontWeight: 'bold' }} loading={loading}>
               Schedule Meeting
             </Button>
           </Form.Item>
@@ -235,10 +235,10 @@ const EventsMeetingSchedule = () => {
           color: #64748B !important;
         }
         .ant-tabs-tab-active .ant-tabs-tab-btn {
-          color: #14B8A6 !important;
+          color: #4CAF50 !important;
         }
         .ant-tabs-ink-bar {
-          background: #14B8A6 !important;
+          background: #4CAF50 !important;
         }
       `}</style>
     </div>

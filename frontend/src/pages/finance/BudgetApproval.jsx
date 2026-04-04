@@ -13,12 +13,12 @@ const downloadBudgetPDF = (budget) => {
       <title>Budget Proposal - ${budget.event}</title>
       <style>
         body { font-family: Arial, sans-serif; padding: 40px; color: #111; }
-        h1 { color: #0F766E; border-bottom: 2px solid #0F766E; padding-bottom: 8px; }
-        h2 { color: #0F766E; margin-top: 24px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        h1 { color: #2E7D32; border-bottom: 2px solid #4CAF50; padding-bottom: 8px; }
+        h2 { color: #2E7D32; margin-top: 24px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
         table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-        th { background: #0F766E; color: white; padding: 10px; text-align: left; }
+        th { background: #2E7D32; color: white; padding: 10px; text-align: left; }
         td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
-        .total { font-weight: bold; font-size: 16px; color: #0F766E; }
+        .total { font-weight: bold; font-size: 16px; color: #2E7D32; }
         .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: bold; background: ${budget.status === 'Approved' ? '#d1fae5' : '#fef3c7'}; color: ${budget.status === 'Approved' ? '#065f46' : '#92400e'}; }
         .footer { margin-top: 40px; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 12px; }
       </style>
@@ -143,12 +143,12 @@ const BudgetApproval = () => {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', padding: '24px', background: '#0F172A' }}>
-      <Title level={2} style={{ color: '#FFFFFF', marginBottom: 24 }}>Budget Approvals</Title>
+    <div style={{ minHeight: '100vh', padding: '24px', background: '#FAFAFA' }}>
+      <Title level={2} style={{ color: '#0F172A', marginBottom: 24 }}>Budget Approvals</Title>
       <Table columns={columns} dataSource={data} rowKey="id" />
 
       <Modal
-        title={<span style={{ color: '#FFFFFF' }}>Review Budget Proposal: {selectedBudget?.event}</span>}
+        title={<span style={{ color: '#0F172A' }}>Review Budget Proposal: {selectedBudget?.event}</span>}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={[
@@ -178,7 +178,7 @@ const BudgetApproval = () => {
         className="glass-modal"
       >
         {selectedBudget && (
-          <Descriptions bordered column={1} size="small" labelStyle={{ width: '150px', color: '#FFFFFF', fontWeight: 'bold' }} contentStyle={{ color: '#FFFFFF' }}>
+          <Descriptions bordered column={1} size="small" labelStyle={{ width: '150px', color: '#374151', fontWeight: 'bold', background: '#E8F5E9' }} contentStyle={{ color: '#1F2937', background: '#FFFFFF' }}>
              <Descriptions.Item label="Status">
                <Badge status={selectedBudget.status === 'Approved' ? 'success' : selectedBudget.status === 'Pending' ? 'warning' : 'error'} text={selectedBudget.status} />
              </Descriptions.Item>

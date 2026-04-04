@@ -89,7 +89,7 @@ const EventManagement = () => {
         <Button 
           type="primary" 
           size="large"
-          style={{ background: '#14B8A6', borderColor: '#0F766E', fontWeight: 'bold', color: '#000' }}
+          style={{ background: '#4CAF50', borderColor: '#43A047', fontWeight: 'bold', color: '#fff' }}
           onClick={() => navigate('/events/create')}
         >
           Craft New Event Post

@@ -38,13 +38,13 @@ const ViewFeedback = () => {
       title: 'User',
       dataIndex: 'user',
       key: 'user',
-      render: (text) => <Text className="text-white font-bold">{text}</Text>,
+      render: (text) => <Text className="text-slate-900 font-bold">{text}</Text>,
     },
     {
       title: 'Rating',
       dataIndex: 'rating',
       key: 'rating',
-      render: (rating) => <Rate disabled defaultValue={rating} className="text-[#14B8A6] text-xs" />,
+      render: (rating) => <Rate disabled defaultValue={rating} className="text-[#4CAF50] text-xs" />,
     },
     {
       title: 'Category',
@@ -62,7 +62,7 @@ const ViewFeedback = () => {
       title: 'Subject',
       dataIndex: 'subject',
       key: 'subject',
-      render: (text) => <Text className="text-gray-300">{text}</Text>,
+      render: (text) => <Text className="text-slate-700">{text}</Text>,
     },
     {
       title: 'Date',
@@ -76,7 +76,7 @@ const ViewFeedback = () => {
       render: (_, record) => (
         <Button 
           type="link" 
-          className="text-[#14B8A6] hover:text-[#0F766E] p-0"
+          className="text-[#4CAF50] hover:text-[#2E7D32] p-0"
           onClick={() => console.log('View details', record)}
         >
           View Details
@@ -86,9 +86,9 @@ const ViewFeedback = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-[#14B8A6]/30 rounded-3xl overflow-hidden shadow-2xl relative p-6 md:p-8">
+    <div className="min-h-screen bg-[#F8FAF8] font-sans selection:bg-[#4CAF50]/25 rounded-3xl overflow-hidden shadow-sm relative p-6 md:p-8">
       {/* Ambient background glow */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#0F766E]/5 to-transparent pointer-events-none z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#4CAF50]/8 to-transparent pointer-events-none z-0"></div>
       
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex items-center justify-between mb-8">
@@ -96,16 +96,16 @@ const ViewFeedback = () => {
             <Button 
               icon={<ArrowLeft size={18} />} 
               onClick={() => navigate(-1)}
-              className="hover:scale-105 transition-transform bg-white/10 border-white/20 text-slate-800 rounded-xl"
+              className="hover:scale-105 transition-transform bg-white border border-[#C8E6C9] text-slate-800 rounded-xl shadow-sm"
             />
             <Title level={2} className="m-0 !text-slate-800 tracking-tight font-black uppercase tracking-tighter">
-              Feedback <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#14B8A6]">Center</span>
+              Feedback <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] to-[#4CAF50]">Center</span>
             </Title>
           </div>
           <Button 
             icon={<MessageCircle size={18} />} 
             onClick={() => setFeedbackModal(true)}
-            style={{ background: 'linear-gradient(to right, #14B8A6, #0F766E)', border: 'none', color: '#fff', fontWeight: 700, borderRadius: 12 }}
+            style={{ background: 'linear-gradient(to right, #43A047, #4CAF50)', border: 'none', color: '#fff', fontWeight: 700, borderRadius: 12, boxShadow: '0 4px 14px rgba(76, 175, 80, 0.25)' }}
           >
             Your Feedback
           </Button>
@@ -129,9 +129,9 @@ const ViewFeedback = () => {
           ))}
         </div>
 
-        <Card className="bg-[#0F172A] border-[#1E293B] shadow-2xl rounded-3xl overflow-hidden">
+        <Card className="bg-white border-[#C8E6C9] shadow-lg rounded-3xl overflow-hidden">
           <div className="mb-6 flex items-center justify-between">
-            <Title level={4} className="m-0 !text-white font-bold uppercase tracking-widest text-xs border-b border-white/10 pb-2">
+            <Title level={4} className="m-0 !text-slate-800 font-bold uppercase tracking-widest text-xs border-b border-[#C8E6C9] pb-2">
               Recent Submissions
             </Title>
             <Text className="text-gray-500 text-xs italic">Syncing live data...</Text>
@@ -142,46 +142,48 @@ const ViewFeedback = () => {
             dataSource={feedbacks} 
             pagination={{ pageSize: 5 }}
             className="dark-table"
-            rowClassName="hover:bg-white/5 cursor-pointer transform transition-all"
+            rowClassName="hover:bg-[#E8F5E9]/50 cursor-pointer transform transition-all"
           />
         </Card>
       </div>
 
       <style>{`
+        .dark-table .ant-table {
           background: transparent !important;
-          color: white !important;
+          color: #1F2937 !important;
         }
         .dark-table .ant-table-thead > tr > th {
-          background: rgba(255, 255, 255, 0.05) !important;
-          color: rgba(255, 255, 255, 0.5) !important;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+          background: #E8F5E9 !important;
+          color: #2E7D32 !important;
+          border-bottom: 1px solid #C8E6C9 !important;
           font-size: 11px !important;
           text-transform: uppercase !important;
           letter-spacing: 0.1em !important;
           font-weight: 800 !important;
         }
         .dark-table .ant-table-tbody > tr > td {
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+          border-bottom: 1px solid #E8F5E9 !important;
           padding: 16px !important;
+          background: #FFFFFF !important;
         }
         .dark-table .ant-pagination-item {
-          background: rgba(255, 255, 255, 0.05) !important;
-          border-color: rgba(255, 255, 255, 0.1) !important;
+          background: #FFFFFF !important;
+          border-color: #C8E6C9 !important;
         }
         .dark-table .ant-pagination-item a {
-          color: rgba(255, 255, 255, 0.7) !important;
+          color: #475569 !important;
         }
         .dark-table .ant-pagination-item-active {
-          border-color: #14B8A6 !important;
+          border-color: #4CAF50 !important;
         }
         .dark-table .ant-pagination-item-active a {
-          color: #14B8A6 !important;
+          color: #2E7D32 !important;
         }
         .dark-table .ant-pagination-prev .ant-pagination-item-link,
         .dark-table .ant-pagination-next .ant-pagination-item-link {
-          background: rgba(255, 255, 255, 0.05) !important;
-          color: rgba(255, 255, 255, 0.7) !important;
-          border-color: rgba(255, 255, 255, 0.1) !important;
+          background: #FFFFFF !important;
+          color: #475569 !important;
+          border-color: #C8E6C9 !important;
         }
       `}</style>
 
@@ -191,34 +193,34 @@ const ViewFeedback = () => {
         footer={null}
         centered
         width={520}
-        styles={{ content: { background: '#1E293B', borderRadius: 16, padding: 32 }, header: { background: '#1E293B' } }}
+        styles={{ content: { background: '#FFFFFF', borderRadius: 16, padding: 32 }, header: { background: '#FFFFFF', borderBottom: '1px solid #C8E6C9' } }}
       >
         <div style={{ marginBottom: 24 }}>
-          <h2 style={{ color: '#fff', fontWeight: 800, fontSize: 22, margin: 0 }}>Share Your Feedback</h2>
-          <p style={{ color: '#94A3B8', marginTop: 4, fontSize: 13 }}>Help us improve your experience.</p>
+          <h2 style={{ color: '#0F172A', fontWeight: 800, fontSize: 22, margin: 0 }}>Share Your Feedback</h2>
+          <p style={{ color: '#64748B', marginTop: 4, fontSize: 13 }}>Help us improve your experience.</p>
         </div>
         <Form form={form} layout="vertical" onFinish={handleSubmitFeedback}>
-          <Form.Item name="name" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Your Name</span>}>
-            <Input placeholder="Enter your name" style={{ background: '#0F172A', border: '1px solid #334155', color: '#fff', borderRadius: 10 }} />
+          <Form.Item name="name" label={<span style={{ color: '#475569', fontWeight: 600 }}>Your Name</span>}>
+            <Input placeholder="Enter your name" style={{ background: '#FFFFFF', border: '1px solid #C8E6C9', color: '#1F2937', borderRadius: 10 }} />
           </Form.Item>
-          <Form.Item name="rating" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Rating</span>} rules={[{ required: true, message: 'Please give a rating' }]}>
-            <Rate style={{ color: '#14B8A6' }} />
+          <Form.Item name="rating" label={<span style={{ color: '#475569', fontWeight: 600 }}>Rating</span>} rules={[{ required: true, message: 'Please give a rating' }]}>
+            <Rate style={{ color: '#4CAF50' }} />
           </Form.Item>
-          <Form.Item name="category" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Category</span>} rules={[{ required: true, message: 'Please select a category' }]}>
-            <Select placeholder="Select category" dropdownStyle={{ background: '#1E293B' }}>
+          <Form.Item name="category" label={<span style={{ color: '#475569', fontWeight: 600 }}>Category</span>} rules={[{ required: true, message: 'Please select a category' }]}>
+            <Select placeholder="Select category" dropdownStyle={{ background: '#FFFFFF', border: '1px solid #C8E6C9' }}>
               {['General', 'Bug Report', 'Feature Request', 'UI/UX'].map(c => (
                 <Select.Option key={c} value={c}>{c}</Select.Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="subject" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Subject</span>} rules={[{ required: true, message: 'Please enter a subject' }]}>
-            <Input placeholder="Briefly describe your feedback" style={{ background: '#0F172A', border: '1px solid #334155', color: '#fff', borderRadius: 10 }} />
+          <Form.Item name="subject" label={<span style={{ color: '#475569', fontWeight: 600 }}>Subject</span>} rules={[{ required: true, message: 'Please enter a subject' }]}>
+            <Input placeholder="Briefly describe your feedback" style={{ background: '#FFFFFF', border: '1px solid #C8E6C9', color: '#1F2937', borderRadius: 10 }} />
           </Form.Item>
-          <Form.Item name="message" label={<span style={{ color: '#94A3B8', fontWeight: 600 }}>Message</span>} rules={[{ required: true, message: 'Please enter your message' }]}>
-            <Input.TextArea rows={4} placeholder="Write your detailed feedback..." style={{ background: '#0F172A', border: '1px solid #334155', color: '#fff', borderRadius: 10 }} />
+          <Form.Item name="message" label={<span style={{ color: '#475569', fontWeight: 600 }}>Message</span>} rules={[{ required: true, message: 'Please enter your message' }]}>
+            <Input.TextArea rows={4} placeholder="Write your detailed feedback..." style={{ background: '#FFFFFF', border: '1px solid #C8E6C9', color: '#1F2937', borderRadius: 10 }} />
           </Form.Item>
           <Form.Item style={{ marginBottom: 0 }}>
-            <Button htmlType="submit" block style={{ background: 'linear-gradient(to right, #14B8A6, #0F766E)', border: 'none', color: '#fff', fontWeight: 700, borderRadius: 10, height: 44, fontSize: 15 }}>
+            <Button htmlType="submit" block style={{ background: 'linear-gradient(to right, #43A047, #4CAF50)', border: 'none', color: '#fff', fontWeight: 700, borderRadius: 10, height: 44, fontSize: 15 }}>
               Submit Feedback
             </Button>
           </Form.Item>

@@ -52,8 +52,8 @@ const lectures = [
     registered: 22,
     description: 'Explore cloud-native design patterns, CI/CD pipelines, and container orchestration using Docker and Kubernetes.',
     tags: ['Cloud', 'DevOps', 'IT'],
-    color: '#14B8A6',
-    avatarBg: 'linear-gradient(135deg, #14B8A6, #0F766E)',
+    color: '#4CAF50',
+    avatarBg: 'linear-gradient(135deg, #4CAF50, #2E7D32)',
   },
   {
     id: 4,
@@ -139,11 +139,11 @@ const LecturePanel = () => {
   };
 
   return (
-    <div style={{ background: '#0F172A', minHeight: '100vh', padding: '0' }}>
+    <div style={{ background: '#FAFAFA', minHeight: '100vh', padding: '0' }}>
 
       {/* Top Nav */}
-      <nav style={{ background: '#0F172A', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 24, padding: '18px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '24px', position: 'sticky', top: 16, zIndex: 50 }}>
-        <h1 style={{ margin: 0, fontSize: 20, fontWeight: 900, background: 'linear-gradient(to right, #1FAF9A, #14B8A6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textTransform: 'uppercase', letterSpacing: '-0.5px' }}>
+      <nav style={{ background: '#FAFAFA', border: '1px solid rgba(200, 230, 201, 0.9)', borderRadius: 24, padding: '18px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '24px', position: 'sticky', top: 16, zIndex: 50 }}>
+        <h1 style={{ margin: 0, fontSize: 20, fontWeight: 900, background: 'linear-gradient(to right, #2E7D32, #4CAF50)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textTransform: 'uppercase', letterSpacing: '-0.5px' }}>
           Lecture Panel
         </h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28, fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', color: '#64748B' }}>
@@ -151,7 +151,7 @@ const LecturePanel = () => {
             <span key={item}
               onClick={() => navigate(`/${item.toLowerCase().replace(' ', '-')}`)}
               style={{ cursor: 'pointer' }}
-              onMouseEnter={e => e.target.style.color = '#fff'}
+              onMouseEnter={e => e.target.style.color = '#2E7D32'}
               onMouseLeave={e => e.target.style.color = '#64748B'}
             >{item}</span>
           ))}
@@ -182,8 +182,8 @@ const LecturePanel = () => {
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#6366F122', border: '1px solid #6366F144', borderRadius: 999, padding: '4px 16px', color: '#6366F1', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 16 }}>
             <ReadOutlined /> Academic Sessions
           </div>
-          <h2 style={{ color: '#FFFFFF', fontSize: 48, fontWeight: 900, margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: '-1px' }}>
-            University <span style={{ background: 'linear-gradient(to right, #6366F1, #14B8A6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Lectures</span>
+          <h2 style={{ color: '#1F2937', fontSize: 48, fontWeight: 900, margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: '-1px' }}>
+            University <span style={{ background: 'linear-gradient(to right, #6366F1, #4CAF50)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Lectures</span>
           </h2>
           <p style={{ color: '#64748B', fontSize: 16, margin: 0 }}>
             Browse and register for upcoming academic sessions hosted by faculty.
@@ -195,9 +195,9 @@ const LecturePanel = () => {
           {[
             { label: 'Total Lectures', value: lectureData.length, color: '#6366F1' },
             { label: 'Open Seats', value: lectureData.reduce((a, l) => a + (l.seats - l.registered), 0), color: '#22C55E' },
-            { label: 'Departments', value: [...new Set(lectureData.map(l => l.department))].length, color: '#14B8A6' },
+            { label: 'Departments', value: [...new Set(lectureData.map(l => l.department))].length, color: '#4CAF50' },
           ].map(({ label, value, color }) => (
-            <div key={label} style={{ background: '#1E293B', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '16px 32px', textAlign: 'center' }}>
+            <div key={label} style={{ background: '#FFFFFF', border: '1px solid rgba(200, 230, 201, 0.85)', borderRadius: 16, padding: '16px 32px', textAlign: 'center' }}>
               <div style={{ color, fontSize: 28, fontWeight: 900 }}>{value}</div>
               <div style={{ color: '#64748B', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: 2 }}>{label}</div>
             </div>
@@ -214,7 +214,7 @@ const LecturePanel = () => {
             return (
               <Col xs={24} md={12} lg={8} key={lecture.id}>
                 <div style={{
-                  background: '#1E293B', border: '1px solid rgba(255,255,255,0.07)',
+                  background: '#FFFFFF', border: '1px solid rgba(200, 230, 201, 0.85)',
                   borderRadius: 24, overflow: 'hidden', height: '100%',
                   display: 'flex', flexDirection: 'column',
                   transition: 'transform 0.2s, box-shadow 0.2s',
@@ -222,7 +222,7 @@ const LecturePanel = () => {
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = `0 16px 40px ${lecture.color}33`; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                 >
-                  <div style={{ height: 4, background: `linear-gradient(to right, ${lecture.color}, #0F172A)` }} />
+                  <div style={{ height: 4, background: `linear-gradient(to right, ${lecture.color}, #FAFAFA)` }} />
 
                   <div style={{ padding: '22px 24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
@@ -237,7 +237,7 @@ const LecturePanel = () => {
                     </div>
 
                     {/* Lecturer photo + name */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, padding: '12px 14px', background: '#0F172A', borderRadius: 14, border: '1px solid #1E293B' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, padding: '12px 14px', background: '#F7FCF7', borderRadius: 14, border: '1px solid #C8E6C9' }}>
                       <div style={{
                         width: 48, height: 48, borderRadius: '50%',
                         background: lecture.avatarBg,
@@ -248,13 +248,13 @@ const LecturePanel = () => {
                         {lecture.lecturerInitials}
                       </div>
                       <div>
-                        <div style={{ color: '#FFFFFF', fontWeight: 700, fontSize: 14 }}>{lecture.lecturer}</div>
+                        <div style={{ color: '#1F2937', fontWeight: 700, fontSize: 14 }}>{lecture.lecturer}</div>
                         <div style={{ color: '#64748B', fontSize: 11, marginTop: 2 }}>{lecture.lecturerTitle}</div>
                       </div>
                     </div>
 
                     {/* Title */}
-                    <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: 16, lineHeight: 1.3, marginBottom: 10 }}>
+                    <div style={{ color: '#1F2937', fontWeight: 800, fontSize: 16, lineHeight: 1.3, marginBottom: 10 }}>
                       {lecture.title}
                     </div>
 
@@ -269,8 +269,8 @@ const LecturePanel = () => {
 
                     {/* Info */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 14 }}>
-                      <span style={{ color: '#CBD5E1', fontSize: 13 }}><CalendarOutlined style={{ color: '#6366F1', marginRight: 7 }} />{lecture.date} · {lecture.time}</span>
-                      <span style={{ color: '#CBD5E1', fontSize: 13 }}><EnvironmentOutlined style={{ color: '#14B8A6', marginRight: 7 }} />{lecture.venue}</span>
+                      <span style={{ color: '#4B5563', fontSize: 13 }}><CalendarOutlined style={{ color: '#6366F1', marginRight: 7 }} />{lecture.date} · {lecture.time}</span>
+                      <span style={{ color: '#4B5563', fontSize: 13 }}><EnvironmentOutlined style={{ color: '#4CAF50', marginRight: 7 }} />{lecture.venue}</span>
                     </div>
 
                     {/* Seat progress */}
@@ -279,7 +279,7 @@ const LecturePanel = () => {
                         <span style={{ color: '#64748B', fontSize: 11 }}>🪑 {isFull ? 'No seats available' : `${seatsLeft} seats left`}</span>
                         <span style={{ color: '#64748B', fontSize: 11 }}>{fillPct}% filled</span>
                       </div>
-                      <div style={{ background: '#0F172A', borderRadius: 999, height: 5 }}>
+                      <div style={{ background: '#E8F5E9', borderRadius: 999, height: 5 }}>
                         <div style={{ width: `${fillPct}%`, height: '100%', borderRadius: 999, background: fillPct >= 90 ? '#EF4444' : lecture.color, transition: 'width 0.4s' }} />
                       </div>
                     </div>
@@ -312,10 +312,10 @@ const LecturePanel = () => {
           title={null}
         >
           {/* Accent bar */}
-          <div style={{ height: 4, background: `linear-gradient(to right, ${selected.color}, #0F172A)`, margin: '-20px -24px 24px', borderRadius: '8px 8px 0 0' }} />
+          <div style={{ height: 4, background: `linear-gradient(to right, ${selected.color}, #FAFAFA)`, margin: '-20px -24px 24px', borderRadius: '8px 8px 0 0' }} />
 
           {/* Lecturer profile */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, padding: '16px', background: '#0F172A', borderRadius: 16, border: '1px solid #1E293B' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, padding: '16px', background: '#F7FCF7', borderRadius: 16, border: '1px solid #C8E6C9' }}>
             <div style={{
               width: 64, height: 64, borderRadius: '50%',
               background: selected.avatarBg,
@@ -326,7 +326,7 @@ const LecturePanel = () => {
               {selected.lecturerInitials}
             </div>
             <div>
-              <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: 18 }}>{selected.lecturer}</div>
+              <div style={{ color: '#1F2937', fontWeight: 800, fontSize: 18 }}>{selected.lecturer}</div>
               <div style={{ color: '#64748B', fontSize: 13, marginTop: 3 }}>{selected.lecturerTitle}</div>
               <span style={{ background: `${selected.color}22`, color: selected.color, borderRadius: 999, padding: '2px 10px', fontSize: 11, fontWeight: 700, display: 'inline-block', marginTop: 6 }}>
                 {selected.department}
@@ -335,7 +335,7 @@ const LecturePanel = () => {
           </div>
 
           {/* Title */}
-          <div style={{ color: '#FFFFFF', fontWeight: 900, fontSize: 22, marginBottom: 10 }}>{selected.title}</div>
+          <div style={{ color: '#1F2937', fontWeight: 900, fontSize: 22, marginBottom: 10 }}>{selected.title}</div>
 
           {/* Tags */}
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
@@ -345,22 +345,22 @@ const LecturePanel = () => {
           </div>
 
           {/* Description */}
-          <div style={{ background: '#0F172A', borderRadius: 12, padding: '14px 16px', marginBottom: 20, border: '1px solid #1E293B' }}>
-            <div style={{ color: '#94A3B8', fontSize: 14, lineHeight: 1.7 }}>{selected.description}</div>
+          <div style={{ background: '#F7FCF7', borderRadius: 12, padding: '14px 16px', marginBottom: 20, border: '1px solid #C8E6C9' }}>
+            <div style={{ color: '#4B5563', fontSize: 14, lineHeight: 1.7 }}>{selected.description}</div>
           </div>
 
           {/* Details grid */}
           <Row gutter={[12, 12]} style={{ marginBottom: 8 }}>
             {[
               { icon: <CalendarOutlined />, label: 'Date & Time', value: `${selected.date} · ${selected.time}`, color: '#6366F1' },
-              { icon: <EnvironmentOutlined />, label: 'Venue', value: selected.venue, color: '#14B8A6' },
+              { icon: <EnvironmentOutlined />, label: 'Venue', value: selected.venue, color: '#4CAF50' },
               { icon: <TeamOutlined />, label: 'Seats Left', value: `${selected.seats - selected.registered} / ${selected.seats}`, color: '#F59E0B' },
             ].map(({ icon, label, value, color }) => (
               <Col span={8} key={label}>
-                <div style={{ background: '#0F172A', borderRadius: 12, padding: '12px 14px', border: '1px solid #1E293B', textAlign: 'center' }}>
+                <div style={{ background: '#F7FCF7', borderRadius: 12, padding: '12px 14px', border: '1px solid #C8E6C9', textAlign: 'center' }}>
                   <div style={{ color, fontSize: 18, marginBottom: 4 }}>{icon}</div>
                   <div style={{ color: '#64748B', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4 }}>{label}</div>
-                  <div style={{ color: '#E2E8F0', fontSize: 13, fontWeight: 600 }}>{value}</div>
+                  <div style={{ color: '#1F2937', fontSize: 13, fontWeight: 600 }}>{value}</div>
                 </div>
               </Col>
             ))}
@@ -370,21 +370,21 @@ const LecturePanel = () => {
 
       {/* Registration Modal */}
       <Modal
-        title={<span style={{ color: '#FFFFFF' }}>Register — {selected?.title}</span>}
+        title={<span style={{ color: '#1F2937' }}>Register — {selected?.title}</span>}
         open={registerOpen}
         onCancel={() => setRegisterOpen(false)}
         footer={null}
         className="dark-modal"
       >
-        <div style={{ background: '#0F172A', borderRadius: 10, padding: '10px 14px', marginBottom: 20, color: '#94A3B8', fontSize: 13 }}>
+        <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 20, color: '#2E7D32', fontSize: 13, border: '1px solid #C8E6C9' }}>
           🔒 Restricted to university students. A valid university email is required.
         </div>
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <Form.Item name="fullName" label={<span style={{ color: '#94A3B8' }}>Full Name</span>}
+          <Form.Item name="fullName" label={<span style={{ color: '#4B5563' }}>Full Name</span>}
             rules={[{ required: true }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only' }]}>
             <Input size="large" />
           </Form.Item>
-          <Form.Item name="email" label={<span style={{ color: '#94A3B8' }}>University Email</span>}
+          <Form.Item name="email" label={<span style={{ color: '#4B5563' }}>University Email</span>}
             rules={[{ required: true }, { type: 'email' }, {
               validator: (_, value) =>
                 value && !value.endsWith('@my.sliit.lk') && !value.endsWith('@sliit.lk')
@@ -404,7 +404,7 @@ const LecturePanel = () => {
 
       {/* Become a Lecturer Modal */}
       <Modal
-        title={<span style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 800 }}>🎓 Become a Lecturer</span>}
+        title={<span style={{ color: '#1F2937', fontSize: 18, fontWeight: 800 }}>🎓 Become a Lecturer</span>}
         open={becomeLecturerOpen}
         onCancel={() => { setBecomeLecturerOpen(false); lecturerForm.resetFields(); }}
         footer={null}
@@ -420,26 +420,26 @@ const LecturePanel = () => {
           lecturerForm.resetFields();
         }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
-            <Form.Item name="fullName" label={<span style={{ color: '#94A3B8' }}>Full Name</span>}
+            <Form.Item name="fullName" label={<span style={{ color: '#4B5563' }}>Full Name</span>}
               rules={[{ required: true }]}>
               <Input size="large" placeholder="Dr. John Smith" />
             </Form.Item>
-            <Form.Item name="email" label={<span style={{ color: '#94A3B8' }}>University Email</span>}
+            <Form.Item name="email" label={<span style={{ color: '#4B5563' }}>University Email</span>}
               rules={[{ required: true }, { type: 'email' }]}>
               <Input size="large" placeholder="lecturer@sliit.lk" />
             </Form.Item>
-            <Form.Item name="department" label={<span style={{ color: '#94A3B8' }}>Department</span>}
+            <Form.Item name="department" label={<span style={{ color: '#4B5563' }}>Department</span>}
               rules={[{ required: true }]}>
               <Input size="large" placeholder="e.g. Computer Science" />
             </Form.Item>
-            <Form.Item name="subject" label={<span style={{ color: '#94A3B8' }}>Subject / Topic</span>}
+            <Form.Item name="subject" label={<span style={{ color: '#4B5563' }}>Subject / Topic</span>}
               rules={[{ required: true }]}>
               <Input size="large" placeholder="e.g. Machine Learning" />
             </Form.Item>
           </div>
-          <Form.Item name="bio" label={<span style={{ color: '#94A3B8' }}>Short Bio</span>}
+          <Form.Item name="bio" label={<span style={{ color: '#4B5563' }}>Short Bio</span>}
             rules={[{ required: true }]}>
-            <Input.TextArea rows={3} placeholder="Tell us about your academic background and expertise..." style={{ background: '#0F172A', borderColor: '#334155', color: '#FFFFFF', borderRadius: 10, resize: 'none' }} />
+            <Input.TextArea rows={3} placeholder="Tell us about your academic background and expertise..." style={{ background: '#FFFFFF', borderColor: '#C8E6C9', color: '#1F2937', borderRadius: 10, resize: 'none' }} />
           </Form.Item>
           <Form.Item style={{ marginBottom: 0, marginTop: 8 }}>
             <Button type="primary" htmlType="submit" size="large" block
@@ -450,15 +450,6 @@ const LecturePanel = () => {
         </Form>
       </Modal>
 
-      <style>{`
-        .dark-modal .ant-modal-content { background: #1E293B !important; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08) !important; }
-        .dark-modal .ant-modal-header { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
-        .dark-modal .ant-modal-title { color: #FFFFFF !important; }
-        .dark-modal .ant-modal-close { color: #94A3B8 !important; }
-        .dark-modal .ant-form-item-label > label { color: #94A3B8 !important; }
-        .dark-modal .ant-input { background: #0F172A !important; border-color: #334155 !important; color: #FFFFFF !important; }
-        .dark-modal .ant-input::placeholder { color: #475569 !important; }
-      `}</style>
     </div>
   );
 };
