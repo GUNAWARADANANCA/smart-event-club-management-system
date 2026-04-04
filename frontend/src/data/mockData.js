@@ -208,6 +208,14 @@ export const mockRequests = [
   }
 ];
 
+/** Event rows shown on Event Management and in Manage Requests “View status” dialog */
+export const mockManagedEvents = [
+  { id: 'E-001', title: 'Annual Tech Symposium 2026', date: '2026-08-15', venue: 'Main Hall', capacity: 500, status: 'Approved' },
+  { id: 'E-002', title: 'Robotics Workshop: Level 1', date: '2026-09-10', venue: 'Lab 04', capacity: 50, status: 'Pending' },
+  { id: 'E-003', title: 'University Cultural Night', date: '2026-10-05', venue: 'Auditorium', capacity: 1200, status: 'Approved' },
+  { id: 'E-004', title: 'Freshers Welcome: Faculty of IT', date: '2026-11-20', venue: 'Sports Ground', capacity: 2000, status: 'Rejected' },
+];
+
 export const mockFinanceRequests = [
   {
     id: 'REQ-2001',

@@ -3,6 +3,8 @@ import { Table, Button, Space, Typography, Tag, Modal, Form, Input, Select, Inpu
 import api from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
+import StudentRequestsSection from '@/components/events/StudentRequestsSection';
+import { mockManagedEvents } from '@/data/mockData';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -21,12 +23,7 @@ const EventManagement = () => {
 
   const fetchEvents = async () => {
     // Mock data for UI demonstration
-    setData([
-      { id: 'E-001', title: 'Annual Tech Symposium 2026', date: '2026-08-15', venue: 'Main Hall', capacity: 500, status: 'Approved' },
-      { id: 'E-002', title: 'Robotics Workshop: Level 1', date: '2026-09-10', venue: 'Lab 04', capacity: 50, status: 'Pending' },
-      { id: 'E-003', title: 'University Cultural Night', date: '2026-10-05', venue: 'Auditorium', capacity: 1200, status: 'Approved' },
-      { id: 'E-004', title: 'Freshers Welcome: Faculty of IT', date: '2026-11-20', venue: 'Sports Ground', capacity: 2000, status: 'Rejected' },
-    ]);
+    setData([...mockManagedEvents]);
     setLoading(false);
   };
 
@@ -95,7 +92,12 @@ const EventManagement = () => {
           Craft New Event Post
         </Button>
       </div>
-      <Table columns={columns} dataSource={data} rowKey="id" loading={loading} />
+
+      <div style={{ marginBottom: 32 }}>
+        <StudentRequestsSection />
+      </div>
+
+      {/* <Table columns={columns} dataSource={data} rowKey="id" loading={loading} /> */}
 
       <Modal 
         title={`Edit Event: ${editingEvent?.title}`} 
