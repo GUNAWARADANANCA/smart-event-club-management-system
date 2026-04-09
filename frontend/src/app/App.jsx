@@ -45,6 +45,7 @@ import EventGalleryDetail from '@/pages/events/EventGalleryDetail';
 import SecureMeetings from '@/pages/finance/SecureMeetings';
 import ViewFeedback from '@/pages/public/ViewFeedback';
 import LecturePanel from '@/pages/events/LecturePanel';
+import FeedbackForm from "@/pages/public/FeedbackForm";
 
 function App() {
   return (
@@ -89,6 +90,7 @@ function App() {
           <Route path="portal" element={<UpcomingEventsPortal />} />
           <Route path="events/lecture-panel" element={<LecturePanel />} />
           <Route path="my-events" element={<MyEvents />} />
+          <Route path="feedback" element={<FeedbackForm />} />
           
           <Route element={<EventProtectedRoute />}>
             <Route path="events" element={<EventManagement />} />
