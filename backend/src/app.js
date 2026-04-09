@@ -25,6 +25,7 @@ app.use('/api/tickets', ticketsRouter);
 app.use('/api/expenses', expensesRouter);
 app.use('/api/meetings', meetingsRouter);
 app.use('/events', eventsRouter);
+app.use("/api/feedback", require("./routes/feedback"));
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
