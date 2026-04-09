@@ -9,7 +9,7 @@ const MONGO_URI = process.env.MONGO_URI?.trim();
 const dnsServers = process.env.DNS_SERVERS?.split(',')
   .map((s) => s.trim())
   .filter(Boolean);
-if (dnsServers.length > 0) {
+if (Array.isArray(dnsServers) && dnsServers.length > 0) {
   dns.setServers(dnsServers);
 }
 
