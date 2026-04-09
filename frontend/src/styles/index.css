@@ -1,0 +1,430 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brand — light green on white (legacy --teal-* names kept for existing utilities) */
+:root {
+  --teal-primary: #4caf50;
+  --teal-secondary: #2e7d32;
+  --teal-hover: #66bb6a;
+  --teal-active: #388e3c;
+  --teal-dark: #1b5e20;
+  --teal-bg: #e8f5e9;
+  --teal-muted: #f1f8f4;
+  --teal-border: #c8e6c9;
+  --teal-gradient: linear-gradient(135deg, #43a047, #4caf50);
+  --teal-gradient-hover: linear-gradient(135deg, #4caf50, #66bb6a);
+  --teal-gradient-active: linear-gradient(135deg, #388e3c, #2e7d32);
+  --teal-shadow: 0 6px 20px rgba(76, 175, 80, 0.28);
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --surface-card: #ffffff;
+  --surface-subtle: #f7fcf7;
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--text-primary);
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Auth layout */
+.page-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(165deg, #ffffff 0%, #e8f5e9 42%, #f1f8f4 100%);
+}
+
+.page-auth .glass-input.ant-input-affix-wrapper,
+.page-auth .glass-input.ant-input {
+  background: #ffffff !important;
+  border: 1px solid var(--teal-border) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.page-auth .glass-input.ant-input-affix-wrapper-focused,
+.page-auth .glass-input.ant-input-focused,
+.page-auth .glass-input.ant-input-affix-wrapper:hover,
+.page-auth .glass-input.ant-input:hover {
+  border-color: var(--teal-primary) !important;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.18) !important;
+}
+
+.page-auth .glass-input input {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+}
+
+.page-auth .glass-input input::placeholder {
+  color: #9ca3af !important;
+}
+
+.page-auth .glass-input .ant-input-password-icon {
+  color: #6b7280 !important;
+}
+
+.page-auth .glass-input .ant-input-password-icon:hover {
+  color: var(--teal-secondary) !important;
+}
+
+.page-auth .glass-btn {
+  background: var(--teal-gradient) !important;
+  border: none !important;
+  height: 50px !important;
+  font-size: 16px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  box-shadow: var(--teal-shadow) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.page-auth .glass-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.35) !important;
+}
+
+.page-auth .link-text {
+  color: var(--teal-secondary);
+  transition: color 0.2s ease;
+}
+
+.page-auth .link-text:hover {
+  color: var(--teal-primary);
+}
+
+/* Primary gradient button */
+.btn-teal-primary {
+  background: var(--teal-gradient) !important;
+  color: #ffffff !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  padding: 10px 24px !important;
+  box-shadow: var(--teal-shadow) !important;
+  border: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-teal-primary:hover {
+  background: var(--teal-gradient-hover) !important;
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.32) !important;
+  transform: translateY(-1px);
+}
+
+.btn-teal-primary:active {
+  background: var(--teal-gradient-active) !important;
+  transform: scale(0.98);
+}
+
+.btn-teal-secondary {
+  background: transparent !important;
+  border: 2px solid var(--teal-primary) !important;
+  color: var(--teal-secondary) !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  padding: 8px 22px !important;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
+}
+
+.btn-teal-secondary:hover {
+  background: var(--teal-bg) !important;
+  color: var(--teal-dark) !important;
+  border-color: var(--teal-secondary) !important;
+}
+
+.btn-light-green {
+  background: var(--teal-bg) !important;
+  color: var(--teal-secondary) !important;
+  border: 2px solid var(--teal-primary) !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  padding: 10px 24px !important;
+  transition: background 0.2s ease, color 0.2s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-light-green:hover {
+  background: var(--teal-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.22) !important;
+}
+
+.tag-teal-pill {
+  border-radius: 999px !important;
+  padding: 4px 12px !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+
+.tag-teal-pill.active {
+  background: var(--teal-gradient) !important;
+  color: #ffffff !important;
+}
+
+.tag-teal-pill.inactive {
+  background: var(--teal-bg) !important;
+  color: var(--teal-secondary) !important;
+}
+
+/* Ant Design */
+.ant-btn-primary {
+  background: var(--teal-gradient) !important;
+  border-color: transparent !important;
+  border-radius: 10px !important;
+  box-shadow: var(--teal-shadow) !important;
+  height: auto !important;
+  padding: 10px 22px !important;
+  font-weight: 600 !important;
+}
+
+.ant-btn-primary:hover {
+  background: var(--teal-gradient-hover) !important;
+}
+
+.ant-btn-default {
+  border-radius: 10px !important;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease !important;
+}
+
+.ant-menu-item-selected {
+  background-color: var(--teal-bg) !important;
+  color: var(--teal-secondary) !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+}
+
+.ant-menu-item:hover {
+  color: var(--teal-secondary) !important;
+}
+
+.ant-tabs-ink-bar {
+  background: var(--teal-gradient) !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--teal-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.ant-card {
+  border-radius: 16px !important;
+  border: 1px solid var(--teal-border) !important;
+  box-shadow: 0 4px 14px rgba(46, 125, 50, 0.06) !important;
+  transition: box-shadow 0.2s ease !important;
+}
+
+.ant-card:hover {
+  box-shadow: 0 8px 28px rgba(46, 125, 50, 0.1) !important;
+}
+
+.ant-modal-content {
+  border-radius: 20px !important;
+}
+
+.ant-tag {
+  border-radius: 999px !important;
+}
+
+.green-select .ant-select-selector {
+  background-color: var(--teal-bg) !important;
+  color: var(--teal-secondary) !important;
+  border-color: var(--teal-border) !important;
+  border-radius: 999px !important;
+}
+
+.green-dropdown .ant-select-item-option-selected {
+  background-color: var(--teal-primary) !important;
+  color: #ffffff !important;
+}
+
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-number:focus,
+.ant-input-number-focused {
+  border-color: var(--teal-primary) !important;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2) !important;
+  outline: 0;
+}
+
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: var(--teal-primary) !important;
+}
+
+.ant-select-focused:not(.ant-select-disabled) .ant-select-selector {
+  border-color: var(--teal-primary) !important;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2) !important;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-number,
+.ant-input-number-input {
+  background-color: #ffffff !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px !important;
+}
+
+.ant-input:hover,
+.ant-input:focus,
+.ant-input-affix-wrapper:hover,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  background-color: #ffffff !important;
+}
+
+.ant-input:-webkit-autofill,
+.ant-input:-webkit-autofill:hover,
+.ant-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #e8f5e9 inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  caret-color: var(--text-primary) !important;
+}
+
+.ant-input-number-input {
+  background-color: transparent !important;
+}
+
+/* Modals — class names unchanged for compatibility */
+.dark-modal .ant-modal-content,
+.glass-modal .ant-modal-content {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--teal-border) !important;
+  box-shadow: 0 20px 50px rgba(46, 125, 50, 0.12) !important;
+}
+
+.dark-modal .ant-modal-header,
+.glass-modal .ant-modal-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--teal-border) !important;
+}
+
+.dark-modal .ant-modal-title,
+.glass-modal .ant-modal-title {
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+}
+
+.dark-modal .ant-modal-close,
+.glass-modal .ant-modal-close {
+  color: var(--text-secondary) !important;
+}
+
+.dark-modal .ant-modal-close:hover,
+.glass-modal .ant-modal-close:hover {
+  color: var(--teal-secondary) !important;
+}
+
+.dark-modal .ant-form-item-label > label,
+.glass-modal .ant-form-item-label > label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-modal .ant-input,
+.dark-modal .ant-input-affix-wrapper,
+.dark-modal .ant-input-number,
+.dark-modal .ant-picker,
+.dark-modal .ant-select-selector,
+.glass-modal .ant-input,
+.glass-modal .ant-input-affix-wrapper {
+  background: #ffffff !important;
+  border-color: var(--teal-border) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-modal .ant-input::placeholder,
+.glass-modal .ant-input::placeholder {
+  color: #9ca3af !important;
+}
+
+.dark-modal .ant-select-selection-placeholder,
+.dark-modal .ant-picker-input > input {
+  color: var(--text-secondary) !important;
+}
+
+.dark-modal .ant-picker-input > input {
+  color: var(--text-primary) !important;
+}
+
+/* Selects — shared with CreateQuiz, UserManagement */
+.dark-select .ant-select-selector {
+  background: #ffffff !important;
+  border-color: var(--teal-border) !important;
+  color: var(--text-primary) !important;
+  border-radius: 12px !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.dark-select .ant-select-selection-placeholder {
+  color: #9ca3af !important;
+}
+
+.dark-select .ant-select-arrow {
+  color: var(--teal-secondary) !important;
+}
+
+.dark-dropdown {
+  background: #ffffff !important;
+  border: 1px solid var(--teal-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 32px rgba(46, 125, 50, 0.1) !important;
+}
+
+.dark-dropdown .ant-select-item {
+  color: var(--text-primary) !important;
+}
+
+.dark-dropdown .ant-select-item-option-active {
+  background: var(--teal-bg) !important;
+}
+
+.dark-dropdown .ant-select-item-option-selected {
+  background: rgba(76, 175, 80, 0.15) !important;
+  color: var(--teal-dark) !important;
+  font-weight: 600 !important;
+}
+
+/* Main layout sider (light) */
+.layout-sider-light.ant-layout-sider {
+  box-shadow: 2px 0 24px rgba(46, 125, 50, 0.06) !important;
+}
+
+.custom-menu.ant-menu-light .ant-menu-item {
+  border-radius: 10px !important;
+  margin: 4px 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.custom-menu.ant-menu-light .ant-menu-item-icon {
+  color: var(--teal-secondary) !important;
+}
+
+/* Ticket sales table (light) */
+.custom-ticket-table .ant-table {
+  background: transparent !important;
+}
+.custom-ticket-table .ant-table-thead > tr > th {
+  background: #e8f5e9 !important;
+  color: #1f2937 !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid #c8e6c9 !important;
+}
+.custom-ticket-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #e8f5e9 !important;
+}
+.custom-ticket-table .ant-table-tbody > tr:hover > td {
+  background: #f7fcf7 !important;
+}
