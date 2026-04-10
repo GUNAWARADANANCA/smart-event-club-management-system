@@ -145,7 +145,7 @@ const StudentRequestsSection = () => {
         </Button>
       </div>
 
-      <Card bordered={false} style={{ borderRadius: 12, backgroundColor: '#FFFFFF', borderColor: '#C8E6C9', boxShadow: '0 4px 14px rgba(46, 125, 50, 0.08)' }}>
+      <Card variant="borderless" style={{ borderRadius: 12, backgroundColor: '#FFFFFF', borderColor: '#C8E6C9', boxShadow: '0 4px 14px rgba(46, 125, 50, 0.08)' }}>
         <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 7 }} scroll={{ x: true }} className="dark-table" />
       </Card>
 

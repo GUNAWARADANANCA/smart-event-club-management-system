@@ -1,105 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const newsData = [
-  {
-    id: 1,
-    category: 'Sports',
-    tag: '🏆 Achievement',
-    title: 'Swimming Team Wins National Championship',
-    summary: 'Our university swimming team clinched gold at the National Inter-University Swimming Championship, with three students breaking national records.',
-    date: 'March 28, 2026',
-    author: 'Sports Desk',
-    color: 'from-[#2980b9] to-[#154360]',
-    accent: '#2980b9',
-  },
-  {
-    id: 2,
-    category: 'Academic',
-    tag: '🎓 Excellence',
-    title: 'Students Win International AI Research Award',
-    summary: 'A team of final-year computing students took first place at the Global AI Innovation Summit, impressing judges with their healthcare prediction model.',
-    date: 'March 25, 2026',
-    author: 'Academic Affairs',
-    color: 'from-[#4CAF50] to-[#2E7D32]',
-    accent: '#4CAF50',
-  },
-  {
-    id: 3,
-    category: 'Sports',
-    tag: '⚽ Sports',
-    title: 'Football Club Advances to Regional Finals',
-    summary: 'The university football club secured a dramatic last-minute victory to advance to the regional finals, scheduled for next month.',
-    date: 'March 22, 2026',
-    author: 'Sports Desk',
-    color: 'from-[#4ade80] to-[#1b5e20]',
-    accent: '#4ade80',
-  },
-  {
-    id: 4,
-    category: 'Academic',
-    tag: '📚 Academic',
-    title: 'Dean\'s List 2026 Announced — Record Number of Honorees',
-    summary: 'This semester saw a record-breaking number of students make the Dean\'s List, reflecting the rising academic standards across all faculties.',
-    date: 'March 20, 2026',
-    author: 'Registrar Office',
-    color: 'from-[#f59e0b] to-[#7e5109]',
-    accent: '#f59e0b',
-  },
-  {
-    id: 5,
-    category: 'Winning',
-    tag: '🥇 Winner',
-    title: 'CodeRed Hackathon Champions Announced',
-    summary: 'Team ByteForce won the 48-hour CodeRed Hackathon, building a real-time campus safety alert system that impressed all five industry judges.',
-    date: 'March 18, 2026',
-    author: 'Events Team',
-    color: 'from-[#8e44ad] to-[#4a235a]',
-    accent: '#8e44ad',
-  },
-  {
-    id: 6,
-    category: 'Winning',
-    tag: '🎨 Arts',
-    title: 'Art Club Student Wins National Design Competition',
-    summary: 'Second-year student Aisha Malik won the National Student Design Award for her digital art series exploring cultural identity and modern technology.',
-    date: 'March 15, 2026',
-    author: 'Arts & Culture',
-    color: 'from-[#e74c3c] to-[#78281f]',
-    accent: '#e74c3c',
-  },
-  {
-    id: 7,
-    category: 'Academic',
-    tag: '🔬 Research',
-    title: 'University Research Paper Published in Nature Journal',
-    summary: 'A groundbreaking research paper by the Biology department on sustainable biofuels has been accepted and published in the prestigious Nature journal.',
-    date: 'March 12, 2026',
-    author: 'Research Office',
-    color: 'from-[#1abc9c] to-[#0e6251]',
-    accent: '#1abc9c',
-  },
-  {
-    id: 8,
-    category: 'Sports',
-    tag: '🏸 Sports',
-    title: 'Badminton Team Sweeps Inter-University Tournament',
-    summary: 'The university badminton team won all five categories at the Inter-University Badminton Tournament, bringing home the overall championship trophy.',
-    date: 'March 10, 2026',
-    author: 'Sports Desk',
-    color: 'from-[#3498db] to-[#1a5276]',
-    accent: '#3498db',
-  },
-];
+import { Spin, Empty, App as AntdApp, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import api from '@/lib/api';
 
 const categories = ['All', 'Sports', 'Academic', 'Winning'];
 
 export default function News() {
   const [filter, setFilter] = useState('All');
   const [selected, setSelected] = useState(null);
+  const [newsData, setNewsData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
+
+  // Fetch news from API
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get('/api/news');
+        setNewsData(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        console.error(error);
+        message.error('Failed to fetch news');
+        setNewsData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   const filtered = filter === 'All' ? newsData : newsData.filter(n => n.category === filter);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (newsData.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Empty description="No news available" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white font-sans rounded-3xl overflow-hidden shadow-lg shadow-green-900/5 relative">
@@ -120,7 +70,7 @@ export default function News() {
 
         <main className="max-w-[1400px] mx-auto pb-20">
           {/* Heading */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 relative">
             <div className="inline-block px-4 py-1 rounded-full bg-[#E8F5E9] border border-[#C8E6C9] text-[#2E7D32] text-xs font-bold uppercase tracking-widest mb-6">
               Latest Updates
             </div>
@@ -130,6 +80,19 @@ export default function News() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto font-medium">
               Student achievements, sports victories, academic milestones, and everything happening on campus.
             </p>
+
+            {/* Add News Button - Floating Action Button */}
+            <div className="absolute top-0 right-0">
+              <Button
+                type="primary"
+                size="large"
+                icon={<PlusOutlined />}
+                onClick={() => navigate('/news-login', { state: { from: '/admin/news' } })}
+                className="bg-gradient-to-r from-[#43A047] to-[#4CAF50] border-none hover:from-[#2E7D32] hover:to-[#388E3C] shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 transition-all duration-300 rounded-full h-14 w-14 flex items-center justify-center"
+              >
+                <span className="sr-only">Add News</span>
+              </Button>
+            </div>
           </div>
 
           {/* Filters */}
@@ -153,7 +116,7 @@ export default function News() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map(item => (
               <div
-                key={item.id}
+                key={item._id}
                 onClick={() => setSelected(item)}
                 className="group bg-white border border-[#C8E6C9] rounded-3xl overflow-hidden shadow-sm hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 cursor-pointer hover:-translate-y-1"
               >
@@ -165,7 +128,9 @@ export default function News() {
                       style={{ background: item.accent }}>
                       {item.tag}
                     </span>
-                    <span className="text-xs text-gray-500 font-medium">{item.date}</span>
+                    <span className="text-xs text-gray-500 font-medium">
+                      {new Date(item.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
                   </div>
                   <h3 className="text-lg font-black text-gray-900 mb-3 leading-snug group-hover:text-[#2E7D32] transition-colors">
                     {item.title}

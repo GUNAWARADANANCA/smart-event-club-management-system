@@ -54,7 +54,7 @@ const Register = () => {
     <div className="page-auth">
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Card
-          bordered={false}
+          variant={false}
           style={{
             background: '#FFFFFF',
             border: '1px solid #C8E6C9',

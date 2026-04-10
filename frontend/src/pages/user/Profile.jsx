@@ -23,7 +23,7 @@ const Profile = () => {
             <p style={{ color: 'gray' }}>Role: {role}</p>
           </div>
         </div>
-        <Descriptions bordered column={1}>
+        <Descriptions variant column={1}>
           <Descriptions.Item label="Email">{email}</Descriptions.Item>
           <Descriptions.Item label="Join Date">October 15, 2025</Descriptions.Item>
           <Descriptions.Item label="Associated Club">Tech Society</Descriptions.Item>

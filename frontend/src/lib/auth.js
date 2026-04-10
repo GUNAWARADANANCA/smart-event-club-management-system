@@ -7,6 +7,7 @@ export const ROLES = {
   STUDENT: 'student',
   EVENT_ADMIN: 'event_admin',
   FINANCE_ADMIN: 'finance_admin',
+  NEWS_ADMIN: 'news_admin',
 };
 
 const AUTH_ROLE_KEY = 'authRole';
@@ -25,6 +26,8 @@ export function roleDisplayLabel(role) {
       return 'Event Admin';
     case ROLES.FINANCE_ADMIN:
       return 'Finance Admin';
+    case ROLES.NEWS_ADMIN:
+      return 'News Admin';
     case ROLES.STUDENT:
     default:
       return 'Student';

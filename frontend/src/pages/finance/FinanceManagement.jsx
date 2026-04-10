@@ -212,7 +212,7 @@ const FinanceManagement = () => {
       </Spin>
 
       <div style={{ marginTop: 24 }}>
-        <Card title={<span style={{ color: '#1F2937' }}>Budget Proposals</span>} bordered={false} style={{ background: '#FFFFFF', border: '1px solid #C8E6C9' }}>
+        <Card title={<span style={{ color: '#1F2937' }}>Budget Proposals</span>} variant="borderless" style={{ background: '#FFFFFF', border: '1px solid #C8E6C9' }}>
           <Table 
             columns={[ 
               { title: 'ID', dataIndex: 'id', key: 'id' },

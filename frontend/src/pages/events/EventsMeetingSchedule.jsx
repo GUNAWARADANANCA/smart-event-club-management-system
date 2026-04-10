@@ -123,7 +123,7 @@ const EventsMeetingSchedule = () => {
       <Row gutter={24}>
         <Col xs={24} lg={16}>
           <Card 
-            bordered={false} 
+            variant="borderless"
             className="shadow-md"
             style={{ background: '#FFFFFF', borderRadius: 16 }}
             bodyStyle={{ padding: '0 24px 24px 24px' }}
@@ -142,7 +142,7 @@ const EventsMeetingSchedule = () => {
         <Col xs={24} lg={8}>
           <Card 
             title={<span style={{ color: '#000000' }}>Meeting Logistics Guidelines</span>}
-            bordered={false} 
+            variant="borderless"
             className="shadow-md"
             style={{ background: '#FFFFFF', borderRadius: 16 }}
           >
