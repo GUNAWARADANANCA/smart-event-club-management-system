@@ -416,7 +416,7 @@ const LecturePanel = () => {
         </p>
         <Form form={lecturerForm} layout="vertical" onFinish={async (values) => {
           try {
-            const response = await fetch('/api/lecturer-requests', {
+            const response = await fetch('http://localhost:5000/api/lecturer-requests', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
