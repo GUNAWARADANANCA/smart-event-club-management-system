@@ -5,7 +5,6 @@ import {
   Camera,
   Star,
   Users,
-  Database,
   Globe,
   CalendarDays,
   CircleDollarSign,
@@ -13,7 +12,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 const MainLayout = () => {
   const navigate = useNavigate();
@@ -22,13 +21,10 @@ const MainLayout = () => {
     token: { borderRadiusLG },
   } = theme.useToken();
 
-  const userName = localStorage.getItem('userName') || 'Admin User';
-
   const menuItems = [
     { key: '/gallery', icon: <Camera size={18} />, label: 'Past Event Gallery' },
     { key: '/sponsorships', icon: <Star size={18} />, label: 'Sponsorships' },
     { key: '/users', icon: <Users size={18} />, label: 'Event/Club Requests' },
-    { key: '/manage-requests', icon: <Database size={18} />, label: 'Manage Requests' },
     { key: '/portal', icon: <Globe size={18} />, label: 'Events Portal' },
     { key: '/events', icon: <CalendarDays size={18} />, label: 'Events' },
     { key: '/finance', icon: <CircleDollarSign size={18} />, label: 'Finance' },
@@ -64,21 +60,6 @@ const MainLayout = () => {
         />
       </Sider>
       <Layout style={{ background: '#FAFAFA', marginLeft: 260 }}>
-        <Header
-          style={{
-            padding: '0 28px',
-            background: '#FFFFFF',
-            borderBottom: '1px solid #C8E6C9',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            boxShadow: '0 1px 0 rgba(46, 125, 50, 0.06)',
-          }}
-        >
-          <div style={{ color: '#1F2937', fontSize: '16px', fontWeight: 600 }}>
-            Welcome back, {userName}
-          </div>
-        </Header>
         <Content style={{ margin: '28px 32px', overflow: 'initial', background: 'transparent' }}>
           <div style={{ minHeight: 360, borderRadius: borderRadiusLG }}>
             <Outlet />

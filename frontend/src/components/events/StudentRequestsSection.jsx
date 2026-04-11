@@ -1,39 +1,121 @@
 import React, { useMemo, useState } from 'react';
 import { Table, Tag, Space, Button, Modal, Typography, Card, message } from 'antd';
-import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined, SendOutlined, FileTextOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  EyeOutlined,
+  SendOutlined,
+  FilePdfOutlined,
+  FileTextOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockRequests, mockManagedEvents } from '@/data/mockData';
-import { sendProposalToFinance } from '@/store/proposalStore';
+import {
+  createBudgetProposalFromRequest,
+  getSentBudgetProposals,
+  sendProposalToFinance,
+} from '@/store/proposalStore';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
+
+const initialRequests = mockRequests.filter(
+  (request) => request.requestType !== 'Club Management Request'
+);
+
+const openBudgetProposalPreview = (proposal) => {
+  const fmt = (value) => `Rs. ${Number(value || 0).toLocaleString()}`;
+  const html = `
+    <html>
+      <head>
+        <title>Budget Proposal - ${proposal.event}</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 40px; color: #111; max-width: 820px; margin: 0 auto; }
+          h1 { color: #2E7D32; border-bottom: 2px solid #4CAF50; padding-bottom: 8px; }
+          h2 { color: #2E7D32; margin-top: 26px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+          p { line-height: 1.6; }
+          .meta { display: flex; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+          .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: bold; background: #d1fae5; color: #065f46; }
+          table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+          th { background: #2E7D32; color: white; padding: 10px; text-align: left; }
+          td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+          .total { font-weight: bold; font-size: 16px; color: #2E7D32; }
+          .footer { margin-top: 40px; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+        </style>
+      </head>
+      <body>
+        <div style="font-size:12px; color:#64748b; margin-bottom:12px;">Generated ${proposal.generatedAt || new Date().toLocaleString()}</div>
+        <h1>Budget Proposal</h1>
+        <div class="meta">
+          <div><strong>Event:</strong> ${proposal.event}</div>
+          <div><strong>Status:</strong> <span class="badge">${proposal.status}</span></div>
+        </div>
+        <h2>Introduction</h2>
+        <p>${proposal.introduction}</p>
+        <h2>Objectives</h2>
+        <p>${proposal.objectives}</p>
+        <h2>Cost Breakdown</h2>
+        <table>
+          <tr><th>Category</th><th>Amount (Rs.)</th></tr>
+          <tr><td>Equipment</td><td>${fmt(proposal.equipmentCost)}</td></tr>
+          <tr><td>Labor</td><td>${fmt(proposal.laborCost)}</td></tr>
+          <tr><td>Materials</td><td>${fmt(proposal.materialsCost)}</td></tr>
+          <tr><td>Miscellaneous</td><td>${fmt(proposal.miscellaneousCost)}</td></tr>
+          <tr><td class="total">Total</td><td class="total">${fmt(proposal.amount)}</td></tr>
+        </table>
+        <h2>Justification</h2>
+        <p>${proposal.justification}</p>
+        <div class="footer">Generated automatically by Smart Event Club Management System</div>
+      </body>
+    </html>
+  `;
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+};
 
 const StudentRequestsSection = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState(mockRequests);
+  const [data, setData] = useState(initialRequests);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [sentProposals, setSentProposals] = useState([]);
+  const [sentProposals, setSentProposals] = useState(
+    getSentBudgetProposals().map((proposal) => proposal.id)
+  );
 
   const handleStatusChange = (id, newStatus) => {
-    const requestIndex = mockRequests.findIndex(r => r.id === id);
-    if (requestIndex > -1) mockRequests[requestIndex].status = newStatus;
-    setData([...mockRequests]);
+    setData((currentData) => {
+      const nextData = currentData.map((request) => {
+        if (request.id !== id) return request;
+
+        const updatedRequest = { ...request, status: newStatus };
+        if (newStatus === 'Approved') {
+          updatedRequest.generatedProposal = createBudgetProposalFromRequest(updatedRequest);
+        }
+        return updatedRequest;
+      });
+      return nextData;
+    });
+
+    if (newStatus === 'Approved') {
+      message.success('Request approved and budget proposal generated automatically.');
+      return;
+    }
+
+    message.info(`Request ${newStatus.toLowerCase()}.`);
   };
 
   const handleSendProposal = (record) => {
+    const proposal = record.generatedProposal || createBudgetProposalFromRequest(record);
     sendProposalToFinance({
-      id: record.id,
-      name: record.fullName + ' — ' + record.requestType,
-      type: record.requestType.includes('Event') ? 'Event' : 'Club',
-      submittedDate: record.submittedDate,
+      ...proposal,
       status: 'Pending',
-      description: record.description,
-      remarks: '',
-      source: 'ManageRequests',
     });
-    setSentProposals(prev => [...prev, record.id]);
-    message.success(`Proposal for ${record.fullName} sent to Finance!`);
+    setSentProposals((prev) => [...prev, record.id]);
+    message.success(`Budget proposal for ${record.fullName} sent to Finance!`);
   };
 
   const showDetails = (record) => {
@@ -50,11 +132,8 @@ const StudentRequestsSection = () => {
       title: 'Type',
       dataIndex: 'requestType',
       key: 'requestType',
-      filters: [
-        { text: 'Event', value: 'University Event Request' },
-        { text: 'Club', value: 'Club Management Request' },
-      ],
-      onFilter: (value, record) => record.requestType.includes(value),
+      filters: [{ text: 'Event', value: 'Event Approval Request' }],
+      onFilter: (value, record) => record.requestType === value,
     },
     {
       title: 'Status',
@@ -66,10 +145,13 @@ const StudentRequestsSection = () => {
         { text: 'Rejected', value: 'Rejected' },
       ],
       onFilter: (value, record) => record.status === value,
-      render: status => {
-        let className = status === 'Approved' ? 'tag-teal-pill active' : status === 'Rejected' ? 'tag-teal-pill inactive' : 'tag-teal-pill inactive';
+      render: (status) => {
+        const className =
+          status === 'Approved'
+            ? 'tag-teal-pill active'
+            : 'tag-teal-pill inactive';
         return <Tag className={className}>{status}</Tag>;
-      }
+      },
     },
     { title: 'Date', dataIndex: 'submittedDate', key: 'submittedDate' },
     {
@@ -77,76 +159,165 @@ const StudentRequestsSection = () => {
       key: 'actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button icon={<EyeOutlined />} onClick={() => showDetails(record)} size="small" className="btn-teal-secondary">View</Button>
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => showDetails(record)}
+            size="small"
+            className="btn-teal-secondary"
+          >
+            View
+          </Button>
           {record.status === 'Pending' && (
             <>
-              <Button icon={<CheckCircleOutlined />} onClick={() => handleStatusChange(record.id, 'Approved')} size="small" className="btn-teal-primary">Approve</Button>
-              <Button icon={<CloseCircleOutlined />} onClick={() => handleStatusChange(record.id, 'Rejected')} size="small" className="btn-teal-secondary">Reject</Button>
+              <Button
+                icon={<CheckCircleOutlined />}
+                onClick={() => handleStatusChange(record.id, 'Approved')}
+                size="small"
+                className="btn-teal-primary"
+              >
+                Approve
+              </Button>
+              <Button
+                icon={<CloseCircleOutlined />}
+                onClick={() => handleStatusChange(record.id, 'Rejected')}
+                size="small"
+                className="btn-teal-secondary"
+              >
+                Reject
+              </Button>
             </>
           )}
           {record.status === 'Approved' && (
-            <Button
-              icon={<SendOutlined />}
-              size="small"
-              className="btn-teal-primary"
-              disabled={sentProposals.includes(record.id)}
-              onClick={() => handleSendProposal(record)}
-            >
-              {sentProposals.includes(record.id) ? 'Sent' : 'Send Proposal'}
-            </Button>
+            <>
+              <Button
+                icon={<FilePdfOutlined />}
+                size="small"
+                className="btn-teal-secondary"
+                onClick={() =>
+                  openBudgetProposalPreview(
+                    record.generatedProposal || createBudgetProposalFromRequest(record)
+                  )
+                }
+              >
+                View Budget
+              </Button>
+              <Button
+                icon={<SendOutlined />}
+                size="small"
+                className="btn-teal-primary"
+                disabled={sentProposals.includes(record.id)}
+                onClick={() => handleSendProposal(record)}
+              >
+                {sentProposals.includes(record.id) ? 'Proposal Sent' : 'Send Budget Proposal'}
+              </Button>
+            </>
           )}
         </Space>
       ),
     },
   ];
 
-  const eventStatusColumns = useMemo(() => [
-    { title: 'Title', dataIndex: 'title', key: 'title' },
-    { title: 'Date', dataIndex: 'date', key: 'date' },
-    { title: 'Venue', dataIndex: 'venue', key: 'venue' },
-    { title: 'Capacity', dataIndex: 'capacity', key: 'capacity' },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => {
-        const color = status === 'Approved' ? 'green' : (status === 'Pending' ? 'orange' : 'red');
-        return <Tag color={color}>{status}</Tag>;
-      }
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: () => (
-        <Space size="middle" wrap>
-          <Button icon={<FileTextOutlined />} type="default" size="small" onClick={() => { setStatusModalOpen(false); navigate('/portal'); }}>
-            View in Portal
-          </Button>
-          <Button icon={<EditOutlined />} type="dashed" size="small" onClick={() => { setStatusModalOpen(false); navigate('/events'); }}>
-            Edit
-          </Button>
-          <Button icon={<DeleteOutlined />} danger size="small" onClick={() => message.info('Delete events from the Event Management page.')}>
-            Delete
-          </Button>
-        </Space>
-      ),
-    },
-  ], [navigate]);
+  const eventStatusColumns = useMemo(
+    () => [
+      { title: 'Title', dataIndex: 'title', key: 'title' },
+      { title: 'Date', dataIndex: 'date', key: 'date' },
+      { title: 'Venue', dataIndex: 'venue', key: 'venue' },
+      { title: 'Capacity', dataIndex: 'capacity', key: 'capacity' },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (status) => {
+          const color =
+            status === 'Approved' ? 'green' : status === 'Pending' ? 'orange' : 'red';
+          return <Tag color={color}>{status}</Tag>;
+        },
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        render: () => (
+          <Space size="middle" wrap>
+            <Button
+              icon={<FileTextOutlined />}
+              type="default"
+              size="small"
+              onClick={() => {
+                setStatusModalOpen(false);
+                navigate('/portal');
+              }}
+            >
+              View in Portal
+            </Button>
+            <Button
+              icon={<EditOutlined />}
+              type="dashed"
+              size="small"
+              onClick={() => {
+                setStatusModalOpen(false);
+                navigate('/events');
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              icon={<DeleteOutlined />}
+              danger
+              size="small"
+              onClick={() => message.info('Delete events from the Event Management page.')}
+            >
+              Delete
+            </Button>
+          </Space>
+        ),
+      },
+    ],
+    [navigate]
+  );
 
   return (
-    <div style={{ }}>
-      <div style={{ marginBottom: 16, display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+    <div>
+      <div
+        style={{
+          marginBottom: 16,
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          gap: 12,
+        }}
+      >
         <div>
-          {/* <Title level={2} style={{ color: '#0F172A', marginBottom: 4 }}>Manage Requests</Title> */}
-          <Text style={{ color: '#64748B' }}>Review, approve, or reject student requests for events and clubs.</Text>
+          <Text style={{ color: '#64748B' }}>
+            Review, approve, or reject student event requests.
+          </Text>
         </div>
-        <Button type="default" className="btn-teal-secondary" onClick={() => setStatusModalOpen(true)}>
+        <Button
+          type="default"
+          className="btn-teal-secondary"
+          onClick={() => setStatusModalOpen(true)}
+        >
           View Status
         </Button>
       </div>
 
-      <Card bordered={false} style={{ borderRadius: 12, backgroundColor: '#FFFFFF', borderColor: '#C8E6C9', boxShadow: '0 4px 14px rgba(46, 125, 50, 0.08)' }}>
-        <Table columns={columns} dataSource={data} rowKey="id" pagination={{ pageSize: 7 }} scroll={{ x: true }} className="dark-table" />
+      <Card
+        bordered={false}
+        style={{
+          borderRadius: 12,
+          backgroundColor: '#FFFFFF',
+          borderColor: '#C8E6C9',
+          boxShadow: '0 4px 14px rgba(46, 125, 50, 0.08)',
+        }}
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey="id"
+          pagination={{ pageSize: 7 }}
+          scroll={{ x: true }}
+          className="dark-table"
+        />
       </Card>
 
       <Modal
@@ -154,7 +325,14 @@ const StudentRequestsSection = () => {
         open={statusModalOpen}
         onCancel={() => setStatusModalOpen(false)}
         footer={[
-          <Button key="close" type="primary" className="btn-teal-primary" onClick={() => setStatusModalOpen(false)}>Close</Button>
+          <Button
+            key="close"
+            type="primary"
+            className="btn-teal-primary"
+            onClick={() => setStatusModalOpen(false)}
+          >
+            Close
+          </Button>,
         ]}
         width={960}
         styles={{ body: { paddingTop: 12 } }}
@@ -173,7 +351,13 @@ const StudentRequestsSection = () => {
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={[
-          <Button key="close" onClick={() => setIsModalVisible(false)} className="btn-teal-primary">Close</Button>
+          <Button
+            key="close"
+            onClick={() => setIsModalVisible(false)}
+            className="btn-teal-primary"
+          >
+            Close
+          </Button>,
         ]}
       >
         {selectedRequest && (

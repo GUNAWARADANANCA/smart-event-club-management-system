@@ -1,11 +1,24 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, Space, Typography, message, Divider, Select } from 'antd';
 import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
-import api from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
+
+const LOCAL_QUIZZES_KEY = 'localQuizzes';
+
+const addLocalQuiz = (quiz) => {
+  try {
+    const existing = JSON.parse(localStorage.getItem(LOCAL_QUIZZES_KEY) || '[]');
+    const next = Array.isArray(existing) ? [quiz, ...existing] : [quiz];
+    localStorage.setItem(LOCAL_QUIZZES_KEY, JSON.stringify(next));
+  } catch {
+    // ignore
+  }
+};
+
+const isoDate = (date) => date.toISOString().slice(0, 10);
 
 const CreateQuiz = () => {
   const navigate = useNavigate();
@@ -27,12 +40,19 @@ const CreateQuiz = () => {
         }))
       };
 
-      await api.post('/quiz', payload);
+      const localQuiz = {
+        id: `local-${Date.now()}`,
+        title: payload.title,
+        description: payload.description || '',
+        questions: payload.questions?.length || 0,
+        closeDate: isoDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)),
+        materials: [],
+      };
+
+      addLocalQuiz(localQuiz);
       message.success('Quiz created successfully!');
-      navigate('/quizzes');
-    } catch (err) {
-      console.error(err);
-      message.error('Failed to create quiz');
+      form.resetFields();
+      navigate('/quizzes', { state: { refresh: true } });
     } finally {
       setLoading(false);
     }
@@ -69,8 +89,15 @@ const CreateQuiz = () => {
               label={<Text className="text-gray-600 font-semibold tracking-wide uppercase text-xs tracking-widest">Quiz Title</Text>}
               rules={[
                 { required: true, message: 'Please input quiz title!' },
-                { pattern: /^[A-Za-z\s]+$/, message: 'Quiz title must contain letters only, no numbers allowed!' }
+                { whitespace: true, message: 'Quiz title cannot be empty.' },
+                { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }
               ]}
+              normalize={(value) =>
+                String(value ?? '')
+                  .replace(/[^A-Za-z\s]/g, '')
+                  .replace(/\s+/g, ' ')
+                  .trimStart()
+              }
             >
               <Input placeholder="Enter quiz title" className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10" />
             </Form.Item>
@@ -114,6 +141,7 @@ const CreateQuiz = () => {
             name="description"
             label={<Text className="text-gray-600 font-semibold tracking-wide uppercase text-xs tracking-widest">Description</Text>}
             rules={[{ pattern: /^[A-Za-z\s]+$/, message: 'Description must contain letters only, no numbers allowed!' }]}
+            normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
           >
             <Input.TextArea placeholder="Enter quiz description" rows={3} className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl resize-none" />
           </Form.Item>
@@ -150,6 +178,7 @@ const CreateQuiz = () => {
                       { required: true, message: 'Missing question text' },
                       { pattern: /^[A-Za-z\s]+$/, message: 'Question must contain letters only!' }
                     ]}
+                    normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
                   >
                     <Input.TextArea placeholder="Type your question here..." className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl resize-none" />
                   </Form.Item>
@@ -159,7 +188,8 @@ const CreateQuiz = () => {
                       {...restField}
                       name={[name, 'option1']}
                       label={<Text className="text-gray-500 text-xs uppercase font-bold tracking-tight">Option 1</Text>}
-                      rules={[{ required: true, message: 'Missing option 1' }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only!' }]}
+                      rules={[{ required: true, message: 'Missing option 1' }, { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }]}
+                      normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
                     >
                       <Input placeholder="Option 1" className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10" />
                     </Form.Item>
@@ -167,7 +197,8 @@ const CreateQuiz = () => {
                       {...restField}
                       name={[name, 'option2']}
                       label={<Text className="text-gray-500 text-xs uppercase font-bold tracking-tight">Option 2</Text>}
-                      rules={[{ required: true, message: 'Missing option 2' }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only!' }]}
+                      rules={[{ required: true, message: 'Missing option 2' }, { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }]}
+                      normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
                     >
                       <Input placeholder="Option 2" className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10" />
                     </Form.Item>
@@ -175,7 +206,8 @@ const CreateQuiz = () => {
                       {...restField}
                       name={[name, 'option3']}
                       label={<Text className="text-gray-500 text-xs uppercase font-bold tracking-tight">Option 3</Text>}
-                      rules={[{ required: true, message: 'Missing option 3' }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only!' }]}
+                      rules={[{ required: true, message: 'Missing option 3' }, { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }]}
+                      normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
                     >
                       <Input placeholder="Option 3" className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10" />
                     </Form.Item>
@@ -183,7 +215,8 @@ const CreateQuiz = () => {
                       {...restField}
                       name={[name, 'option4']}
                       label={<Text className="text-gray-500 text-xs uppercase font-bold tracking-tight">Option 4</Text>}
-                      rules={[{ required: true, message: 'Missing option 4' }, { pattern: /^[A-Za-z\s]+$/, message: 'Letters only!' }]}
+                      rules={[{ required: true, message: 'Missing option 4' }, { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }]}
+                      normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
                     >
                       <Input placeholder="Option 4" className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10" />
                     </Form.Item>
@@ -208,33 +241,22 @@ const CreateQuiz = () => {
                   </Form.Item>
                 </Card>
               ))}
-              <Form.Item>
-                 <Button 
-                  type="dashed" 
-                  onClick={() => add()} 
-                  block 
-                  icon={<PlusOutlined />}
-                  className="h-16 border-dashed border-[#4CAF50] text-[#2E7D32] hover:text-white hover:border-[#43A047] bg-[#E8F5E9] hover:bg-[#4CAF50] rounded-2xl font-bold uppercase tracking-widest text-xs transition-all"
-                >
-                  Add Question Now
-                </Button>
-              </Form.Item>
             </>
           )}
         </Form.List>
 
-        <Form.Item className="mt-12">
-           <Button 
-            type="primary" 
-            htmlType="submit" 
-            size="large" 
-            block 
-            icon={<SaveOutlined />}
-            loading={loading}
-            className="h-14 bg-gradient-to-r from-[#43A047] to-[#4CAF50] hover:from-[#388E3C] hover:to-[#43A047] border-0 rounded-2xl font-bold uppercase tracking-widest text-sm shadow-lg shadow-green-600/20 hover:shadow-xl transition-all text-white"
-          >
-            Create Quiz Now
-          </Button>
+        <Form.Item className="mt-10">
+          <div className="flex justify-end">
+            <Button
+              type="primary"
+              htmlType="submit"
+              icon={<SaveOutlined />}
+              loading={loading}
+              className="bg-[#4CAF50] hover:!bg-[#43A047] border-0 rounded-xl font-bold uppercase tracking-widest text-xs px-8 h-11 shadow-md shadow-green-600/20"
+            >
+              Create Quiz
+            </Button>
+          </div>
         </Form.Item>
       </Form>
       </div>

@@ -5,6 +5,7 @@ const eventsRouter = require('./routes/events');
 const ticketsRouter = require('./routes/tickets');
 const expensesRouter = require('./routes/expenses');
 const meetingsRouter = require('./routes/meetings');
+const quizRouter = require('./routes/quiz');
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.use('/api/tickets', ticketsRouter);
 app.use('/api/expenses', expensesRouter);
 app.use('/api/meetings', meetingsRouter);
 app.use('/events', eventsRouter);
+app.use('/quiz', quizRouter);
+app.use('/api/quiz', quizRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });

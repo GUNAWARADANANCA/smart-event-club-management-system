@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-
-const userName = localStorage.getItem('userName') || 'Student User';
+import React, { useEffect, useState } from 'react';
 
 const achievements = [
   {
@@ -44,6 +42,30 @@ const stats = [
 
 export default function UserPerformance() {
   const [activeTab, setActiveTab] = useState('achievements'); // achievements | history
+  const [profile, setProfile] = useState(() => ({
+    name: localStorage.getItem('userName') || 'Student User',
+    email: localStorage.getItem('userEmail') || '',
+  }));
+
+  const computedStats = [
+    { label: 'Quizzes Taken', value: 1, icon: '📝', color: '#4CAF50' },
+    { label: 'Average Score', value: '100%', icon: '📊', color: '#6366f1' },
+    { label: 'Certificates', value: 1, icon: '🎓', color: '#d4af37' },
+    { label: 'Rank', value: '#12', icon: '🏆', color: '#f97316' },
+  ];
+
+  useEffect(() => {
+    const sync = () => {
+      setProfile({
+        name: localStorage.getItem('userName') || 'Student User',
+        email: localStorage.getItem('userEmail') || '',
+      });
+    };
+
+    // In case user details change in another tab/window.
+    window.addEventListener('storage', sync);
+    return () => window.removeEventListener('storage', sync);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white font-sans p-6 max-w-5xl mx-auto">
@@ -65,7 +87,7 @@ export default function UserPerformance() {
           <div className="w-28 h-28 rounded-2xl overflow-hidden border-4 border-white shadow-xl"
             style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)' }}>
             <img
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userName}&backgroundColor=b6e3f4`}
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.name}&backgroundColor=b6e3f4`}
               alt="avatar"
               className="w-full h-full object-cover"
             />
@@ -78,7 +100,10 @@ export default function UserPerformance() {
         {/* Info */}
         <div className="flex-1 text-center md:text-left">
           <p className="text-[#2E7D32] text-xs font-black uppercase tracking-widest mb-1">Student Portal</p>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{userName}</h1>
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{profile.name}</h1>
+          {profile.email && (
+            <p className="text-sm font-semibold text-slate-500 -mt-1 mb-2">{profile.email}</p>
+          )}
           <div className="flex flex-wrap gap-2 justify-center md:justify-start">
             <span className="px-3 py-1 rounded-full text-xs font-bold text-gray-700 border border-[#C8E6C9]"
               style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)' }}>
@@ -97,7 +122,7 @@ export default function UserPerformance() {
 
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full md:w-auto">
-          {stats.map((s, i) => (
+          {computedStats.map((s, i) => (
             <div key={i} className="rounded-2xl p-4 text-center flex-shrink-0 bg-white/80 backdrop-blur-sm border border-[#C8E6C9] shadow-sm">
               <div className="text-2xl mb-1">{s.icon}</div>
               <div className="text-xl font-black" style={{ color: s.color }}>{s.value}</div>
@@ -137,7 +162,7 @@ export default function UserPerformance() {
                     <img src={a.avatar} alt="avatar" className="w-full h-full object-cover" />
                   </div>
                   <div>
-                    <p className="font-black text-slate-800 text-sm">{userName}</p>
+                    <p className="font-black text-slate-800 text-sm">{profile.name}</p>
                     <p className="text-xs text-slate-500 font-semibold">{a.date}</p>
                   </div>
                 </div>

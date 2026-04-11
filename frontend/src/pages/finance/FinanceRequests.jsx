@@ -3,10 +3,28 @@ import { Card, Button, Typography, Tag, Row, Col, Modal, Input, message, Space, 
 import { EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, FilePdfOutlined, DownloadOutlined, SendOutlined, BarChartOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import api from '@/lib/api';
-import { sentProposals } from '@/store/proposalStore';
+import { getSentBudgetProposals } from '@/store/proposalStore';
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
+
+const baseRequests = [
+  { id: 'FR-2026-001', name: 'Annual Tech Symposium Budget', type: 'Event', submittedDate: '2026-03-15', status: 'Pending', description: 'Budget request for venue booking, speaker fees, and marketing materials for the upcoming symposium.', remarks: '', equipmentCost: 80000, laborCost: 120000, materialsCost: 95000, miscellaneousCost: 45000 },
+  { id: 'FR-2026-002', name: 'Robotics Club Equipment', type: 'Club', submittedDate: '2026-03-18', status: 'Approved', description: 'Purchase of 10 Arduino and 5 Raspberry Pi kits for the upcoming workshops.', remarks: 'Approved as per previous committee meeting.', equipmentCost: 55000, laborCost: 20000, materialsCost: 30000, miscellaneousCost: 10000 },
+  { id: 'FR-2026-003', name: 'Cultural Night Performance Costumes', type: 'Event', submittedDate: '2026-03-20', status: 'Pending', description: 'Request for costume rentals and stage setup for the Annual Cultural Night.', remarks: '', equipmentCost: 25000, laborCost: 40000, materialsCost: 60000, miscellaneousCost: 15000 },
+  { id: 'FR-2026-004', name: 'Library Renovation Phase 1', type: 'Other', submittedDate: '2026-03-22', status: 'Pending', description: 'Initial budget request for library furniture replacement and painting as part of the phase 1 renovation plan.', remarks: '', equipmentCost: 200000, laborCost: 150000, materialsCost: 180000, miscellaneousCost: 70000 },
+];
+
+const buildMergedRequests = () => {
+  const sentProposals = getSentBudgetProposals();
+  const merged = [...baseRequests];
+  sentProposals.forEach((proposal) => {
+    if (!merged.find((request) => request.id === proposal.id)) {
+      merged.push(proposal);
+    }
+  });
+  return merged;
+};
 
 const downloadBudgetPDF = (req) => {
   const equipment = req.equipmentCost || 0;
@@ -97,15 +115,7 @@ const FinanceRequests = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const base = [
-      { id: 'FR-2026-001', name: 'Annual Tech Symposium Budget', type: 'Event', submittedDate: '2026-03-15', status: 'Pending', description: 'Budget request for venue booking, speaker fees, and marketing materials for the upcoming symposium.', remarks: '', equipmentCost: 80000, laborCost: 120000, materialsCost: 95000, miscellaneousCost: 45000 },
-      { id: 'FR-2026-002', name: 'Robotics Club Equipment', type: 'Club', submittedDate: '2026-03-18', status: 'Approved', description: 'Purchase of 10 Arduino and 5 Raspberry Pi kits for the upcoming workshops.', remarks: 'Approved as per previous committee meeting.', equipmentCost: 55000, laborCost: 20000, materialsCost: 30000, miscellaneousCost: 10000 },
-      { id: 'FR-2026-003', name: 'Cultural Night Performance Costumes', type: 'Event', submittedDate: '2026-03-20', status: 'Pending', description: 'Request for costume rentals and stage setup for the Annual Cultural Night.', remarks: '', equipmentCost: 25000, laborCost: 40000, materialsCost: 60000, miscellaneousCost: 15000 },
-      { id: 'FR-2026-004', name: 'Library Renovation Phase 1', type: 'Other', submittedDate: '2026-03-22', status: 'Pending', description: 'Initial budget request for library furniture replacement and painting as part of the phase 1 renovation plan.', remarks: '', equipmentCost: 200000, laborCost: 150000, materialsCost: 180000, miscellaneousCost: 70000 },
-    ];
-    const merged = [...base];
-    sentProposals.forEach(p => { if (!merged.find(r => r.id === p.id)) merged.push(p); });
-    setRequests(merged);
+    setRequests(buildMergedRequests());
     setLoading(false);
   }, []);
 
@@ -130,8 +140,12 @@ const FinanceRequests = () => {
     try {
       await api.post('/finance/budgets', { id: selectedRequest.id, status, remarks });
       message.success(status === 'Approved' ? 'Approved successfully!' : `Request ${status} successfully!`);
+      setRequests((currentRequests) =>
+        currentRequests.map((request) =>
+          request.id === selectedRequest.id ? { ...request, status, remarks } : request
+        )
+      );
       closeModal();
-      fetchRequests(); // conceptual reload
     } catch (err) {
       message.error(`Failed to process request: ${err.message}`);
     }
@@ -155,15 +169,7 @@ const FinanceRequests = () => {
           icon={<SendOutlined />}
           className="btn-teal-secondary"
           onClick={() => {
-            const base = [
-              { id: 'FR-2026-001', name: 'Annual Tech Symposium Budget', type: 'Event', submittedDate: '2026-03-15', status: 'Pending', description: 'Budget request for venue booking, speaker fees, and marketing materials for the upcoming symposium.', remarks: '', equipmentCost: 80000, laborCost: 120000, materialsCost: 95000, miscellaneousCost: 45000 },
-              { id: 'FR-2026-002', name: 'Robotics Club Equipment', type: 'Club', submittedDate: '2026-03-18', status: 'Approved', description: 'Purchase of 10 Arduino and 5 Raspberry Pi kits for the upcoming workshops.', remarks: 'Approved as per previous committee meeting.', equipmentCost: 55000, laborCost: 20000, materialsCost: 30000, miscellaneousCost: 10000 },
-              { id: 'FR-2026-003', name: 'Cultural Night Performance Costumes', type: 'Event', submittedDate: '2026-03-20', status: 'Pending', description: 'Request for costume rentals and stage setup for the Annual Cultural Night.', remarks: '', equipmentCost: 25000, laborCost: 40000, materialsCost: 60000, miscellaneousCost: 15000 },
-              { id: 'FR-2026-004', name: 'Library Renovation Phase 1', type: 'Other', submittedDate: '2026-03-22', status: 'Pending', description: 'Initial budget request for library furniture replacement and painting as part of the phase 1 renovation plan.', remarks: '', equipmentCost: 200000, laborCost: 150000, materialsCost: 180000, miscellaneousCost: 70000 },
-            ];
-            const merged = [...base];
-            sentProposals.forEach(p => { if (!merged.find(r => r.id === p.id)) merged.push(p); });
-            setRequests(merged);
+            setRequests(buildMergedRequests());
             message.success('Proposals refreshed!');
           }}
         >

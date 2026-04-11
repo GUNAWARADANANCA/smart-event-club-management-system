@@ -8,6 +8,9 @@ const QuizResult = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const score = location.state?.score || 0;
+  const fullName = location.state?.fullName || 'Learner';
+  const email = location.state?.email || '';
+  const quizTitle = location.state?.quizTitle || 'Quiz';
   
   const passed = score >= 50;
 
@@ -20,7 +23,13 @@ const QuizResult = () => {
           subTitle={`You scored ${score} out of 100.`}
           extra={[
             passed ? (
-              <Button type="primary" key="cert" onClick={() => navigate('/quizzes/certificate')}>
+              <Button
+                type="primary"
+                key="cert"
+                onClick={() => navigate('/quizzes/certificate', {
+                  state: { fullName, email, quizTitle, score },
+                })}
+              >
                 View Certificate
               </Button>
             ) : (

@@ -150,15 +150,81 @@ const Payment = () => {
               <Form.Item name="cardName" label={<span className="text-slate-600 text-xs uppercase font-bold tracking-widest">Name on Card</span>} rules={[{ required: true }]} className="mb-4">
                 <Input placeholder="John Doe" className="bg-white border-[#C8E6C9] text-slate-900 rounded-xl h-11 hover:border-[#81C784]" />
               </Form.Item>
-              <Form.Item name="cardNumber" label={<span className="text-slate-600 text-xs uppercase font-bold tracking-widest">Card Number</span>} rules={[{ required: true, len: 16, message: 'Must be 16 digits' }]} className="mb-4">
-                <Input placeholder="1234 5678 9101 1121" maxLength={16} className="bg-white border-[#C8E6C9] text-slate-900 rounded-xl h-11 hover:border-[#81C784]" />
+              <Form.Item
+                name="cardNumber"
+                label={<span className="text-slate-600 text-xs uppercase font-bold tracking-widest">Card Number</span>}
+                rules={[
+                  { required: true, message: 'Required' },
+                  { len: 16, message: 'Must be 16 digits' },
+                  { pattern: /^\d+$/, message: 'Digits only' },
+                ]}
+                normalize={(value) => String(value ?? '').replace(/\D/g, '').slice(0, 16)}
+                className="mb-4"
+              >
+                <Input
+                  placeholder="1234567891011121"
+                  inputMode="numeric"
+                  maxLength={16}
+                  className="bg-white border-[#C8E6C9] text-slate-900 rounded-xl h-11 hover:border-[#81C784]"
+                />
               </Form.Item>
               <div className="flex gap-4 flex-wrap">
-                  <Form.Item name="expiry" label={<span className="text-slate-600 text-xs uppercase font-bold tracking-widest">Expiry</span>} rules={[{ required: true }]} className="flex-1 min-w-[140px]">
-                    <Input placeholder="MM/YY" className="bg-white border-[#C8E6C9] text-slate-900 rounded-xl h-11 hover:border-[#81C784]" />
+                  <Form.Item
+                    name="expiry"
+                    label={<span className="text-slate-600 text-xs uppercase font-bold tracking-widest">Expiry</span>}
+                    rules={[
+                      { required: true, message: 'Required' },
+                      { pattern: /^(0[1-9]|1[0-2])\/\d{2}$/, message: 'Use MM/YY (01-12)' },
+                      {
+                        validator: async (_, value) => {
+                          const v = String(value || '').trim();
+                          if (!v) return;
+                          const match = v.match(/^(0[1-9]|1[0-2])\/(\d{2})$/);
+                          if (!match) return;
+
+                          const month = Number(match[1]);
+                          const year = 2000 + Number(match[2]);
+                          const now = new Date();
+                          const currentMonth = now.getMonth() + 1;
+                          const currentYear = now.getFullYear();
+
+                          if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                            throw new Error('Card is expired');
+                          }
+                        },
+                      },
+                    ]}
+                    normalize={(value) => {
+                      const digits = String(value ?? '').replace(/\D/g, '').slice(0, 4);
+                      if (digits.length <= 2) return digits;
+                      return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+                    }}
+                    className="flex-1 min-w-[140px]"
+                  >
+                    <Input
+                      placeholder="MM/YY"
+                      inputMode="numeric"
+                      maxLength={5}
+                      className="bg-white border-[#C8E6C9] text-slate-900 rounded-xl h-11 hover:border-[#81C784]"
+                    />
                   </Form.Item>
-                  <Form.Item name="cvv" label={<span className="text-slate-600 text-xs uppercase font-bold tracking-widest">CVV</span>} rules={[{ required: true, len: 3 }]} className="flex-1 min-w-[140px]">
-                    <Input placeholder="123" maxLength={3} className="bg-white border-[#C8E6C9] text-slate-900 rounded-xl h-11 hover:border-[#81C784]" />
+                  <Form.Item
+                    name="cvv"
+                    label={<span className="text-slate-600 text-xs uppercase font-bold tracking-widest">CVV</span>}
+                    rules={[
+                      { required: true, message: 'Please enter cvv' },
+                      { len: 3, message: 'Must be 3 digits' },
+                      { pattern: /^\d+$/, message: 'Digits only' },
+                    ]}
+                    normalize={(value) => String(value ?? '').replace(/\D/g, '').slice(0, 3)}
+                    className="flex-1 min-w-[140px]"
+                  >
+                    <Input
+                      placeholder="123"
+                      inputMode="numeric"
+                      maxLength={3}
+                      className="bg-white border-[#C8E6C9] text-slate-900 rounded-xl h-11 hover:border-[#81C784]"
+                    />
                   </Form.Item>
               </div>
             </div>
