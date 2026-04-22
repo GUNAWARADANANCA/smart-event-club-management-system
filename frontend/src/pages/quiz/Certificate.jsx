@@ -1,588 +1,600 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Card, Space, Typography, message, Divider, Select, Tooltip, Alert, Badge, Progress } from 'antd';
-import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, SaveOutlined, QuestionCircleOutlined, CheckCircleOutlined, WarningOutlined, TrophyOutlined, ClockCircleOutlined, FileTextOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Card, Typography, Button, Divider, Space, message, Tooltip, Modal, Result, Spin, Statistic, Row, Col } from 'antd';
+import { 
+  DownloadOutlined, 
+  SafetyCertificateOutlined, 
+  TrophyOutlined, 
+  ShareAltOutlined, 
+  PrinterOutlined,
+  MailOutlined,
+  CheckCircleOutlined,
+  StarOutlined,
+  AwardOutlined,
+  HomeOutlined,
+  QrcodeOutlined
+} from '@ant-design/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const { Title, Text, Paragraph } = Typography;
-const { Option } = Select;
-const { TextArea } = Input;
 
-const LOCAL_QUIZZES_KEY = 'localQuizzes';
+const escapeHtml = (value) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 
-const addLocalQuiz = (quiz) => {
-  try {
-    const existing = JSON.parse(localStorage.getItem(LOCAL_QUIZZES_KEY) || '[]');
-    const next = Array.isArray(existing) ? [quiz, ...existing] : [quiz];
-    localStorage.setItem(LOCAL_QUIZZES_KEY, JSON.stringify(next));
-  } catch {
-    // ignore
+const downloadCertificatePDF = ({ fullName, email, quizTitle, issuedDate, score, percentage }) => {
+  const filenameBase = String(quizTitle || 'certificate')
+    .trim()
+    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, '')
+    .replace(/\s+/g, '-')
+    .slice(0, 80) || 'certificate';
+
+  const html = `
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>${escapeHtml(filenameBase)}-certificate</title>
+        <style>
+          @page { 
+            size: A4 landscape; 
+            margin: 0; 
+          }
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          html, body { 
+            height: 100%; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          }
+          body { 
+            margin: 0; 
+            font-family: 'Segoe UI', 'Poppins', 'Arial', sans-serif; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .certificate-container {
+            width: 297mm;
+            height: 210mm;
+            padding: 8mm;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .certificate {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fff 0%, #fef9e7 100%);
+            border: 12px double #d4af37;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+          }
+          .certificate::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%);
+            pointer-events: none;
+          }
+          .certificate-content {
+            padding: 15mm 20mm;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+          }
+          .seal {
+            position: absolute;
+            bottom: 20mm;
+            right: 20mm;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #d4af37;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(212,175,55,0.1);
+          }
+          .title {
+            font-size: 42px;
+            color: #d4af37;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            margin: 0 0 8mm;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+          }
+          .subtitle {
+            font-size: 18px;
+            font-style: italic;
+            margin: 0 0 6mm;
+            color: #555;
+          }
+          .name {
+            font-size: 44px;
+            font-weight: 800;
+            margin: 0 0 4mm;
+            color: #2c3e50;
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+          .email {
+            font-size: 14px;
+            margin: 0 0 10mm;
+            color: #7f8c8d;
+          }
+          .score-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin: 10mm auto;
+            color: white;
+            font-weight: bold;
+          }
+          .desc {
+            font-size: 16px;
+            margin: 0 0 10mm;
+            color: #555;
+          }
+          .quiz {
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 2mm;
+            color: #2c3e50;
+          }
+          .divider {
+            border-top: 2px solid #d4af37;
+            margin: 12mm 0 8mm;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+          }
+          .footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20mm;
+            margin-top: 8mm;
+          }
+          .sig {
+            width: 45%;
+            text-align: center;
+          }
+          .sigLine {
+            border-top: 2px solid #2c3e50;
+            margin: 0 auto 3mm;
+            width: 70mm;
+          }
+          .sigText {
+            font-size: 12px;
+            color: #555;
+          }
+          .certificate-id {
+            position: absolute;
+            bottom: 10mm;
+            left: 20mm;
+            font-size: 10px;
+            color: #999;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="certificate-container">
+          <div class="certificate">
+            <div class="certificate-content">
+              <div class="seal">CERTIFIED</div>
+              <h1 class="title">Certificate of Achievement</h1>
+              <p class="subtitle">This is proudly presented to</p>
+              <div class="name">${escapeHtml(fullName)}</div>
+              <div class="email">${escapeHtml(email)}</div>
+              ${score ? `<div class="score-badge">Score: ${escapeHtml(score)} (${escapeHtml(percentage)}%)</div>` : ''}
+              <div class="desc">
+                For successfully completing the quiz for<br/>
+                <div class="quiz">${escapeHtml(quizTitle)}</div>
+              </div>
+              <div class="divider"></div>
+              <div class="footer">
+                <div class="sig">
+                  <div class="sigLine"></div>
+                  <div class="sigText">Date: ${escapeHtml(issuedDate)}</div>
+                </div>
+                <div class="sig">
+                  <div class="sigLine"></div>
+                  <div class="sigText">Event Organizer</div>
+                </div>
+              </div>
+            </div>
+            <div class="certificate-id">Certificate ID: ${escapeHtml(filenameBase)}-${Date.now()}</div>
+          </div>
+        </div>
+        <script>
+          window.addEventListener('load', () => {
+            requestAnimationFrame(() => {
+              setTimeout(() => {
+                try { window.focus(); window.print(); } catch (e) {}
+              }, 100);
+            });
+          });
+        </script>
+      </body>
+    </html>
+  `;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+
+  const win = window.open(url, '_blank', 'noopener,noreferrer');
+  if (!win) {
+    URL.revokeObjectURL(url);
+    message.error('Please allow pop-ups to download the certificate');
+    return;
   }
+
+  const revoke = () => {
+    try {
+      URL.revokeObjectURL(url);
+    } catch {
+      // ignore
+    }
+  };
+
+  win.onafterprint = revoke;
+  const timer = setInterval(() => {
+    if (win.closed) {
+      clearInterval(timer);
+      revoke();
+    }
+  }, 500);
 };
 
-const isoDate = (date) => date.toISOString().slice(0, 10);
-
-const CreateQuiz = () => {
+const Certificate = () => {
   const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [questionCount, setQuestionCount] = useState(1);
-  const [validationProgress, setValidationProgress] = useState(0);
+  const location = useLocation();
+  const [isSharing, setIsSharing] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  
+  const fullName = location.state?.fullName || 'Learner';
+  const email = location.state?.email || 'No email provided';
+  const quizTitle = location.state?.quizTitle || 'Quiz';
+  const score = location.state?.score || null;
+  const percentage = location.state?.percentage || null;
+  const issuedDate = new Date().toLocaleDateString('en-GB', {
+    day: '2-digit', month: 'long', year: 'numeric',
+  });
 
-  const calculateProgress = (values) => {
-    let completed = 0;
-    let total = 4; // title, eventId, timeLimit, at least one question
-    
-    if (values?.title) completed++;
-    if (values?.eventId) completed++;
-    if (values?.timeLimit) completed++;
-    if (values?.questions?.length > 0 && values.questions[0]?.text) completed++;
-    
-    setValidationProgress((completed / total) * 100);
-  };
+  const certificateId = `${quizTitle.replace(/\s/g, '-')}-${Date.now()}`;
 
-  const onFinish = async (values) => {
-    setLoading(true);
-    try {
-      const payload = {
-        title: values.title,
-        description: values.description,
-        timeLimit: values.timeLimit,
-        eventId: values.eventId,
-        questions: values.questions.map(q => ({
-          text: q.text,
-          options: [q.option1, q.option2, q.option3, q.option4],
-          correctAnswer: q.correctAnswer
-        }))
-      };
-
-      const localQuiz = {
-        id: `local-${Date.now()}`,
-        title: payload.title,
-        description: payload.description || '',
-        questions: payload.questions?.length || 0,
-        closeDate: isoDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)),
-        materials: [],
-        createdAt: new Date().toISOString(),
-        timeLimit: payload.timeLimit,
-        eventId: payload.eventId
-      };
-
-      addLocalQuiz(localQuiz);
+  useEffect(() => {
+    // Animation on mount
+    const timer = setTimeout(() => {
       message.success({
-        content: `Quiz "${payload.title}" created successfully!`,
-        icon: <CheckCircleOutlined style={{ color: '#4CAF50' }} />,
-        duration: 3,
-      });
-      form.resetFields();
-      setQuestionCount(1);
-      setValidationProgress(0);
-      navigate('/quizzes', { state: { refresh: true, newQuiz: localQuiz } });
-    } catch (error) {
-      console.error('Quiz creation error:', error);
-      message.error({
-        content: 'Failed to create quiz. Please check all fields and try again.',
-        icon: <WarningOutlined style={{ color: '#ff4d4f' }} />,
+        content: '🎉 Congratulations on completing the quiz!',
         duration: 4,
+        icon: <TrophyOutlined style={{ color: '#d4af37' }} />
       });
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleShare = async () => {
+    setIsSharing(true);
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `Certificate - ${quizTitle}`,
+          text: `I successfully completed the "${quizTitle}" quiz! 🎉`,
+          url: window.location.href,
+        });
+        message.success('Shared successfully!');
+      } else {
+        setShowShareModal(true);
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        message.error('Unable to share. Copy the link manually.');
+      }
     } finally {
-      setLoading(false);
+      setIsSharing(false);
     }
   };
 
-  const onValuesChange = (changedValues, allValues) => {
-    calculateProgress(allValues);
+  const handlePrint = () => {
+    window.print();
   };
 
-  const handleAddQuestion = (add) => {
-    if (questionCount >= 20) {
-      message.warning('Maximum 20 questions allowed per quiz');
-      return;
-    }
-    add();
-    setQuestionCount(prev => prev + 1);
-    message.success(`Question ${questionCount + 1} added`, 1.5);
-  };
-
-  const handleRemoveQuestion = (remove, name) => {
-    if (questionCount <= 1) {
-      message.warning('Quiz must have at least one question');
-      return;
-    }
-    remove(name);
-    setQuestionCount(prev => prev - 1);
-    message.info('Question removed', 1.5);
+  const handleEmailCertificate = () => {
+    const subject = encodeURIComponent(`Certificate - ${quizTitle}`);
+    const body = encodeURIComponent(
+      `Dear ${fullName},\n\n` +
+      `Congratulations on completing the "${quizTitle}" quiz!\n\n` +
+      `Your certificate is attached. You can also download it from the link below.\n\n` +
+      `Best regards,\nEvent Team`
+    );
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    message.info('Opening email client...');
   };
 
   return (
-    <div className="min-h-screen font-sans selection:bg-[#4CAF50]/25 overflow-hidden relative p-4 md:p-8 bg-gradient-to-br from-gray-50 via-white to-[#F1F8E9]">
+    <div className="min-h-screen bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb] py-12 px-4">
       {/* Animated background elements */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#4CAF50]/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#4CAF50]/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#4CAF50]/3 rounded-full blur-3xl"></div>
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl"></div>
       </div>
-      
-      <div className="max-w-5xl mx-auto relative z-10">
-        {/* Enhanced Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
-            <div className="flex items-center gap-3">
-              <Tooltip title="Back to Quizzes">
-                <Button 
-                  icon={<ArrowLeftOutlined />} 
-                  onClick={() => navigate('/quizzes')}
-                  className="hover:scale-105 transition-all duration-300 bg-white border-[#C8E6C9] text-[#2E7D32] hover:!bg-[#4CAF50] hover:!text-white hover:!border-[#4CAF50] rounded-xl shadow-sm"
-                />
-              </Tooltip>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <TrophyOutlined className="text-[#4CAF50] text-xl" />
-                  <Title level={3} className="!text-[#2E7D32] !mb-0 font-bold">
-                    Create New Quiz
-                  </Title>
-                </div>
-                <Text type="secondary" className="text-sm ml-7">
-                  Design engaging quizzes with multiple choice questions
-                </Text>
-              </div>
-            </div>
-            <Badge count={`${questionCount} Question${questionCount !== 1 ? 's' : ''}`} style={{ backgroundColor: '#4CAF50' }} />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full mb-4">
+            <AwardOutlined className="text-yellow-400 text-xl" />
+            <span className="text-white font-semibold">Certificate of Excellence</span>
           </div>
-          
-          {/* Progress indicator */}
-          <div className="ml-12 mr-4">
-            <div className="flex justify-between items-center mb-2">
-              <Text className="text-xs text-gray-500">Quiz completion progress</Text>
-              <Text className="text-xs font-semibold text-[#4CAF50]">{Math.round(validationProgress)}%</Text>
-            </div>
-            <Progress 
-              percent={validationProgress} 
-              showInfo={false}
-              strokeColor={{
-                '0%': '#4CAF50',
-                '100%': '#66BB6A',
-              }}
-              trailColor="#E8F5E9"
-              size="small"
-              className="!mb-0"
-            />
-          </div>
+          <Title level={2} className="!text-white !mb-2">
+            Your Achievement Certificate
+          </Title>
+          <Text className="text-white/80 text-lg">
+            Congratulations on your accomplishment!
+          </Text>
         </div>
- 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          onValuesChange={onValuesChange}
-          initialValues={{ questions: [{}] }}
-          autoComplete="off"
-        >
-          {/* Enhanced General Information Card */}
-          <Card className="bg-white/95 backdrop-blur-sm border-[#C8E6C9] shadow-xl rounded-3xl mb-8 relative overflow-hidden group transition-all duration-300 hover:shadow-2xl">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#4CAF50]/10 to-[#81C784]/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-[#4CAF50]/5 to-transparent rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
-            
-            <div className="flex items-center gap-3 mb-6 relative z-10">
-              <div className="w-1 h-8 bg-gradient-to-b from-[#4CAF50] to-[#81C784] rounded-full"></div>
-              <FileTextOutlined className="text-[#4CAF50] text-xl" />
-              <Title level={4} className="!text-gray-800 m-0 font-bold">
-                General Information
-              </Title>
-              <Tooltip title="Basic details about your quiz - all fields marked with * are required">
-                <QuestionCircleOutlined className="text-gray-400 cursor-help hover:text-[#4CAF50] transition-colors" />
-              </Tooltip>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <Form.Item
-                name="title"
-                label={
-                  <Text className="text-gray-700 font-semibold">
-                    Quiz Title <span className="text-red-500">*</span>
-                  </Text>
-                }
-                rules={[
-                  { required: true, message: 'Please input quiz title!' },
-                  { whitespace: true, message: 'Quiz title cannot be empty.' },
-                  { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' },
-                  { min: 3, message: 'Title must be at least 3 characters' },
-                  { max: 100, message: 'Title cannot exceed 100 characters' }
-                ]}
-                normalize={(value) =>
-                  String(value ?? '')
-                    .replace(/[^A-Za-z\s]/g, '')
-                    .replace(/\s+/g, ' ')
-                    .trimStart()
-                }
-                tooltip="Choose a clear, descriptive title for your quiz"
-              >
-                <Input 
-                  placeholder="e.g., JavaScript Fundamentals" 
-                  size="large"
-                  className="bg-gray-50 border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl transition-all duration-200"
-                  prefix={<span className="text-[#4CAF50] mr-2">📝</span>}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="eventId"
-                label={
-                  <Text className="text-gray-700 font-semibold">
-                    Associated Event <span className="text-red-500">*</span>
-                  </Text>
-                }
-                rules={[{ required: true, message: 'Please select an event association' }]}
-                tooltip="Select which event this quiz belongs to"
-              >
-                <Select 
-                  placeholder="Select event" 
-                  size="large"
-                  className="rounded-xl"
-                  popupClassName="dark-dropdown"
-                  suffixIcon={<span className="text-[#4CAF50]">▼</span>}
-                >
-                  <Option value={101}>
-                    <div className="flex items-center gap-2">
-                      <span>🎯</span> Tech Symposium 2026
-                    </div>
-                  </Option>
-                  <Option value={102}>
-                    <div className="flex items-center gap-2">
-                      <span>🤖</span> AI Ethics Workshop
-                    </div>
-                  </Option>
-                  <Option value={103}>
-                    <div className="flex items-center gap-2">
-                      <span>💻</span> CodeRed Hackathon
-                    </div>
-                  </Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                name="timeLimit"
-                label={
-                  <Text className="text-gray-700 font-semibold">
-                    Time Limit <span className="text-red-500">*</span>
-                  </Text>
-                }
-                rules={[{ required: true, message: 'Please set a time limit!' }]}
-                tooltip="Set how many minutes participants have to complete the quiz"
-              >
-                <Select
-                  placeholder="Select time limit"
-                  size="large"
-                  className="rounded-xl"
-                  popupClassName="dark-dropdown"
-                  suffixIcon={<ClockCircleOutlined className="text-[#4CAF50]" />}
-                >
-                  {[5, 10, 15, 20, 30, 45, 60, 90, 120].map(t => (
-                    <Option key={t} value={t}>
-                      <div className="flex items-center justify-between">
-                        <span>{t} minute{t !== 1 ? 's' : ''}</span>
-                        {t === 30 && <span className="text-xs text-[#4CAF50]">Recommended</span>}
-                      </div>
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </div>
-
-            <Form.Item
-              name="description"
-              label={<Text className="text-gray-700 font-semibold">Description</Text>}
-              rules={[
-                { pattern: /^[A-Za-z\s]+$/, message: 'Description must contain letters only, no numbers allowed!' },
-                { max: 500, message: 'Description cannot exceed 500 characters' }
-              ]}
-              normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
-              tooltip="Provide a brief description of what this quiz covers (optional)"
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Certificate Card */}
+          <div className="lg:col-span-2">
+            <Card 
+              className="shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-3xl transform hover:scale-[1.02]"
+              style={{ 
+                background: 'linear-gradient(135deg, #fff 0%, #fef9e7 100%)',
+                border: 'none',
+                borderRadius: '24px'
+              }}
+              bodyStyle={{ padding: 0 }}
             >
-              <TextArea 
-                placeholder="Enter quiz description (optional) - e.g., This quiz tests your knowledge on..." 
-                rows={3} 
-                className="bg-gray-50 border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl resize-none transition-all duration-200"
-                showCount
-                maxLength={500}
-              />
-            </Form.Item>
-
-            {/* Info alert */}
-            <Alert
-              message="Tip: Keep your quiz title clear and concise. Use the description to provide additional context about the quiz content."
-              type="info"
-              showIcon
-              className="mt-4 bg-blue-50 border-blue-200 rounded-xl"
-              icon={<QuestionCircleOutlined />}
-            />
-          </Card>
-
-          <Divider orientation="left" className="!border-gray-200 my-8">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#4CAF50]/10 flex items-center justify-center">
-                <span className="text-[#4CAF50] font-bold">{questionCount}</span>
+              {/* Decorative ribbon */}
+              <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#d4af37] to-[#ffd700] transform rotate-45 translate-x-16 -translate-y-16"></div>
               </div>
-              <Text className="text-gray-600 font-bold uppercase tracking-wider text-sm">
-                Questions
-              </Text>
-              <div className="h-px w-32 bg-gradient-to-r from-[#4CAF50] to-transparent"></div>
-            </div>
-          </Divider>
 
-          <Form.List name="questions">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map(({ key, name, ...restField }, index) => (
-                  <Card 
-                    key={key} 
-                    className="bg-gradient-to-br from-white to-[#F7FCF7] border-[#C8E6C9] shadow-lg rounded-2xl mb-6 relative overflow-hidden group transition-all duration-300 hover:shadow-xl hover:scale-[1.01]"
-                    title={
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#4CAF50] to-[#66BB6A] text-white text-sm flex items-center justify-center font-bold shadow-md">
-                          {index + 1}
-                        </div>
-                        <Text className="text-gray-800 font-bold">
-                          Question {index + 1}
-                        </Text>
-                        {fields.length > 1 && (
-                          <Badge count="Active" style={{ backgroundColor: '#4CAF50' }} className="ml-2" />
-                        )}
-                      </div>
-                    }
-                    extra={
-                      fields.length > 1 && (
-                        <Tooltip title="Remove this question">
-                          <Button 
-                            type="text" 
-                            danger 
-                            icon={<DeleteOutlined />} 
-                            onClick={() => handleRemoveQuestion(remove, name)}
-                            className="hover:bg-red-500/10 rounded-full transition-all duration-200"
-                            size="large"
-                          />
-                        </Tooltip>
-                      )
-                    }
-                  >
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'text']}
-                      rules={[
-                        { required: true, message: 'Please enter the question text' },
-                        { pattern: /^[A-Za-z\s]+$/, message: 'Question must contain letters only!' },
-                        { min: 5, message: 'Question must be at least 5 characters' },
-                        { max: 200, message: 'Question cannot exceed 200 characters' }
-                      ]}
-                      normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
-                    >
-                      <TextArea 
-                        placeholder="Type your question here..." 
-                        rows={2}
-                        className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl resize-none transition-all duration-200 font-medium"
-                        showCount
-                        maxLength={200}
-                      />
-                    </Form.Item>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'option1']}
-                        label={
-                          <Text className="text-gray-600 text-sm font-semibold">
-                            Option A <span className="text-red-500">*</span>
-                          </Text>
-                        }
-                        rules={[
-                          { required: true, message: 'Option A is required' }, 
-                          { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }
-                        ]}
-                        normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
-                      >
-                        <Input 
-                          placeholder="Enter option A" 
-                          className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10 transition-all duration-200"
-                          prefix={<span className="text-[#4CAF50] font-bold mr-1">A.</span>}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'option2']}
-                        label={
-                          <Text className="text-gray-600 text-sm font-semibold">
-                            Option B <span className="text-red-500">*</span>
-                          </Text>
-                        }
-                        rules={[
-                          { required: true, message: 'Option B is required' }, 
-                          { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }
-                        ]}
-                        normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
-                      >
-                        <Input 
-                          placeholder="Enter option B" 
-                          className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10 transition-all duration-200"
-                          prefix={<span className="text-[#4CAF50] font-bold mr-1">B.</span>}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'option3']}
-                        label={
-                          <Text className="text-gray-600 text-sm font-semibold">
-                            Option C <span className="text-red-500">*</span>
-                          </Text>
-                        }
-                        rules={[
-                          { required: true, message: 'Option C is required' }, 
-                          { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }
-                        ]}
-                        normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
-                      >
-                        <Input 
-                          placeholder="Enter option C" 
-                          className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10 transition-all duration-200"
-                          prefix={<span className="text-[#4CAF50] font-bold mr-1">C.</span>}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'option4']}
-                        label={
-                          <Text className="text-gray-600 text-sm font-semibold">
-                            Option D <span className="text-red-500">*</span>
-                          </Text>
-                        }
-                        rules={[
-                          { required: true, message: 'Option D is required' }, 
-                          { pattern: /^[A-Za-z\s]+$/, message: 'Numbers are not allowed (letters only).' }
-                        ]}
-                        normalize={(value) => String(value ?? '').replace(/[^A-Za-z\s]/g, '')}
-                      >
-                        <Input 
-                          placeholder="Enter option D" 
-                          className="bg-white border-[#C8E6C9] text-gray-900 placeholder-gray-400 hover:border-[#4CAF50] focus:border-[#4CAF50] rounded-xl h-10 transition-all duration-200"
-                          prefix={<span className="text-[#4CAF50] font-bold mr-1">D.</span>}
-                        />
-                      </Form.Item>
-                    </div>
-
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'correctAnswer']}
-                      label={
-                        <div className="flex items-center gap-2">
-                          <TrophyOutlined className="text-[#4CAF50]" />
-                          <Text className="text-[#2E7D32] font-bold">
-                            Correct Answer <span className="text-red-500">*</span>
-                          </Text>
-                          <Tooltip title="Select which option is the correct answer for this question">
-                            <QuestionCircleOutlined className="text-gray-400 cursor-help" />
-                          </Tooltip>
-                        </div>
-                      }
-                      rules={[{ required: true, message: 'Please select the correct answer' }]}
-                    >
-                      <Select 
-                        placeholder="Choose the correct answer" 
-                        size="large"
-                        className="rounded-xl"
-                        popupClassName="dark-dropdown"
-                        suffixIcon={<CheckCircleOutlined className="text-[#4CAF50]" />}
-                      >
-                        <Option value={1}>
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">A</span>
-                            Option A
-                          </div>
-                        </Option>
-                        <Option value={2}>
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">B</span>
-                            Option B
-                          </div>
-                        </Option>
-                        <Option value={3}>
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">C</span>
-                            Option C
-                          </div>
-                        </Option>
-                        <Option value={4}>
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">D</span>
-                            Option D
-                          </div>
-                        </Option>
-                      </Select>
-                    </Form.Item>
-                  </Card>
-                ))}
-                
-                {/* Enhanced Add Question Button */}
-                <div className="flex justify-center my-8">
-                  <Button
-                    type="dashed"
-                    onClick={() => handleAddQuestion(add)}
-                    icon={<PlusOutlined />}
-                    size="large"
-                    className="border-2 border-dashed border-[#4CAF50] text-[#4CAF50] hover:!bg-[#4CAF50] hover:!text-white rounded-xl px-8 h-12 transition-all duration-300 hover:scale-105"
-                    disabled={questionCount >= 20}
-                  >
-                    {questionCount >= 20 ? 'Maximum Questions Reached' : 'Add Another Question'}
-                  </Button>
+              <div className="p-8 md:p-12 text-center relative">
+                <div className="mb-6">
+                  <div className="inline-block p-4 bg-gradient-to-br from-[#d4af37]/10 to-[#ffd700]/10 rounded-full mb-4">
+                    <SafetyCertificateOutlined className="text-6xl text-[#d4af37]" />
+                  </div>
                 </div>
                 
-                {questionCount >= 20 && (
-                  <Alert
-                    message="Maximum Questions Limit"
-                    description="You've reached the maximum limit of 20 questions per quiz."
-                    type="warning"
-                    showIcon
-                    className="mb-6 rounded-xl"
-                  />
-                )}
-              </>
-            )}
-          </Form.List>
+                <Title level={1} className="!text-[#d4af37] !font-serif !mb-4 !text-3xl md:!text-4xl">
+                  Certificate of Achievement
+                </Title>
+                
+                <Text className="text-gray-600 text-lg italic block mb-6">
+                  This is proudly presented to
+                </Text>
+                
+                <Title level={2} className="!text-gray-800 !mb-2 !text-2xl md:!text-3xl">
+                  {fullName}
+                </Title>
+                
+                <Text className="text-gray-500 block mb-6">
+                  {email}
+                </Text>
 
-          {/* Enhanced Form Actions */}
-          <Card className="bg-white/95 backdrop-blur-sm border-[#C8E6C9] shadow-lg rounded-3xl mt-8">
-            <div className="flex justify-between items-center flex-wrap gap-4">
-              <div>
-                <Text className="text-gray-500 text-sm">
-                  {questionCount} question{questionCount !== 1 ? 's' : ''} will be added to this quiz
+                {(score || percentage) && (
+                  <div className="inline-block bg-gradient-to-r from-[#667eea] to-[#764ba2] px-6 py-3 rounded-full mb-6">
+                    <div className="flex items-center gap-3">
+                      <TrophyOutlined className="text-yellow-400 text-xl" />
+                      <Text className="text-white font-semibold">
+                        Score: {score} ({percentage}%)
+                      </Text>
+                    </div>
+                  </div>
+                )}
+                
+                <Text className="text-gray-600 text-base block mb-4">
+                  For successfully completing the quiz for
                 </Text>
-                <br />
-                <Text type="secondary" className="text-xs">
-                  All fields marked with <span className="text-red-500">*</span> are required
-                </Text>
+                
+                <Title level={3} className="!text-gray-800 !mb-8 !text-xl md:!text-2xl">
+                  {quizTitle}
+                </Title>
+                
+                <Divider className="!border-[#d4af37] !my-8" />
+                
+                <div className="flex justify-between items-center flex-wrap gap-6">
+                  <div className="text-center flex-1">
+                    <div className="border-b-2 border-gray-800 w-32 mx-auto mb-2"></div>
+                    <Text className="text-gray-600 text-sm">Date: {issuedDate}</Text>
+                  </div>
+                  <div className="text-center flex-1">
+                    <div className="border-b-2 border-gray-800 w-32 mx-auto mb-2"></div>
+                    <Text className="text-gray-600 text-sm">Event Organizer</Text>
+                  </div>
+                </div>
+
+                {/* Certificate ID */}
+                <div className="mt-8 pt-4 border-t border-gray-200">
+                  <Text className="text-gray-400 text-xs">
+                    Certificate ID: {certificateId}
+                  </Text>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <Button
-                  onClick={() => navigate('/quizzes')}
-                  size="large"
-                  className="border-gray-300 text-gray-600 hover:!border-gray-400 rounded-xl font-medium px-6 transition-all duration-200"
-                >
-                  Cancel
-                </Button>
+            </Card>
+          </div>
+
+          {/* Stats and Actions Sidebar */}
+          <div className="space-y-6">
+            {/* Stats Card */}
+            <Card className="shadow-xl rounded-2xl bg-white/95 backdrop-blur-sm">
+              <Statistic
+                title={<Text className="text-gray-600">Certificate Status</Text>}
+                value="Active"
+                valueStyle={{ color: '#52c41a', fontSize: '20px' }}
+                prefix={<CheckCircleOutlined />}
+              />
+              <Divider className="!my-4" />
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <Text className="text-gray-500">Recipient</Text>
+                  <Text className="font-semibold">{fullName}</Text>
+                </div>
+                <div className="flex justify-between">
+                  <Text className="text-gray-500">Quiz Title</Text>
+                  <Text className="font-semibold">{quizTitle}</Text>
+                </div>
+                <div className="flex justify-between">
+                  <Text className="text-gray-500">Issue Date</Text>
+                  <Text className="font-semibold">{issuedDate}</Text>
+                </div>
+              </div>
+            </Card>
+
+            {/* Actions Card */}
+            <Card className="shadow-xl rounded-2xl bg-white/95 backdrop-blur-sm">
+              <Title level={5} className="!mb-4">Actions</Title>
+              <Space direction="vertical" className="w-full" size="middle">
                 <Button
                   type="primary"
-                  htmlType="submit"
-                  icon={<SaveOutlined />}
-                  loading={loading}
+                  icon={<DownloadOutlined />}
                   size="large"
-                  className="bg-gradient-to-r from-[#4CAF50] to-[#66BB6A] hover:!from-[#43A047] hover:!to-[#4CAF50] border-0 rounded-xl font-bold shadow-lg shadow-green-600/30 transition-all duration-300 hover:scale-105 px-8"
+                  block
+                  onClick={() => downloadCertificatePDF({ fullName, email, quizTitle, issuedDate, score, percentage })}
+                  className="bg-gradient-to-r from-[#667eea] to-[#764ba2] border-0 hover:shadow-lg transition-all"
                 >
-                  {loading ? 'Creating Quiz...' : 'Create Quiz'}
+                  Download PDF
                 </Button>
-              </div>
-            </div>
-          </Card>
-        </Form>
+                
+                <Button
+                  icon={<PrinterOutlined />}
+                  size="large"
+                  block
+                  onClick={handlePrint}
+                  className="border-[#d4af37] text-[#d4af37] hover:!bg-[#d4af37] hover:!text-white transition-all"
+                >
+                  Print Certificate
+                </Button>
+                
+                <Button
+                  icon={<ShareAltOutlined />}
+                  size="large"
+                  block
+                  onClick={handleShare}
+                  loading={isSharing}
+                  className="border-[#1890ff] text-[#1890ff] hover:!bg-[#1890ff] hover:!text-white transition-all"
+                >
+                  Share Achievement
+                </Button>
+                
+                <Tooltip title="Send certificate via email">
+                  <Button
+                    icon={<MailOutlined />}
+                    size="large"
+                    block
+                    onClick={handleEmailCertificate}
+                    className="border-[#ff7c43] text-[#ff7c43] hover:!bg-[#ff7c43] hover:!text-white transition-all"
+                  >
+                    Email Certificate
+                  </Button>
+                </Tooltip>
+
+                <Divider className="!my-2" />
+
+                <Button
+                  icon={<HomeOutlined />}
+                  size="large"
+                  block
+                  onClick={() => navigate('/quizzes')}
+                  className="border-gray-300 text-gray-600 hover:!border-gray-400 transition-all"
+                >
+                  Back to Quizzes
+                </Button>
+              </Space>
+            </Card>
+
+            {/* Social Proof */}
+            <Card className="shadow-xl rounded-2xl bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white text-center">
+              <StarOutlined className="text-3xl mb-2" />
+              <Text className="text-white block font-semibold mb-1">
+                Share your achievement!
+              </Text>
+              <Text className="text-white/80 text-sm">
+                Let others know about your success on social media
+              </Text>
+            </Card>
+          </div>
+        </div>
       </div>
+
+      {/* Share Modal */}
+      <Modal
+        title="Share Your Certificate"
+        open={showShareModal}
+        onCancel={() => setShowShareModal(false)}
+        footer={null}
+        className="rounded-2xl"
+      >
+        <Result
+          icon={<TrophyOutlined style={{ color: '#d4af37' }} />}
+          title="Share this achievement!"
+          subTitle="Copy the link below to share your certificate"
+          extra={
+            <div className="space-y-3">
+              <Input.TextArea 
+                value={`I successfully completed the "${quizTitle}" quiz! 🎉\n\nCertificate ID: ${certificateId}`}
+                rows={3}
+                readOnly
+                className="rounded-xl"
+              />
+              <Button 
+                type="primary" 
+                block
+                onClick={() => {
+                  navigator.clipboard.writeText(`I successfully completed the "${quizTitle}" quiz! 🎉\nCertificate ID: ${certificateId}`);
+                  message.success('Copied to clipboard!');
+                  setShowShareModal(false);
+                }}
+                className="bg-gradient-to-r from-[#667eea] to-[#764ba2] border-0"
+              >
+                Copy to Clipboard
+              </Button>
+            </div>
+          }
+        />
+      </Modal>
+
+      {/* Print Styles */}
+      <style jsx>{`
+        @media print {
+          .no-print {
+            display: none;
+          }
+          .ant-card {
+            box-shadow: none;
+          }
+        }
+      `}</style>
     </div>
   );
 };
 
-export default CreateQuiz;
+export default Certificate;
