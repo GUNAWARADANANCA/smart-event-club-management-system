@@ -414,10 +414,28 @@ const LecturePanel = () => {
         <p style={{ color: '#64748B', fontSize: 14, marginBottom: 24 }}>
           Share your expertise with students. Fill in the form and our academic team will review your application.
         </p>
-        <Form form={lecturerForm} layout="vertical" onFinish={(values) => {
-          message.success('Application submitted! We\'ll be in touch soon.');
-          setBecomeLecturerOpen(false);
-          lecturerForm.resetFields();
+        <Form form={lecturerForm} layout="vertical" onFinish={async (values) => {
+          try {
+            const response = await fetch('http://localhost:5000/api/lecturer-requests', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(values),
+            });
+
+            if (response.ok) {
+              message.success('Application submitted! We\'ll be in touch soon.');
+              setBecomeLecturerOpen(false);
+              lecturerForm.resetFields();
+            } else {
+              const errorData = await response.json();
+              message.error(errorData.error || 'Failed to submit application');
+            }
+          } catch (error) {
+            console.error('Error submitting lecturer request:', error);
+            message.error('Failed to submit application. Please try again.');
+          }
         }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
             <Form.Item name="fullName" label={<span style={{ color: '#4B5563' }}>Full Name</span>}

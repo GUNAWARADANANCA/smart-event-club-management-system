@@ -1,20 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button, Divider, Space, message, Tooltip, Modal, Result, Spin, Statistic, Row, Col } from 'antd';
-import { 
-  DownloadOutlined, 
-  SafetyCertificateOutlined, 
-  TrophyOutlined, 
-  ShareAltOutlined, 
-  PrinterOutlined,
-  MailOutlined,
-  CheckCircleOutlined,
-  StarOutlined,
-  AwardOutlined,
-  HomeOutlined,
-  QrcodeOutlined
-} from '@ant-design/icons';
+import * as Icons from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+const AwardOutlined = Icons.AwardOutlined || Icons.TrophyOutlined;
 const { Title, Text, Paragraph } = Typography;
 
 const escapeHtml = (value) =>

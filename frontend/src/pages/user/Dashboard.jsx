@@ -40,7 +40,7 @@ export default function Dashboard() {
       <Row gutter={[24, 24]}>
         {/* Card 1: Total Revenue */}
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} bodyStyle={{ padding: '20px 24px 8px' }} style={{ borderRadius: 8 }}>
+          <Card variant="borderless" bodyStyle={{ padding: '20px 24px 8px' }} style={{ borderRadius: 8 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.45)' }}>
               <span>Total Revenue</span>
               <InfoCircleOutlined />
@@ -65,7 +65,7 @@ export default function Dashboard() {
 
         {/* Card 2: Visits (Registrations) */}
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} bodyStyle={{ padding: '20px 24px 8px' }} style={{ borderRadius: 8 }}>
+          <Card variant="borderless" bodyStyle={{ padding: '20px 24px 8px' }} style={{ borderRadius: 8 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.45)' }}>
               <span>Visits</span>
               <InfoCircleOutlined />
@@ -88,7 +88,7 @@ export default function Dashboard() {
 
         {/* Card 3: Payments (Tickets) */}
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} bodyStyle={{ padding: '20px 24px 8px' }} style={{ borderRadius: 8 }}>
+          <Card variant="borderless" bodyStyle={{ padding: '20px 24px 8px' }} style={{ borderRadius: 8 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.45)' }}>
               <span>Payments</span>
               <InfoCircleOutlined />
@@ -111,7 +111,7 @@ export default function Dashboard() {
 
         {/* Card 4: Operation Effect */}
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} bodyStyle={{ padding: '20px 24px 8px' }} style={{ borderRadius: 8 }}>
+          <Card variant="borderless" bodyStyle={{ padding: '20px 24px 8px' }} style={{ borderRadius: 8 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.45)' }}>
               <span>Operation Effect</span>
               <InfoCircleOutlined />
@@ -135,7 +135,7 @@ export default function Dashboard() {
         </Col>
       </Row>
 
-      <Card bordered={false} style={{ marginTop: 24, borderRadius: 8 }} bodyStyle={{ padding: 0 }}>
+      <Card variant="borderless" style={{ marginTop: 24, borderRadius: 8 }} bodyStyle={{ padding: 0 }}>
         <Tabs 
           defaultActiveKey="1" 
           size="large" 

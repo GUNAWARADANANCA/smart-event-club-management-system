@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, Typography, message } from 'antd';
+import { Form, Input, Button, Card, Typography, App as AntdApp } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -17,6 +17,7 @@ const Login = () => {
   const from = location.state?.from || '/';
   const prefilledEmail = location.state?.email || '';
   const [loading, setLoading] = useState(false);
+  const { message } = AntdApp.useApp();
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -42,7 +43,7 @@ const Login = () => {
     <div className="page-auth">
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Card
-          bordered={false}
+          variant={false}
           style={{
             background: '#FFFFFF',
             border: '1px solid #C8E6C9',
