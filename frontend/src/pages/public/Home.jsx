@@ -23,6 +23,16 @@ const Home = () => {
     navigate('/', { replace: true });
   };
 
+  const handleGalleryClick = () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      navigate('/login', { state: { from: '/gallery' } });
+    } else {
+      navigate('/gallery');
+    }
+  };
+
   const modules = [
     {
       icon: <CalendarOutlined style={{ fontSize: 36, color: '#4CAF50' }} />,
@@ -144,7 +154,7 @@ const Home = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/login', { state: { from: '/gallery' } })}
+            onClick={handleGalleryClick}
             className="px-8 py-4 border-2 border-[#C8E6C9] rounded-2xl font-bold text-[#2E7D32] text-base bg-white hover:bg-[#E8F5E9] hover:border-[#A5D6A7] transition-all duration-200"
           >
             View Gallery

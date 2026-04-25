@@ -105,7 +105,7 @@ const SecureMeetings = () => {
         <Col xs={24} lg={16}>
           <Card
             title={<><VideoCameraOutlined style={{ color: '#4CAF50', marginRight: 8 }}/><span style={{ color: '#1F2937' }}>Upcoming Secure Meetings</span></>}
-            bordered={false}
+            variant="borderless"
             style={{ background: '#FFFFFF', borderRadius: 16, border: '1px solid rgba(200, 230, 201, 0.9)' }}
           >
             <Spin spinning={loading}>
@@ -159,7 +159,7 @@ const SecureMeetings = () => {
         <Col xs={24} lg={8}>
           <Card
             title={<span style={{ color: '#1F2937' }}>Access Security Rules</span>}
-            bordered={false}
+            variant="borderless"
             style={{ background: '#FFFFFF', borderRadius: 16, border: '1px solid rgba(200, 230, 201, 0.9)' }}
           >
             <Paragraph style={{ color: '#4B5563' }}>

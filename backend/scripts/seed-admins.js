@@ -11,7 +11,8 @@ const User = require('../src/models/User');
 
 const MONGO_URI = process.env.MONGO_URI?.trim();
 
-const dnsServers = process.env.DNS_SERVERS?.split(',')
+const dnsServers = (process.env.DNS_SERVERS ?? '')
+  .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
 if (dnsServers.length > 0) {
@@ -31,6 +32,11 @@ const ADMIN_USERS = [
     email: 'finance.admin@university.edu',
     password: 'FinanceAdmin2026!',
     role: 'finance_admin',
+  },
+  {
+    email: 'news.admin@university.edu',
+    password: 'NewsAdmin2026!',
+    role: 'news_admin',
   },
 ];
 

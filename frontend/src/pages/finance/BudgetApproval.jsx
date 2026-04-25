@@ -136,7 +136,7 @@ const BudgetApproval = () => {
         className="glass-modal"
       >
         {selectedBudget && (
-          <Descriptions bordered column={1} size="small" labelStyle={{ width: '150px', color: '#374151', fontWeight: 'bold', background: '#E8F5E9' }} contentStyle={{ color: '#1F2937', background: '#FFFFFF' }}>
+          <Descriptions variant column={1} size="small" labelStyle={{ width: '150px', color: '#374151', fontWeight: 'bold', background: '#E8F5E9' }} contentStyle={{ color: '#1F2937', background: '#FFFFFF' }}>
              <Descriptions.Item label="Status">
                <Badge status={selectedBudget.status === 'Approved' ? 'success' : selectedBudget.status === 'Pending' ? 'warning' : 'error'} text={selectedBudget.status} />
              </Descriptions.Item>
