@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Input, Button, Card, Typography, Select, message, ConfigProvider } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, Card, Typography, Select, message, Modal } from 'antd';
 import { mockRequests } from '@/data/mockData';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, Users, GraduationCap } from 'lucide-react';
@@ -41,9 +41,58 @@ const hubCards = [
   },
 ];
 
+const clubLeaders = [
+  {
+    name: 'Nethmi Perera',
+    role: 'President, Computing Society',
+    email: 'nethmi@my.sliit.lk',
+  },
+  {
+    name: 'Kasun Fernando',
+    role: 'Secretary, Media & Arts Society',
+    email: 'kasun@my.sliit.lk',
+  },
+];
+
+const sisHighlights = [
+  {
+    label: 'Student ID',
+    value: 'IT2026001',
+  },
+  {
+    label: 'Current Semester',
+    value: 'Year 2 - Semester 1',
+  },
+  {
+    label: 'Academic Status',
+    value: 'Good Standing',
+  },
+  {
+    label: 'Next Registration Window',
+    value: '2026-05-15',
+  },
+];
+
+const sisPanelMembers = [
+  {
+    name: 'Dr. Nimal Perera',
+    role: 'SIS Coordinator',
+  },
+  {
+    name: 'Ms. Ayesha Silva',
+    role: 'Academic Records Officer',
+  },
+  {
+    name: 'Mr. Kavindu Fernando',
+    role: 'Student Registration Officer',
+  },
+];
+
 const RequestManagement = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [leadersOpen, setLeadersOpen] = useState(false);
+  const [sisOpen, setSisOpen] = useState(false);
 
   const onFinish = (values) => {
     const newRequest = {
@@ -77,7 +126,19 @@ const RequestManagement = () => {
           <Title level={3} style={{ color: '#1F2937', margin: '0 0 20px' }}>Quick Access</Title>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
             {hubCards.map(({ icon: Icon, title, desc, color, gradient, glow, tag, route }) => (
-              <div key={title} onClick={() => navigate(route)}
+              <div
+                key={title}
+                onClick={() => {
+                  if (route === '/club-leaders') {
+                    setLeadersOpen(true);
+                    return;
+                  }
+                  if (route === '/sis') {
+                    setSisOpen(true);
+                    return;
+                  }
+                  navigate(route);
+                }}
                 style={{ flex: '1 1 220px', background: '#FFFFFF', border: '1px solid #C8E6C9', borderRadius: 20, overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s', boxShadow: '0 4px 14px rgba(46, 125, 50, 0.06)' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 32px ${glow}`; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
@@ -196,6 +257,95 @@ const RequestManagement = () => {
           </div>
         </Form>
       </div>
+
+      <Modal
+        title="Club & Society Leaders"
+        open={leadersOpen}
+        onCancel={() => setLeadersOpen(false)}
+        footer={[
+          <Button key="close" type="primary" onClick={() => setLeadersOpen(false)} style={{ background: '#4CAF50', borderColor: '#43A047' }}>
+            Close
+          </Button>,
+        ]}
+      >
+        <div style={{ display: 'grid', gap: 14 }}>
+          {clubLeaders.map((leader) => (
+            <div
+              key={leader.email}
+              style={{
+                border: '1px solid #C8E6C9',
+                borderRadius: 16,
+                padding: '16px 18px',
+                background: '#F7FCF7',
+              }}
+            >
+              <div style={{ color: '#1F2937', fontWeight: 700, fontSize: 16 }}>{leader.name}</div>
+              <div style={{ color: '#2E7D32', fontWeight: 600, marginTop: 4 }}>{leader.role}</div>
+              <div style={{ color: '#64748B', marginTop: 6 }}>{leader.email}</div>
+            </div>
+          ))}
+        </div>
+      </Modal>
+
+      <Modal
+        title="Student Information System"
+        open={sisOpen}
+        onCancel={() => setSisOpen(false)}
+        footer={[
+          <Button key="close" type="primary" onClick={() => setSisOpen(false)} style={{ background: '#F59E0B', borderColor: '#D97706' }}>
+            Close
+          </Button>,
+        ]}
+      >
+        <div style={{ marginBottom: 16, color: '#64748B', lineHeight: 1.7 }}>
+          Access important academic details including records, semester progress, and registration updates from the SIS portal.
+        </div>
+        <div style={{ display: 'grid', gap: 12 }}>
+          {sisHighlights.map((item) => (
+            <div
+              key={item.label}
+              style={{
+                border: '1px solid #FCD34D',
+                borderRadius: 16,
+                padding: '16px 18px',
+                background: '#FFF7ED',
+              }}
+            >
+              <div style={{ color: '#92400E', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                {item.label}
+              </div>
+              <div style={{ color: '#1F2937', fontWeight: 700, fontSize: 16, marginTop: 6 }}>
+                {item.value}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 24 }}>
+          <div style={{ color: '#92400E', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+            SIS Panel Members
+          </div>
+          <div style={{ display: 'grid', gap: 12 }}>
+            {sisPanelMembers.map((member) => (
+              <div
+                key={member.name}
+                style={{
+                  border: '1px solid #FCD34D',
+                  borderRadius: 16,
+                  padding: '14px 18px',
+                  background: '#FFFFFF',
+                }}
+              >
+                <div style={{ color: '#1F2937', fontWeight: 700, fontSize: 15 }}>
+                  {member.name}
+                </div>
+                <div style={{ color: '#92400E', marginTop: 4, fontWeight: 600 }}>
+                  {member.role}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Modal>
 
     </div>
   );

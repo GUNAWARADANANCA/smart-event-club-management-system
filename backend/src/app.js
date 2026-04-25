@@ -8,6 +8,7 @@ const expensesRouter = require('./routes/expenses');
 const meetingsRouter = require('./routes/meetings');
 const newsRouter = require('./routes/news');
 const lecturerRequestsRouter = require('./routes/lecturer-requests');
+const quizRouter = require('./routes/quiz');
 
 const app = express();
 
@@ -33,6 +34,8 @@ app.use('/api/news', newsRouter);
 app.use('/api/lecturer-requests', lecturerRequestsRouter);
 app.use('/events', eventsRouter);
 app.use('/api/feedback', require('./routes/feedback'));
+app.use('/quiz', quizRouter);
+app.use('/api/quiz', quizRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });

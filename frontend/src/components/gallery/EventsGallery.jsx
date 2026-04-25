@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Hardcoded Dummy Data
@@ -122,7 +122,37 @@ const GalleryCard = ({ item, onView }) => {
 
 export default function EventsGallery() {
   const [filter, setFilter] = useState('All');
+  const [headingVisible, setHeadingVisible] = useState(false);
+  const headingRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const el = headingRef.current;
+    if (!el) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeadingVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const categoryStyles = {
+    All: { from: '#2E7D32', via: '#4CAF50', to: '#F97316' },
+    Academic: { from: '#1E3A8A', via: '#2563EB', to: '#60A5FA' },
+    Sports: { from: '#0B7285', via: '#14B8A6', to: '#5EEAD4' },
+    Workshop: { from: '#7C3AED', via: '#A855F7', to: '#C084FC' },
+    Cultural: { from: '#C2410C', via: '#F97316', to: '#FCD34D' },
+  };
+
+  const currentStyle = categoryStyles[filter] || categoryStyles.All;
 
   const handleViewGallery = (item) => {
     const slug = item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -139,8 +169,19 @@ export default function EventsGallery() {
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#E8F5E9]/80 to-transparent pointer-events-none z-0" />
 
       <div className="relative z-10 p-6 md:p-8">
-        <nav className="w-full bg-white shadow-md border border-[#C8E6C9] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-16 rounded-3xl sticky top-4 z-50">
-          <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] to-[#4CAF50] tracking-tighter uppercase mb-4 md:mb-0">
+        <nav className="w-full bg-white shadow-md border border-[#C8E6C9] px-8 py-5 flex flex-col md:flex-row justify-between items-center mb-8 rounded-3xl sticky top-4 z-50">
+          <style>{`
+            @keyframes gradientShift {
+              0%, 100% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+            }
+            .dynamic-header-gradient {
+              background-image: linear-gradient(90deg, #2E7D32, #43A047, #81C784, #4CAF50);
+              background-size: 200% 200%;
+              animation: gradientShift 8s ease infinite;
+            }
+          `}</style>
+          <h1 className="text-2xl font-black text-transparent bg-clip-text dynamic-header-gradient tracking-tighter uppercase mb-4 md:mb-0 transition-transform duration-500 hover:-translate-y-1 hover:scale-[1.03]">
             Uni Gallery
           </h1>
           <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm font-bold uppercase tracking-widest text-gray-600">
@@ -155,14 +196,11 @@ export default function EventsGallery() {
         <main className="max-w-[1600px] mx-auto pb-20">
           
           {/* Page Heading */}
-          <div className="text-center mb-16">
-            <div className="inline-block px-4 py-1 rounded-full bg-[#E8F5E9] border border-[#C8E6C9] text-[#2E7D32] text-xs font-bold uppercase tracking-widest mb-6">
-              Officially Curated Albums
-            </div>
-            <h2 className="text-5xl md:text-7xl font-black text-gray-900 uppercase tracking-tighter mb-6">
-              Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2E7D32] via-[#4CAF50] to-[#F97316]">Showcase</span>
+          <div className="text-center mb-6" ref={headingRef}>
+            <h2 className={`text-5xl md:text-7xl font-black uppercase tracking-tighter mb-6 transition-all duration-700 ${headingVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              Event <span className="text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(90deg, ${currentStyle.from}, ${currentStyle.via}, ${currentStyle.to})` }}>Showcase</span>
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium">
+            <p className={`text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium transition-all duration-700 ${headingVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               Relive the most unforgettable moments, explosive hackathons, and vibrant cultural nights hosted at our university.
             </p>
           </div>
@@ -173,10 +211,10 @@ export default function EventsGallery() {
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
-                className={`px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm transition-all duration-300 border ${
+                className={`px-8 py-3 rounded-full font-bold uppercase tracking-widest text-sm transition-all duration-300 transform border ${
                   filter === cat 
-                  ? 'bg-gradient-to-r from-[#43A047] to-[#4CAF50] text-white border-transparent shadow-md shadow-green-600/20 scale-105'
-                  : 'bg-white text-gray-600 border-[#C8E6C9] hover:bg-[#E8F5E9] hover:text-[#2E7D32] hover:border-[#A5D6A7]'
+                  ? 'bg-gradient-to-r from-[#43A047] to-[#4CAF50] text-white border-transparent shadow-md shadow-green-600/20 scale-105 hover:-translate-y-1 hover:shadow-xl'
+                  : 'bg-white text-gray-600 border-[#C8E6C9] hover:bg-[#E8F5E9] hover:text-[#2E7D32] hover:border-[#A5D6A7] hover:-translate-y-1 hover:shadow-md'
                 }`}
               >
                 {cat}

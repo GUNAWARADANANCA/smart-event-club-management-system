@@ -18,6 +18,20 @@ const galleryDetails = {
       '/chess.png',
     ],
     highlights: ['150+ Participants', '12 Industry Mentors', '3 Prize Categories', '48-Hour Coding Sprint'],
+    achievements: [
+      {
+        title: 'Overall Champions',
+        detail: 'Team CodeCrafters won 1st place for building an AI-powered campus navigation assistant.',
+      },
+      {
+        title: 'Best UI/UX Solution',
+        detail: 'A group of second-year students earned a special award for a polished student wellness platform.',
+      },
+      {
+        title: 'Industry Choice Award',
+        detail: 'The Robotics Club team was recognized by mentors for creating a smart lab inventory tracker.',
+      },
+    ],
   },
   'inter-faculty-swimming-finals': {
     title: 'Inter-Faculty Swimming Finals',
@@ -35,6 +49,20 @@ const galleryDetails = {
       '/swimming.png',
     ],
     highlights: ['8 Faculties Competed', '24 Events', '3 National Records Broken', 'Best Swimmer Award'],
+    achievements: [
+      {
+        title: 'Champion Faculty',
+        detail: 'Faculty of Computing secured the overall championship with the highest medal count.',
+      },
+      {
+        title: 'Outstanding Swimmer',
+        detail: 'Two student athletes broke meet records in freestyle and butterfly events.',
+      },
+      {
+        title: 'Team Spirit Recognition',
+        detail: 'The volunteer organizing committee received appreciation for outstanding coordination.',
+      },
+    ],
   },
   'university-chess-masters': {
     title: 'University Chess Masters',
@@ -52,6 +80,20 @@ const galleryDetails = {
       '/chess.png',
     ],
     highlights: ['64 Players', 'Blitz & Classical Rounds', 'Grand Master Guest', 'Trophy + Scholarship'],
+    achievements: [
+      {
+        title: 'Chess Masters Winner',
+        detail: 'The university chess club captain remained unbeaten through all final rounds.',
+      },
+      {
+        title: 'Rising Star Award',
+        detail: 'A first-year participant received special recognition for reaching the semi-finals.',
+      },
+      {
+        title: 'Best Strategic Match',
+        detail: 'The final board showdown was selected as the most memorable match of the tournament.',
+      },
+    ],
   },
   'global-tech-symposium': {
     title: 'Global Tech Symposium',
@@ -69,6 +111,20 @@ const galleryDetails = {
       '/hackathon.png',
     ],
     highlights: ['20+ Speakers', '500 Attendees', '3-Day Program', 'Live Demos & Panels'],
+    achievements: [
+      {
+        title: 'Top Student Research Pitch',
+        detail: 'Student innovators presented a sustainable smart-city concept to the keynote panel.',
+      },
+      {
+        title: 'Innovation Showcase Highlight',
+        detail: 'The Software Engineering Society was praised for hosting the best demo booth experience.',
+      },
+      {
+        title: 'Networking Excellence',
+        detail: 'Participants secured internship opportunities through the industry networking lounge.',
+      },
+    ],
   },
   'annual-cultural-night': {
     title: 'Annual Cultural Night',
@@ -86,6 +142,20 @@ const galleryDetails = {
       '/art.png',
     ],
     highlights: ['30+ Performances', '15 Nationalities', 'Best Act Award', 'Live Band Night'],
+    achievements: [
+      {
+        title: 'Best Club Performance',
+        detail: 'The Performing Arts Society won the top act award for its contemporary fusion showcase.',
+      },
+      {
+        title: 'Audience Favorite',
+        detail: 'A student-led acoustic ensemble received the highest audience vote of the night.',
+      },
+      {
+        title: 'Cultural Impact Recognition',
+        detail: 'Organizers were honored for representing diverse traditions through music and dance.',
+      },
+    ],
   },
   'robotics-workshop-2026': {
     title: 'Robotics Workshop 2026',
@@ -103,6 +173,20 @@ const galleryDetails = {
       '/hackathon.png',
     ],
     highlights: ['40 Participants', 'Arduino Kits Provided', 'Line-Following Challenge', 'Maze Solver Finals'],
+    achievements: [
+      {
+        title: 'Fastest Robot Build',
+        detail: 'A beginner team assembled and calibrated the fastest line-following robot in the session.',
+      },
+      {
+        title: 'Best Problem-Solving Team',
+        detail: 'Students from the robotics club solved the final maze with the fewest retries.',
+      },
+      {
+        title: 'Workshop Excellence',
+        detail: 'Mentors recognized participants for collaborative troubleshooting and rapid prototyping.',
+      },
+    ],
   },
 };
 
@@ -171,6 +255,29 @@ export default function EventGalleryDetail() {
             {event.highlights.map((h, i) => (
               <div key={i} className="rounded-2xl p-4 text-center border border-slate-100 shadow-sm">
                 <p className="text-xs font-black uppercase tracking-widest text-slate-400">{h}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-14">
+          <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 border-b border-slate-100 pb-3">
+            Student Achievements
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {event.achievements.map((achievement, index) => (
+              <div
+                key={index}
+                className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm"
+              >
+                <div
+                  className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-widest text-white mb-4"
+                  style={{ background: event.accent }}
+                >
+                  Achievement {index + 1}
+                </div>
+                <h4 className="text-lg font-black text-slate-900 mb-3">{achievement.title}</h4>
+                <p className="text-sm leading-7 text-slate-600">{achievement.detail}</p>
               </div>
             ))}
           </div>

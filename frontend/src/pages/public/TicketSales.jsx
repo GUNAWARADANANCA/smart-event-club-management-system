@@ -338,9 +338,25 @@ const TicketSales = () => {
                 <Form.Item
                   name="quantity"
                   label={<span className="font-bold text-gray-600 uppercase text-xs tracking-widest">Tickets</span>}
-                  rules={[{ required: true }]}
+                  initialValue={1}
+                  rules={[
+                    { required: true, message: 'Please enter quantity' },
+                    {
+                      validator: async (_, value) => {
+                        const qty = Number(value);
+                        if (Number.isFinite(qty) && qty === 1) return;
+                        throw new Error('You can select 1 ticket only');
+                      },
+                    },
+                  ]}
                 >
-                  <InputNumber min={1} max={10} size="large" className="w-full rounded-xl bg-white border border-[#C8E6C9] text-gray-900 hover:border-[#4CAF50] focus:border-[#4CAF50]" />
+                  <InputNumber
+                    min={1}
+                    max={1}
+                    size="large"
+                    className="w-full rounded-xl bg-white border border-[#C8E6C9] text-gray-900 hover:border-[#4CAF50] focus:border-[#4CAF50]"
+                    disabled
+                  />
                 </Form.Item>
               </div>
 
