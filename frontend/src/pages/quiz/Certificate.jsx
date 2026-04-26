@@ -14,6 +14,7 @@ const escapeHtml = (value) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 
+    //download cetificate
 const downloadCertificatePDF = ({ fullName, email, quizTitle, issuedDate, score, percentage }) => {
   const filenameBase = String(quizTitle || 'certificate')
     .trim()
