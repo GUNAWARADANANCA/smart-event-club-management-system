@@ -14,7 +14,7 @@ const escapeHtml = (value) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 
-    //download cetificate
+    //download cetificate 
 const downloadCertificatePDF = ({ fullName, email, quizTitle, issuedDate, score, percentage }) => {
   const filenameBase = String(quizTitle || 'certificate')
     .trim()
@@ -313,7 +313,7 @@ const Certificate = () => {
   const handlePrint = () => {
     window.print();
   };
-
+ //handle
   const handleEmailCertificate = () => {
     const subject = encodeURIComponent(`Certificate - ${quizTitle}`);
     const body = encodeURIComponent(
