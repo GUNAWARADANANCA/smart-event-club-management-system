@@ -1,27 +1,24 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Row, Col, Card, Button, Typography, Modal, Form, Input, Dropdown, Tag, message } from 'antd';
-import { DownloadOutlined, TrophyOutlined } from '@ant-design/icons';
+import { DownloadOutlined, TrophyOutlined, BarChartOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
+import api from '@/lib/api';
+import { getAuthRole, ROLES } from '@/lib/auth';
 
 const { Title, Paragraph, Text } = Typography;
 
 // ==================== CONSTANTS ====================
-const TODAY = '2026-04-10';
 const LOCAL_QUIZZES_KEY = 'localQuizzes';
-const ADMIN_CREDENTIALS = {
-  username: 'quize.admin',
-  password: '123456'
-};
+const LOCAL_RESULTS_KEY = 'localQuizResults';
+const PASS_SCORE = 50;
 
 const STATUS_FILTERS = {
   ALL: 'all',
-  OPEN: 'open',
-  CLOSED: 'closed'
+  COMPLETED: 'completed',
+  AVAILABLE: 'available'
 };
 
 // ==================== UTILITY FUNCTIONS ====================
-const isQuizClosed = (quiz) => Boolean(quiz?.closeDate && quiz.closeDate < TODAY);
-
 const readLocalQuizzes = () => {
   try {
     const raw = JSON.parse(localStorage.getItem(LOCAL_QUIZZES_KEY) || '[]');
@@ -29,6 +26,28 @@ const readLocalQuizzes = () => {
   } catch {
     return [];
   }
+};
+
+const readLocalResults = () => {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LOCAL_RESULTS_KEY) || '[]');
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+};
+
+const normalizeResult = (result) => ({
+  quizId: String(result?.quizId || ''),
+  quizTitle: String(result?.quizTitle || ''),
+  score: Number(result?.score || 0),
+  createdAt: result?.createdAt || result?.date || null,
+});
+
+const isQuizClosed = (quiz) => {
+  const today = new Date();
+  const closeDate = quiz?.closeDate ? new Date(quiz.closeDate) : null;
+  return Boolean(closeDate && !Number.isNaN(closeDate.getTime()) && closeDate < today);
 };
 
 const mergeQuizzes = (serverQuizzes, localQuizzes) => {
@@ -148,16 +167,26 @@ These videos cover key OOP concepts and practical code examples to help you prep
   },
 };
 
+const quizCoverImageMap = {
+  'oop-basics': 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=60',
+  'csharp-basics': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=60',
+  'cpp-basics': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=60',
+  'java-basics': 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1200&q=60',
+};
+
 // ==================== REUSABLE COMPONENTS ====================
-const FilterButton = ({ label, filter, currentFilter, onClick, isClosedFilter = false }) => {
+const FilterButton = ({ label, filter, currentFilter, onClick, isCompletedFilter = false }) => {
   const isActive = currentFilter === filter;
   
   const getStyle = () => {
     if (!isActive) {
       return { borderColor: '#C8E6C9', color: '#1F2937' };
     }
-    if (isClosedFilter && filter === STATUS_FILTERS.CLOSED) {
-      return { background: '#EF4444', borderColor: '#EF4444' };
+    if (isCompletedFilter && filter === STATUS_FILTERS.COMPLETED) {
+      return { background: '#16A34A', borderColor: '#16A34A' };
+    }
+    if (filter === STATUS_FILTERS.AVAILABLE) {
+      return { background: '#1677ff', borderColor: '#1677ff' };
     }
     return { background: '#4CAF50', borderColor: '#43A047' };
   };
@@ -173,65 +202,99 @@ const FilterButton = ({ label, filter, currentFilter, onClick, isClosedFilter = 
   );
 };
 
-const QuizCard = ({ quiz, onStartQuiz, onMaterialClick }) => {
+const QuizCard = ({ quiz, onStartQuiz, onMaterialClick, highlighted, isCompleted }) => {
   const closed = isQuizClosed(quiz);
+  const quizKey = quiz?.id || quiz?._id;
+  const coverImage = quizCoverImageMap[quizKey] || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=60';
   
   return (
     <Card
-      bordered={false}
-      style={{ borderRadius: 20, minHeight: 260, boxShadow: '0 12px 30px rgba(72, 187, 120, 0.08)' }}
-      bodyStyle={{ padding: '28px' }}
+      variant="borderless"
+      style={{
+        borderRadius: 20,
+        minHeight: 260,
+        boxShadow: highlighted ? '0 12px 30px rgba(22, 119, 255, 0.18)' : '0 12px 30px rgba(72, 187, 120, 0.08)',
+        border: highlighted ? '2px solid #1677ff' : '1px solid #E8F5E9',
+        overflow: 'hidden',
+      }}
+      styles={{ body: { padding: 0 } }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-        <Text strong style={{ color: '#4CAF50', letterSpacing: '0.08em', fontSize: '0.85rem' }}>
-          {quiz.title}
-        </Text>
-        {closed && <Tag color="red" style={{ borderRadius: 999 }}>Unavailable</Tag>}
-      </div>
-      
-      <Title level={4} style={{ marginTop: 16, color: '#0F172A' }}>{quiz.title}</Title>
-      <Paragraph style={{ color: '#4B5563', lineHeight: 1.75 }}>{quiz.description}</Paragraph>
-      
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 24 }}>
-        <div>
-          <Text type="secondary">{quiz.questions} Questions</Text>
+      <div style={{ position: 'relative', height: 120, overflow: 'hidden' }}>
+        <div
+          style={{
+            position: 'absolute',
+            inset: -12,
+            backgroundImage: `url(${coverImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(4px)',
+            transform: 'scale(1.08)',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(120deg, rgba(15,23,42,0.72) 0%, rgba(30,64,175,0.38) 100%)',
+          }}
+        />
+        <div style={{ position: 'relative', zIndex: 1, padding: '16px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 10 }}>
           <div>
-            <Text type="secondary" style={{ fontSize: 12 }}>
-              Closes on {quiz.closeDate}
+            <Text strong style={{ color: '#ffffff', letterSpacing: '0.08em', fontSize: '0.8rem' }}>
+              {isCompleted ? 'COMPLETED QUIZ' : 'AVAILABLE QUIZ'}
             </Text>
+            <Title level={4} style={{ margin: '8px 0 0', color: '#ffffff' }}>{quiz.title}</Title>
           </div>
+          <Tag color={isCompleted ? 'green' : 'blue'} style={{ borderRadius: 999, marginTop: 2 }}>
+            {isCompleted ? 'Completed' : 'Pending'}
+          </Tag>
         </div>
-        
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          {quiz.materials?.length > 0 && (
-            <Dropdown
-              menu={{
-                items: quiz.materials.map((material, idx) => ({
-                  key: idx,
-                  label: material.title,
-                  onClick: () => onMaterialClick(material.title),
-                })),
-              }}
-              trigger={['click']}
-            >
-              <Button
-                type="default"
-                icon={<DownloadOutlined />}
-                style={{ borderColor: '#4CAF50', color: '#4CAF50', borderRadius: 6 }}
+      </div>
+
+      <div style={{ padding: '22px 24px 24px' }}>
+        <Paragraph style={{ color: '#4B5563', lineHeight: 1.75, minHeight: 70 }}>{quiz.description}</Paragraph>
+      
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 24 }}>
+          <div>
+            <Text type="secondary">{quiz.questions} Questions</Text>
+            <div>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                Closes on {quiz.closeDate}
+              </Text>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            {quiz.materials?.length > 0 && (
+              <Dropdown
+                menu={{
+                  items: quiz.materials.map((material, idx) => ({
+                    key: idx,
+                    label: material.title,
+                    onClick: () => onMaterialClick(material.title),
+                  })),
+                }}
+                trigger={['click']}
               >
-                Materials
-              </Button>
-            </Dropdown>
-          )}
-          
-          <Button
-            type="primary"
-            disabled={closed}
-            onClick={() => onStartQuiz(quiz, closed)}
-            style={closed ? undefined : { background: '#4CAF50', borderColor: '#43A047' }}
-          >
-            {closed ? 'Unavailable' : 'Start Quiz'}
-          </Button>
+                <Button
+                  type="default"
+                  icon={<DownloadOutlined />}
+                  style={{ borderColor: '#4CAF50', color: '#4CAF50', borderRadius: 8 }}
+                >
+                  Materials
+                </Button>
+              </Dropdown>
+            )}
+            
+            <Button
+              type="primary"
+              disabled={closed}
+              onClick={() => onStartQuiz(quiz, closed)}
+              style={closed ? undefined : { background: '#4CAF50', borderColor: '#43A047', borderRadius: 8 }}
+            >
+              {closed ? 'Unavailable' : isCompleted ? 'Retry Quiz' : 'Start Quiz'}
+            </Button>
+          </div>
         </div>
       </div>
     </Card>
@@ -307,25 +370,37 @@ const MaterialsModal = ({ modalState, onClose }) => (
 const QuizManagement = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const authRole = getAuthRole() || ROLES.STUDENT;
+  const isAdmin = authRole !== ROLES.STUDENT;
   
   // State Management
   const [quizzes, setQuizzes] = useState([]);
+  const [results, setResults] = useState([]);
   const [statusFilter, setStatusFilter] = useState(STATUS_FILTERS.ALL);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAchievementModalVisible, setIsAchievementModalVisible] = useState(false);
-  const [isAdminModalVisible, setIsAdminModalVisible] = useState(false);
   const [materialModal, setMaterialModal] = useState({ visible: false, title: '', content: '', links: [] });
+  const [focusQuizId, setFocusQuizId] = useState(null);
   
   // Form Instances
   const [quizForm] = Form.useForm();
   const [achievementForm] = Form.useForm();
-  const [adminForm] = Form.useForm();
 
   // ==================== DATA FETCHING ====================
   const fetchQuizzes = useCallback(async () => {
     const localQuizzes = readLocalQuizzes();
     setQuizzes(mergeQuizzes(fallbackQuizzes, localQuizzes));
+  }, []);
+
+  const fetchResults = useCallback(async () => {
+    const userId = localStorage.getItem('userId');
+    const backendResults = userId
+      ? await api.get(`/api/quiz/results/${userId}`).then((res) => (Array.isArray(res.data) ? res.data : [])).catch(() => [])
+      : [];
+
+    const mergedResults = [...backendResults, ...readLocalResults()].map(normalizeResult);
+    setResults(mergedResults);
   }, []);
 
   // ==================== EVENT HANDLERS ====================
@@ -372,42 +447,64 @@ const QuizManagement = () => {
     navigate('/quizzes/performance');
   };
 
-  const handleAdminSubmit = (values) => {
-    const username = String(values.username || '').trim();
-    const password = String(values.password || '');
-
-    if (username !== ADMIN_CREDENTIALS.username || password !== ADMIN_CREDENTIALS.password) {
-      message.error('Login failed: username must be "quize.admin" and password must be "123456".');
-      return;
-    }
-
-    setIsAdminModalVisible(false);
-    adminForm.resetFields();
-    navigate('/quizzes/create');
-  };
-
   const closeMaterialModal = () => {
     setMaterialModal({ ...materialModal, visible: false });
   };
 
   // ==================== MEMOIZED VALUES ====================
+  const completedQuizKeys = useMemo(() => {
+    const keys = new Set();
+    results
+      .filter((result) => result.score >= PASS_SCORE)
+      .forEach((result) => {
+        if (result.quizId) {
+          keys.add(String(result.quizId));
+        }
+        if (result.quizTitle) {
+          keys.add(String(result.quizTitle).toLowerCase().trim());
+        }
+      });
+    return keys;
+  }, [results]);
+
   const filteredQuizzes = useMemo(() => {
     return quizzes.filter((quiz) => {
-      if (statusFilter === STATUS_FILTERS.OPEN) return !isQuizClosed(quiz);
-      if (statusFilter === STATUS_FILTERS.CLOSED) return isQuizClosed(quiz);
+      const quizId = String(quiz?.id || quiz?._id || '');
+      const quizTitle = String(quiz?.title || '').toLowerCase().trim();
+      const isCompleted = completedQuizKeys.has(quizId) || completedQuizKeys.has(quizTitle);
+
+      if (statusFilter === STATUS_FILTERS.COMPLETED) return isCompleted;
+      if (statusFilter === STATUS_FILTERS.AVAILABLE) return !isCompleted;
       return true;
     });
-  }, [quizzes, statusFilter]);
+  }, [quizzes, statusFilter, completedQuizKeys]);
 
   // ==================== EFFECTS ====================
   useEffect(() => {
     fetchQuizzes();
-  }, [fetchQuizzes]);
+    fetchResults();
+  }, [fetchQuizzes, fetchResults]);
 
   useEffect(() => {
     if (location.state?.refresh) {
-      setStatusFilter(STATUS_FILTERS.OPEN);
+      setStatusFilter(STATUS_FILTERS.AVAILABLE);
       fetchQuizzes();
+      fetchResults();
+      navigate('/quizzes', { replace: true });
+      return;
+    }
+
+    if (location.state?.statusFilter || location.state?.focusQuizId) {
+      const incomingFilter = location.state?.statusFilter;
+      const mappedFilter = incomingFilter === 'open' ? STATUS_FILTERS.AVAILABLE : incomingFilter;
+      const normalizedFilter = Object.values(STATUS_FILTERS).includes(incomingFilter)
+        ? incomingFilter
+        : Object.values(STATUS_FILTERS).includes(mappedFilter)
+          ? mappedFilter
+        : STATUS_FILTERS.ALL;
+
+      setStatusFilter(normalizedFilter);
+      setFocusQuizId(location.state?.focusQuizId || null);
       navigate('/quizzes', { replace: true });
     }
   }, [location.key, fetchQuizzes, navigate]);
@@ -426,11 +523,18 @@ const QuizManagement = () => {
         <div>
           <Title level={2} style={{ margin: 0, color: '#0F172A' }}>Quiz Library</Title>
           <Paragraph style={{ maxWidth: 640, color: '#4B5563', marginBottom: 0 }}>
-            Pick a subject and start a quick basics quiz in OOP, C#, C++, or Java.
+            Pick a subject and start a quick basics quiz. Track your completion in real-time with completed and available filters.
           </Paragraph>
         </div>
         
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <Button
+            icon={<BarChartOutlined />}
+            onClick={() => navigate('/quizzes/progress')}
+            style={{ borderColor: '#1890ff', color: '#1677ff', fontWeight: 'bold' }}
+          >
+            See Progress So Far
+          </Button>
           <Button
             icon={<TrophyOutlined />}
             onClick={() => setIsAchievementModalVisible(true)}
@@ -438,15 +542,34 @@ const QuizManagement = () => {
           >
             User Achievements
           </Button>
-          <Button
-            type="primary"
-            onClick={() => setIsAdminModalVisible(true)}
-            style={{ background: '#4CAF50', borderColor: '#43A047', color: '#ffffff', fontWeight: 'bold' }}
-          >
-            Create New Quiz
-          </Button>
+          {isAdmin && (
+            <Button
+              type="primary"
+              onClick={() => navigate('/quizzes/create')}
+              style={{ background: '#4CAF50', borderColor: '#43A047', color: '#ffffff', fontWeight: 'bold' }}
+            >
+              Quiz Management (Create)
+            </Button>
+          )}
         </div>
       </div>
+
+      {/* Filter Section */}
+      {focusQuizId && (
+        <div
+          style={{
+            marginBottom: 16,
+            padding: '10px 14px',
+            borderRadius: 10,
+            background: '#e6f4ff',
+            border: '1px solid #91caff',
+            color: '#0958d9',
+            fontWeight: 500,
+          }}
+        >
+          You came from Overall Progress. The recommended available quiz is highlighted below.
+        </div>
+      )}
 
       {/* Filter Section */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 24 }}>
@@ -457,17 +580,17 @@ const QuizManagement = () => {
           onClick={setStatusFilter} 
         />
         <FilterButton 
-          label="Open Quizzes" 
-          filter={STATUS_FILTERS.OPEN} 
+          label="Completed Quizzes" 
+          filter={STATUS_FILTERS.COMPLETED} 
           currentFilter={statusFilter} 
-          onClick={setStatusFilter} 
+          onClick={setStatusFilter}
+          isCompletedFilter={true}
         />
         <FilterButton 
-          label="Closed Quizzes" 
-          filter={STATUS_FILTERS.CLOSED} 
+          label="Available Quizzes" 
+          filter={STATUS_FILTERS.AVAILABLE} 
           currentFilter={statusFilter} 
-          onClick={setStatusFilter} 
-          isClosedFilter={true}
+          onClick={setStatusFilter}
         />
       </div>
 
@@ -475,11 +598,20 @@ const QuizManagement = () => {
       <Row gutter={[24, 24]}>
         {filteredQuizzes.map((quiz) => (
           <Col xs={24} sm={12} lg={12} xl={12} key={quiz.id}>
+            {(() => {
+              const quizId = String(quiz?.id || quiz?._id || '');
+              const quizTitle = String(quiz?.title || '').toLowerCase().trim();
+              const isCompleted = completedQuizKeys.has(quizId) || completedQuizKeys.has(quizTitle);
+              return (
             <QuizCard 
               quiz={quiz} 
               onStartQuiz={handleStartQuiz} 
-              onMaterialClick={handleMaterialClick} 
+              onMaterialClick={handleMaterialClick}
+              highlighted={focusQuizId === quiz.id}
+              isCompleted={isCompleted}
             />
+              );
+            })()}
           </Col>
         ))}
       </Row>
@@ -515,35 +647,6 @@ const QuizManagement = () => {
           achievementForm.resetFields();
         }}
       />
-
-      <Modal
-        title="Admin Login"
-        open={isAdminModalVisible}
-        onCancel={() => {
-          setIsAdminModalVisible(false);
-          adminForm.resetFields();
-        }}
-        onOk={() => adminForm.submit()}
-        okText="Continue"
-      >
-        <Form form={adminForm} layout="vertical" onFinish={handleAdminSubmit}>
-          <Form.Item
-            name="username"
-            label="Username"
-            rules={[{ required: true, message: 'Please enter admin username' }]}
-          >
-            <Input placeholder="quize.admin" autoComplete="username" />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: 'Please enter password' }]}
-          >
-            <Input.Password placeholder="123456" autoComplete="current-password" />
-          </Form.Item>
-        </Form>
-      </Modal>
 
       <MaterialsModal modalState={materialModal} onClose={closeMaterialModal} />
     </div>

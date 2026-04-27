@@ -1,3 +1,4 @@
+// Version: 1.0.2 - Fixed real data integration
 import React, { useMemo, useState } from 'react';
 import { Table, Tag, Space, Button, Modal, Typography, Card, message } from 'antd';
 import {
@@ -11,7 +12,9 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { mockRequests, mockManagedEvents } from '@/data/mockData';
+import api from '@/lib/api';
+// import { mockRequests } from '@/data/mockData';
+const mockManagedEvents = []; // Placeholder for real managed events if needed
 import {
   createBudgetProposalFromRequest,
   getSentBudgetProposals,
@@ -20,9 +23,9 @@ import {
 
 const { Text } = Typography;
 
-const initialRequests = mockRequests.filter(
-  (request) => request.requestType !== 'Club Management Request'
-);
+// const initialRequests = mockRequests.filter(
+//   (request) => request.requestType !== 'Club Management Request'
+// );
 
 const openBudgetProposalPreview = (proposal) => {
   const fmt = (value) => `Rs. ${Number(value || 0).toLocaleString()}`;
@@ -78,34 +81,38 @@ const openBudgetProposalPreview = (proposal) => {
 
 const StudentRequestsSection = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState(initialRequests);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [sentProposals, setSentProposals] = useState(
-    getSentBudgetProposals().map((proposal) => proposal.id)
-  );
+  const [sentProposals, setSentProposals] = useState([]);
+  
+  React.useEffect(() => {
+    fetchRequests();
+  }, []);
 
-  const handleStatusChange = (id, newStatus) => {
-    setData((currentData) => {
-      const nextData = currentData.map((request) => {
-        if (request.id !== id) return request;
-
-        const updatedRequest = { ...request, status: newStatus };
-        if (newStatus === 'Approved') {
-          updatedRequest.generatedProposal = createBudgetProposalFromRequest(updatedRequest);
-        }
-        return updatedRequest;
-      });
-      return nextData;
-    });
-
-    if (newStatus === 'Approved') {
-      message.success('Request approved and budget proposal generated automatically.');
-      return;
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get('/api/lecturer-requests/admin');
+      setData(response.data);
+    } catch (error) {
+      console.error('Failed to load real requests:', error);
+      message.error('Failed to fetch real student requests');
+    } finally {
+      setLoading(false);
     }
+  };
 
-    message.info(`Request ${newStatus.toLowerCase()}.`);
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await api.put(`/api/lecturer-requests/${id}`, { status: newStatus.toLowerCase() });
+      message.success(`Request ${newStatus} successfully!`);
+      fetchRequests();
+    } catch (error) {
+       message.error('Failed to update request status');
+    }
   };
 
   const handleSendProposal = (record) => {
@@ -302,7 +309,7 @@ const StudentRequestsSection = () => {
       </div>
 
       <Card
-        bordered={false}
+        variant="borderless"
         style={{
           borderRadius: 12,
           backgroundColor: '#FFFFFF',
@@ -339,7 +346,7 @@ const StudentRequestsSection = () => {
       >
         <Table
           columns={eventStatusColumns}
-          dataSource={mockManagedEvents}
+          dataSource={[]}
           rowKey="id"
           pagination={{ pageSize: 5, showSizeChanger: false }}
           scroll={{ x: 720 }}

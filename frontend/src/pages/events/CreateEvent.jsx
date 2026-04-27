@@ -56,7 +56,7 @@ const CreateEvent = () => {
           </Form.Item>
           
           <Form.Item name="venue" label="Venue Selection" rules={[{ required: true, message: 'Please select a venue' }]}>
-            <Select placeholder="Select a venue" className="green-select" popupClassName="green-dropdown">
+            <Select placeholder="Select a venue" className="green-select">
               <Option value="Main Hall">Main Hall</Option>
               <Option value="Room 201">Room 201</Option>
               <Option value="Auditorium B">Auditorium B</Option>
@@ -72,7 +72,7 @@ const CreateEvent = () => {
           </Form.Item>
 
           <Form.Item name="club" label="Organizer" rules={[{ required: true, message: 'Please specify the organizer' }]}>
-            <Select placeholder="Select organizing club" className="green-select" popupClassName="green-dropdown">
+            <Select placeholder="Select organizing club" className="green-select">
               <Option value="Tech Society">Tech Society</Option>
               <Option value="Art Club">Art Club</Option>
               <Option value="Student Council">Student Council</Option>
@@ -80,7 +80,7 @@ const CreateEvent = () => {
           </Form.Item>
 
           <Form.Item name="participationType" label="Participation Type" rules={[{ required: true, message: 'Please select participation type' }]}>
-            <Select placeholder="Select allowed participants" className="green-select" popupClassName="green-dropdown">
+            <Select placeholder="Select allowed participants" className="green-select">
               <Option value="University Students Only">University Students Only</Option>
               <Option value="External Students Also Allowed">External Students Also Allowed</Option>
             </Select>

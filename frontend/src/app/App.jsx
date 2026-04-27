@@ -24,6 +24,7 @@ import FinanceProtectedRoute from '@/components/routes/FinanceProtectedRoute';
 import EventProtectedRoute from '@/components/routes/EventProtectedRoute';
 import QuizProtectedRoute from '@/components/routes/QuizProtectedRoute';
 import NewsProtectedRoute from '@/components/routes/NewsProtectedRoute';
+import AdminProtectedRoute from '@/components/routes/AdminProtectedRoute';
 import CreateEvent from '@/pages/events/CreateEvent';
 import ClubManagement from '@/pages/events/ClubManagement';
 import UpcomingEventsPortal from '@/pages/events/UpcomingEventsPortal';
@@ -39,6 +40,7 @@ import FinanceRequests from '@/pages/finance/FinanceRequests';
 import QuizAttempt from '@/pages/quiz/QuizAttempt';
 import QuizResult from '@/pages/quiz/QuizResult';
 import Certificate from '@/pages/quiz/Certificate';
+import QuizOverallProgress from '@/pages/quiz/QuizOverallProgress';
 import UserPerformance from '@/pages/quiz/UserPerformance';
 import CreateQuiz from '@/pages/quiz/CreateQuiz';
 import PublicMeetings from '@/pages/public/PublicMeetings';
@@ -50,6 +52,7 @@ import SecureMeetings from '@/pages/finance/SecureMeetings';
 import ViewFeedback from '@/pages/public/ViewFeedback';
 import LecturePanel from '@/pages/events/LecturePanel';
 import FeedbackForm from '@/pages/public/FeedbackForm';
+import SportEnrollment from '@/pages/events/SportEnrollment';
 
 function App() {
   return (
@@ -96,6 +99,7 @@ function App() {
               <Route path="events/lecture-panel" element={<LecturePanel />} />
               <Route path="my-events" element={<MyEvents />} />
               <Route path="feedback" element={<FeedbackForm />} />
+              <Route path="sports/enrollment" element={<SportEnrollment />} />
 
               {/* News admin routes */}
               <Route element={<NewsProtectedRoute />}>
@@ -124,10 +128,14 @@ function App() {
               </Route>
 
               <Route path="quizzes" element={<QuizManagement />} />
+              <Route path="quizzes/progress" element={<QuizOverallProgress />} />
               <Route path="quizzes/attempt" element={<QuizAttempt />} />
               <Route path="quizzes/result" element={<QuizResult />} />
               <Route path="quizzes/certificate" element={<Certificate />} />
-              <Route path="quizzes/create" element={<CreateQuiz />} />
+
+              <Route element={<AdminProtectedRoute />}>
+                <Route path="quizzes/create" element={<CreateQuiz />} />
+              </Route>
 
               <Route element={<QuizProtectedRoute />}>
                 <Route path="quizzes/performance" element={<UserPerformance />} />

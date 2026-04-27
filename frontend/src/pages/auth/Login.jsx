@@ -29,6 +29,8 @@ const Login = () => {
         token: data.token,
         email: data.user?.email || values.email,
         authRole,
+        id: data.user?.id,
+        name: data.user?.fullName,
       });
       navigate(from);
     } catch (error) {

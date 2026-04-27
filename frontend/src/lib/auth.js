@@ -35,16 +35,24 @@ export function roleDisplayLabel(role) {
 }
 
 /**
- * @param {{ token: string, email?: string, authRole?: string }} opts
+ * @param {{ token: string, email?: string, authRole?: string, id?: string, name?: string }} opts
  */
-export function persistAuthSession({ token, email, authRole }) {
+export function persistAuthSession({ token, email, authRole, id, name }) {
   localStorage.setItem(AUTH_TOKEN_KEY, token);
-  if (email) {
+  if (id) {
+    localStorage.setItem('userId', id);
+  }
+  if (name) {
+    localStorage.setItem('userName', name);
+  } else if (email) {
     localStorage.setItem('userEmail', email);
     const localPart = String(email).split('@')[0] || email;
     const formatted =
       localPart.charAt(0).toUpperCase() + localPart.slice(1);
     localStorage.setItem('userName', formatted);
+  }
+  if (email) {
+    localStorage.setItem('userEmail', email);
   }
   const r = authRole || ROLES.STUDENT;
   localStorage.setItem(AUTH_ROLE_KEY, r);

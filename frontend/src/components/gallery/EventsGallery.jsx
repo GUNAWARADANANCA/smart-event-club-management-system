@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Form, Input, Button as AntButton, message } from 'antd';
+import api from '@/lib/api';
+import { getAuthRole, ROLES } from '@/lib/auth';
 
 // Hardcoded Dummy Data
 const galleryData = [
@@ -68,7 +71,10 @@ const galleryData = [
 const categories = ['All', 'Academic', 'Sports', 'Workshop', 'Cultural'];
 
 // Reusable Card Component
-const GalleryCard = ({ item, onView }) => {
+const GalleryCard = ({ item, onView, onRegister }) => {
+  const authRole = getAuthRole() || ROLES.STUDENT;
+  const isStudent = authRole === ROLES.STUDENT;
+
   return (
     <div className="relative group w-full h-[500px] rounded-3xl overflow-hidden shadow-md cursor-pointer">
       {/* Background Image */}
@@ -111,10 +117,23 @@ const GalleryCard = ({ item, onView }) => {
           </p>
         </div>
 
-        {/* Button */}
-        <button onClick={(e) => { e.stopPropagation(); onView(item); }} className="w-full mt-4 py-3 border-[2px] border-[#E2E8F0]0 rounded-xl bg-[#E2E8F0] hover:bg-white hover:text-black font-black uppercase tracking-widest text-sm backdrop-blur-md transition-all duration-300 hover:shadow-md">
-          View Gallery
-        </button>
+        {/* Buttons */}
+        <div className="flex gap-3 mt-4">
+          <button 
+            onClick={(e) => { e.stopPropagation(); onView(item); }} 
+            className="flex-1 py-3 border-[2px] border-[#E2E8F0] rounded-xl bg-[#E2E8F0] hover:bg-white hover:text-black font-black uppercase tracking-widest text-xs backdrop-blur-md transition-all duration-300 hover:shadow-md"
+          >
+            Gallery
+          </button>
+          {item.category === 'Sports' && isStudent && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); onRegister(item); }} 
+              className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#10B981] to-[#059669] text-white font-black uppercase tracking-widest text-xs transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
+            >
+              Register
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -123,8 +142,35 @@ const GalleryCard = ({ item, onView }) => {
 export default function EventsGallery() {
   const [filter, setFilter] = useState('All');
   const [headingVisible, setHeadingVisible] = useState(false);
+  const [registerModalVisible, setRegisterModalVisible] = useState(false);
+  const [selectedSport, setSelectedSport] = useState(null);
+  const [form] = Form.useForm();
+  const [liveSports, setLiveSports] = useState([]);
   const headingRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchLiveSports();
+  }, []);
+
+  const fetchLiveSports = async () => {
+    try {
+      const response = await api.get('/api/university-sports');
+      const mappedSports = response.data.map(s => ({
+        id: `live-${s._id}`,
+        title: s.name,
+        category: 'Sports',
+        date: 'Season 2026',
+        venue: 'Sports Complex',
+        details: s.description || 'Join the official university team for this sport. Trials and training sessions happen weekly.',
+        image: '/swimming.png', // Generic fallback
+        overlay: 'from-[#0B7285]/60 to-[#154360]/90'
+      }));
+      setLiveSports(mappedSports);
+    } catch (error) {
+      console.error('Failed to fetch live sports:', error);
+    }
+  };
 
   useEffect(() => {
     const el = headingRef.current;
@@ -159,9 +205,31 @@ export default function EventsGallery() {
     navigate(`/gallery/${slug}`);
   };
 
+  const allData = [...galleryData, ...liveSports];
+
   const filteredData = filter === 'All' 
-    ? galleryData 
-    : galleryData.filter(item => item.category === filter);
+    ? allData 
+    : allData.filter(item => item.category === filter);
+
+  const handleOpenRegister = (item) => {
+    setSelectedSport(item);
+    form.setFieldsValue({
+      fullName: localStorage.getItem('userName') || '',
+      email: localStorage.getItem('userEmail') || '',
+      sport: item.title.replace('Inter-Faculty ', '').replace('University ', '').replace(' Finals', '').replace(' Masters', '')
+    });
+    setRegisterModalVisible(true);
+  };
+
+  const onRegisterFinish = async (values) => {
+    try {
+      await api.post('/api/university-sports/register', values);
+      message.success(`Application for ${values.sport} submitted! Status: PENDING.`);
+      setRegisterModalVisible(false);
+    } catch (error) {
+      message.error(error.response?.data?.error || 'Registration failed');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-[#4CAF50]/25 rounded-3xl overflow-hidden shadow-lg shadow-green-900/5 relative">
@@ -225,9 +293,47 @@ export default function EventsGallery() {
           {/* Responsive Poster Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-12">
             {filteredData.map(item => (
-              <GalleryCard key={item.id} item={item} onView={handleViewGallery} />
+              <GalleryCard key={item.id} item={item} onView={handleViewGallery} onRegister={handleOpenRegister} />
             ))}
           </div>
+
+          {/* Sports Registration CTA */}
+          {filter === 'Sports' && (
+            <div style={{
+              marginTop: 40,
+              background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
+              border: '1px solid #10B981',
+              borderRadius: 24,
+              padding: '32px',
+              textAlign: 'center',
+              boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.1)'
+            }}>
+              <h3 style={{ color: '#065F46', fontSize: 24, fontWeight: 900, marginBottom: 12 }}>Ready to Compete?</h3>
+              <p style={{ color: '#047857', fontSize: 16, marginBottom: 24, maxWidth: '600px', margin: '0 auto 24px' }}>
+                Don't just watch from the sidelines. Registration for the next semester's inter-faculty trials is now open!
+              </p>
+              <button
+                onClick={() => navigate('/users')}
+                style={{
+                  background: '#10B981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 999,
+                  padding: '12px 32px',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                Go to Sports Registration Hub →
+              </button>
+            </div>
+          )}
 
           {/* Empty State */}
           {filteredData.length === 0 && (
@@ -238,6 +344,47 @@ export default function EventsGallery() {
 
         </main>
       </div>
+
+      <Modal
+        title={
+          <div className="flex items-center gap-2">
+            <span className="p-2 bg-green-50 rounded-lg text-green-600">🏆</span>
+            <span className="font-extrabold uppercase tracking-tight">Sport Registration</span>
+          </div>
+        }
+        open={registerModalVisible}
+        onCancel={() => setRegisterModalVisible(false)}
+        footer={null}
+        centered
+        width={450}
+        styles={{ content: { borderRadius: '24px' } }}
+      >
+        <div className="mb-6">
+          <p className="text-gray-500 text-sm font-medium">
+            Join the <span className="text-green-600 font-bold">{selectedSport?.title}</span> trials and represent your faculty.
+          </p>
+        </div>
+        <Form form={form} layout="vertical" onFinish={onRegisterFinish} requiredMark={false}>
+          <Form.Item name="fullName" label={<span className="text-xs font-black uppercase tracking-widest text-gray-400">Full Name</span>} rules={[{ required: true }]}>
+            <Input className="rounded-xl h-12 border-gray-100 bg-gray-50 focus:bg-white" placeholder="Enter your full name" />
+          </Form.Item>
+          <Form.Item name="email" label={<span className="text-xs font-black uppercase tracking-widest text-gray-400">Email Address</span>} rules={[{ required: true, type: 'email' }]}>
+            <Input className="rounded-xl h-12 border-gray-100 bg-gray-50 focus:bg-white" placeholder="Enter your student email" />
+          </Form.Item>
+          <Form.Item name="sport" label={<span className="text-xs font-black uppercase tracking-widest text-gray-400">Sport Category</span>} rules={[{ required: true }]}>
+            <Input className="rounded-xl h-12 border-gray-100 bg-gray-50 focus:bg-white" readOnly />
+          </Form.Item>
+          
+          <div className="flex gap-4 mt-8">
+            <AntButton onClick={() => setRegisterModalVisible(false)} className="flex-1 h-12 rounded-xl font-bold uppercase tracking-widest text-xs">
+              Cancel
+            </AntButton>
+            <AntButton type="primary" htmlType="submit" className="flex-1 h-12 rounded-xl bg-gradient-to-r from-[#43A047] to-[#4CAF50] border-none shadow-md shadow-green-200 font-bold uppercase tracking-widest text-xs">
+              Submit Application
+            </AntButton>
+          </div>
+        </Form>
+      </Modal>
     </div>
   );
 }

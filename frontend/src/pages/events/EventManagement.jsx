@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, Typography, Tag, Modal, Form, Input, Select, InputNumber, message } from 'antd';
+import { Table, Button, Space, Typography, Tag, Modal, Form, Input, Select, InputNumber, message, Tabs } from 'antd';
 import api from '@/lib/api';
 import { useNavigate } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import StudentRequestsSection from '@/components/events/StudentRequestsSection';
+import SportsApplicationsSection from '@/components/events/SportsApplicationsSection';
+import SportsManagementSection from '@/components/events/SportsManagementSection';
 import { mockManagedEvents } from '@/data/mockData';
 
 const { Title } = Typography;
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 const EventManagement = () => {
   const [data, setData] = useState([]);
@@ -22,9 +25,16 @@ const EventManagement = () => {
   }, []);
 
   const fetchEvents = async () => {
-    // Mock data for UI demonstration
-    setData([...mockManagedEvents]);
-    setLoading(false);
+    setLoading(true);
+    try {
+      const response = await api.get('/events');
+      setData(response.data);
+    } catch (error) {
+      console.error('Failed to fetch events:', error);
+      message.error('Failed to load real event data');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const openEditModal = (record) => {
@@ -93,11 +103,32 @@ const EventManagement = () => {
         </Button>
       </div>
 
-      <div style={{ marginBottom: 32 }}>
-        <StudentRequestsSection />
-      </div>
-
-      {/* <Table columns={columns} dataSource={data} rowKey="id" loading={loading} /> */}
+      <Tabs 
+        defaultActiveKey="events" 
+        size="large" 
+        className="custom-tabs"
+        items={[
+          {
+            key: 'events',
+            label: 'Event Posts',
+            children: (
+              <div style={{ marginBottom: 32 }}>
+                <StudentRequestsSection />
+              </div>
+            )
+          },
+          {
+            key: 'sports',
+            label: 'Sports Applications',
+            children: <SportsApplicationsSection />
+          },
+          {
+            key: 'categories',
+            label: 'Sport Categories',
+            children: <SportsManagementSection />
+          }
+        ]}
+      />
 
       <Modal 
         title={`Edit Event: ${editingEvent?.title}`} 

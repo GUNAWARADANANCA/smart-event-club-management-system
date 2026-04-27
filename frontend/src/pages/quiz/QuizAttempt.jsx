@@ -1,8 +1,21 @@
 import React from 'react';
 import { Form, Radio, Button, Card, Typography, message } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
+import api from '@/lib/api';
 
 const { Title, Paragraph, Text } = Typography;
+const LOCAL_RESULTS_KEY = 'localQuizResults';
+
+const appendLocalQuizResult = (entry) => {
+  try {
+    const existing = JSON.parse(localStorage.getItem(LOCAL_RESULTS_KEY) || '[]');
+    const safe = Array.isArray(existing) ? existing : [];
+    safe.unshift(entry);
+    localStorage.setItem(LOCAL_RESULTS_KEY, JSON.stringify(safe.slice(0, 100)));
+  } catch {
+    // ignore local storage write failures
+  }
+};
 
 const quizBank = {
   'oop-basics': {
@@ -201,6 +214,27 @@ const QuizAttempt = () => {
     });
 
     const score = Math.round((correctCount / quiz.questions.length) * 100);
+
+    appendLocalQuizResult({
+      quizId,
+      quizTitle: quiz.title,
+      score,
+      totalQuestions: quiz.questions.length,
+      createdAt: new Date().toISOString(),
+    });
+    
+    // Save result to backend
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      api.post('/api/quiz/results', {
+        userId,
+        quizId: quizId,
+        quizTitle: quiz.title,
+        score,
+        totalQuestions: quiz.questions.length
+      }).catch(err => console.error('Failed to save quiz result:', err));
+    }
+
     message.success('Quiz submitted successfully!');
     navigate('/quizzes/result', {
       state: {

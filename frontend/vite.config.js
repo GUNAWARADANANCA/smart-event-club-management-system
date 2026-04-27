@@ -6,14 +6,15 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  root: path.resolve(__dirname, 'frontend'),
+  root: __dirname,
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'frontend/src'),
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   server: {
     port: 5173,
+    strictPort: true,
   },
 })

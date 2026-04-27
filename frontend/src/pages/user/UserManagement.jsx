@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Card, Typography, Select, message, Modal } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Card, Typography, Select, message, Modal, Tag } from 'antd';
 import { mockRequests } from '@/data/mockData';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Users, GraduationCap } from 'lucide-react';
+import { BookOpen, Users, GraduationCap, Trophy } from 'lucide-react';
+import { TrophyOutlined, ClockCircleOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import api from '@/lib/api';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -39,6 +41,24 @@ const hubCards = [
     tag: 'Student Portal',
     route: '/sis',
   },
+  {
+    icon: Trophy,
+    title: 'Sports Section',
+    desc: 'Browse and register for various university sports teams and upcoming trials.',
+    color: '#10B981',
+    gradient: 'linear-gradient(135deg, #10B981, #059669)',
+    glow: 'rgba(16,185,129,0.3)',
+    tag: 'Sports',
+    route: '/sports',
+  },
+];
+
+const mockSports = [
+  { id: 1, name: 'Cricket', season: 'Annual', registrationOpen: true },
+  { id: 2, name: 'Football', season: 'Summer', registrationOpen: true },
+  { id: 3, name: 'Tennis', season: 'Winter', registrationOpen: false },
+  { id: 4, name: 'Swimming', season: 'Annual', registrationOpen: true },
+  { id: 5, name: 'Badminton', season: 'All-Year', registrationOpen: true },
 ];
 
 const clubLeaders = [
@@ -93,6 +113,51 @@ const RequestManagement = () => {
   const navigate = useNavigate();
   const [leadersOpen, setLeadersOpen] = useState(false);
   const [sisOpen, setSisOpen] = useState(false);
+  const [sportsOpen, setSportsOpen] = useState(false);
+  const [userSports, setUserSports] = useState([]);
+  const [loadingSports, setLoadingSports] = useState(false);
+
+  useEffect(() => {
+    if (sportsOpen) {
+      fetchUserSports();
+    }
+  }, [sportsOpen]);
+
+  const fetchUserSports = async () => {
+    setLoadingSports(true);
+    try {
+      const { data } = await api.get('/api/sports/my-registrations');
+      setUserSports(data);
+    } catch (error) {
+      console.error(error);
+      // message.error('Failed to load sports registrations');
+    } finally {
+      setLoadingSports(false);
+    }
+  };
+
+  const handleSportRegister = async (sportName) => {
+    try {
+      const fullName = localStorage.getItem('userName') || 'Student';
+      const email = localStorage.getItem('userEmail') || '';
+      
+      await api.post('/api/sports/register', { 
+        sport: sportName,
+        fullName,
+        email
+      });
+      message.success(`Application for ${sportName} submitted successfully and is now pending.`);
+      fetchUserSports();
+    } catch (error) {
+      const msg = error.response?.data?.error || `Failed to register for ${sportName}`;
+      message.error(msg);
+    }
+  };
+
+  const getSportStatus = (sportName) => {
+    const reg = userSports.find(s => s.sport === sportName);
+    return reg ? reg.status : null;
+  };
 
   const onFinish = (values) => {
     const newRequest = {
@@ -135,6 +200,10 @@ const RequestManagement = () => {
                   }
                   if (route === '/sis') {
                     setSisOpen(true);
+                    return;
+                  }
+                  if (route === '/sports') {
+                    setSportsOpen(true);
                     return;
                   }
                   navigate(route);
@@ -344,6 +413,84 @@ const RequestManagement = () => {
               </div>
             ))}
           </div>
+        </div>
+      </Modal>
+
+      <Modal
+        title={
+          <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <TrophyOutlined style={{ color: '#10B981' }} />
+            <span>Sports Registration Portal</span>
+          </span>
+        }
+        open={sportsOpen}
+        onCancel={() => setSportsOpen(false)}
+        footer={[
+          <Button key="close" type="primary" onClick={() => setSportsOpen(false)} style={{ background: '#10B981', borderColor: '#059669' }}>
+            Close
+          </Button>,
+        ]}
+        width={600}
+      >
+        <div style={{ marginBottom: 20, color: '#64748B', fontSize: 13, background: '#ECFDF5', padding: '10px 14px', borderRadius: 10, border: '1px solid #D1FAE5' }}>
+          🏅 Select a sport from the list below and click the registration button to join the team or trial sessions.
+        </div>
+        <div style={{ display: 'grid', gap: 12 }}>
+          {mockSports.map((sport) => {
+            const sportReg = userSports.find(s => s.sport === sport.name);
+            const status = sportReg ? sportReg.status : null;
+            return (
+              <div
+                key={sport.id}
+                style={{
+                  border: '1px solid #D1FAE5',
+                  borderRadius: 16,
+                  padding: '16px 20px',
+                  background: '#FFFFFF',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.05)'
+                }}
+              >
+                <div>
+                  <div style={{ color: '#1F2937', fontWeight: 700, fontSize: 16 }}>{sport.name}</div>
+                  <div style={{ color: '#059669', fontSize: 12, fontWeight: 600, marginTop: 2 }}>{sport.season} Season</div>
+                </div>
+                
+                {status ? (
+                  <div style={{ textAlign: 'right' }}>
+                    <Tag 
+                      icon={status === 'Approved' ? <CheckCircleOutlined /> : status === 'Pending' ? <ClockCircleOutlined /> : <CloseCircleOutlined />} 
+                      color={status === 'Approved' ? 'success' : status === 'Pending' ? 'processing' : 'error'}
+                      style={{ borderRadius: 6, padding: '4px 8px', fontWeight: 600 }}
+                    >
+                      {status === 'Rejected' ? 'CANCELLED' : status.toUpperCase()}
+                    </Tag>
+                    {status === 'Approved' && sportReg.scheduledDate && (
+                      <div style={{ marginTop: 8, fontSize: 11, color: '#059669', fontWeight: 700, background: '#F0FDF4', padding: '4px 8px', borderRadius: 6, border: '1px solid #DCFCE7' }}>
+                        📅 Trial: {sportReg.scheduledDate} @ {sportReg.scheduledTime}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Button
+                    type="primary"
+                    disabled={!sport.registrationOpen}
+                    onClick={() => handleSportRegister(sport.name)}
+                    style={{
+                      background: sport.registrationOpen ? '#10B981' : '#E5E7EB',
+                      borderColor: sport.registrationOpen ? '#10B981' : '#E5E7EB',
+                      borderRadius: 8,
+                      fontWeight: 600
+                    }}
+                  >
+                    {sport.registrationOpen ? 'Register Now' : 'Closed'}
+                  </Button>
+                )}
+              </div>
+            );
+          })}
         </div>
       </Modal>
 
