@@ -6,9 +6,10 @@ const MONGO_URI = process.env.MONGO_URI?.trim();
 
 // Optional: comma-separated resolvers (e.g. 8.8.8.8,1.1.1.1). Helps when the system DNS
 // refuses SRV lookups for mongodb+srv (querySrv ECONNREFUSED on some Windows setups).
-const dnsServers = process.env.DNS_SERVERS?.split(',')
-  .map((s) => s.trim())
-  .filter(Boolean);
+const dnsServers = process.env.DNS_SERVERS
+  ? process.env.DNS_SERVERS.split(',').map((s) => s.trim()).filter(Boolean)
+  : ['8.8.8.8', '1.1.1.1']; // Fallback to Google and Cloudflare DNS to fix ENOTFOUND issues
+
 if (Array.isArray(dnsServers) && dnsServers.length > 0) {
   dns.setServers(dnsServers);
 }
@@ -26,6 +27,9 @@ mongoose.connection.on('error', (err) => {
 mongoose.connection.on('disconnected', () => {
   console.log('[MongoDB] Disconnected');
 });
+
+const util = require('node:util');
+const resolve4 = util.promisify(dns.resolve4);
 
 /**
  * Connect to MongoDB using MONGO_URI.
@@ -47,8 +51,30 @@ async function connectDb() {
       strict: true,
       deprecationErrors: true,
     },
-    autoSelectFamily: false,
-    family: 4,
+    serverSelectionTimeoutMS: 50000, // Keep trying to send operations for 50 seconds
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    connectTimeoutMS: 50000, // Give up initial connection after 50 seconds
+    maxPoolSize: 50, // Maintain up to 50 socket connections
+    // Fix for intermittent ENOTFOUND DNS issues in some network environments
+    lookup: (hostname, options, callback) => {
+      let cb = typeof options === 'function' ? options : callback;
+      let opts = typeof options === 'object' ? options : {};
+      resolve4(hostname)
+        .then(addresses => {
+          if (addresses && addresses.length > 0) {
+            if (opts.all) {
+              cb(null, addresses.map(addr => ({ address: addr, family: 4 })));
+            } else {
+              cb(null, addresses[0], 4);
+            }
+          } else {
+            dns.lookup(hostname, options, callback); // Fallback
+          }
+        })
+        .catch(err => {
+          dns.lookup(hostname, options, callback); // Fallback
+        });
+    }
   });
 
   return mongoose.connection;
