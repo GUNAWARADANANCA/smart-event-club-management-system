@@ -196,7 +196,7 @@ const ViewFeedback = () => {
           <Button type="link" style={{ color: "#4CAF50", padding: 0 }} onClick={() => setSelectedFeedback(record)}>
             View
           </Button>
-          {/* <Button
+          <Button
             type="text" size="small"
             icon={<Pencil size={13} />}
             style={{ color: "#1890ff", padding: "2px 6px" }}
@@ -211,7 +211,7 @@ const ViewFeedback = () => {
             onClick={() => handleDelete(record)}
           >
             Delete
-          </Button> */}
+          </Button>
         </div>
       ),
     },

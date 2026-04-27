@@ -24,7 +24,7 @@ const Home = () => {
   };
 
   const handleGalleryClick = () => {
-    const token = localStorage.getItem('token');
+    const token = getAuthToken();
 
     if (!token) {
       navigate('/login', { state: { from: '/gallery' } });
