@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Row, Col, Card, Button, Typography, Modal, Form, Input, Dropdown, Tag, message } from 'antd';
-import { DownloadOutlined, TrophyOutlined, BarChartOutlined } from '@ant-design/icons';
+import { Row, Col, Card, Button, Typography, Modal, Form, Input, Dropdown, Tag, message, Select, DatePicker, Divider } from 'antd';
+import { DownloadOutlined, TrophyOutlined, BarChartOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '@/lib/api';
 import { getAuthRole, ROLES } from '@/lib/auth';
@@ -202,10 +202,14 @@ const FilterButton = ({ label, filter, currentFilter, onClick, isCompletedFilter
   );
 };
 
-const QuizCard = ({ quiz, onStartQuiz, onMaterialClick, highlighted, isCompleted }) => {
+const QuizCard = ({ quiz, onStartQuiz, onMaterialClick, highlighted, isCompleted, currentUserId, isAdmin, onEditQuiz, onDeleteQuiz }) => {
   const closed = isQuizClosed(quiz);
   const quizKey = quiz?.id || quiz?._id;
   const coverImage = quizCoverImageMap[quizKey] || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=60';
+  
+  // Check if current user created this quiz
+  const isCreator = currentUserId && quiz.createdBy && String(quiz.createdBy) === String(currentUserId);
+  const canEdit = isAdmin;
   
   return (
     <Card
@@ -245,9 +249,16 @@ const QuizCard = ({ quiz, onStartQuiz, onMaterialClick, highlighted, isCompleted
             </Text>
             <Title level={4} style={{ margin: '8px 0 0', color: '#ffffff' }}>{quiz.title}</Title>
           </div>
-          <Tag color={isCompleted ? 'green' : 'blue'} style={{ borderRadius: 999, marginTop: 2 }}>
-            {isCompleted ? 'Completed' : 'Pending'}
-          </Tag>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {canEdit && (
+              <Tag color="orange" style={{ borderRadius: 999, marginTop: 2 }}>
+                Admin
+              </Tag>
+            )}
+            <Tag color={isCompleted ? 'green' : 'blue'} style={{ borderRadius: 999, marginTop: 2 }}>
+              {isCompleted ? 'Completed' : 'Pending'}
+            </Tag>
+          </div>
         </div>
       </div>
 
@@ -256,7 +267,7 @@ const QuizCard = ({ quiz, onStartQuiz, onMaterialClick, highlighted, isCompleted
       
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 24 }}>
           <div>
-            <Text type="secondary">{quiz.questions} Questions</Text>
+            <Text type="secondary">{Array.isArray(quiz.questions) ? quiz.questions.length : quiz.questions || 0} Questions</Text>
             <div>
               <Text type="secondary" style={{ fontSize: 12 }}>
                 Closes on {quiz.closeDate}
@@ -264,7 +275,7 @@ const QuizCard = ({ quiz, onStartQuiz, onMaterialClick, highlighted, isCompleted
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
             {quiz.materials?.length > 0 && (
               <Dropdown
                 menu={{
@@ -286,14 +297,34 @@ const QuizCard = ({ quiz, onStartQuiz, onMaterialClick, highlighted, isCompleted
               </Dropdown>
             )}
             
-            <Button
-              type="primary"
-              disabled={closed}
-              onClick={() => onStartQuiz(quiz, closed)}
-              style={closed ? undefined : { background: '#4CAF50', borderColor: '#43A047', borderRadius: 8 }}
-            >
-              {closed ? 'Unavailable' : isCompleted ? 'Retry Quiz' : 'Start Quiz'}
-            </Button>
+            {canEdit ? (
+              <div style={{ display: 'flex', gap: 8 }}>
+                <Button
+                  type="default"
+                  onClick={() => onEditQuiz(quiz)}
+                  style={{ borderColor: '#1890ff', color: '#1890ff', borderRadius: 8 }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  type="primary"
+                  danger
+                  onClick={() => onDeleteQuiz(quiz)}
+                  style={{ borderRadius: 8 }}
+                >
+                  Delete
+                </Button>
+              </div>
+            ) : !isAdmin ? (
+              <Button
+                type="primary"
+                disabled={closed}
+                onClick={() => onStartQuiz(quiz, closed)}
+                style={closed ? undefined : { background: '#4CAF50', borderColor: '#43A047', borderRadius: 8 }}
+              >
+                {closed ? 'Unavailable' : isCompleted ? 'Retry Quiz' : 'Start Quiz'}
+              </Button>
+            ) : null}
           </div>
         </div>
       </div>
@@ -366,12 +397,162 @@ const MaterialsModal = ({ modalState, onClose }) => (
   </Modal>
 );
 
+const UpdateQuizModal = ({ visible, quiz, form, onSubmit, onCancel, loading }) => (
+  <Modal
+    title="Update Quiz"
+    open={visible}
+    onCancel={onCancel}
+    width={800}
+    bodyStyle={{ maxHeight: '70vh', overflowY: 'auto' }}
+    footer={[
+      <Button key="cancel" onClick={onCancel}>
+        Cancel
+      </Button>,
+      <Button key="submit" type="primary" loading={loading} onClick={() => form.submit()} style={{ background: '#4CAF50' }}>
+        Update Quiz
+      </Button>,
+    ]}
+  >
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={onSubmit}
+      autoComplete="off"
+    >
+      <Form.Item
+        name="title"
+        label="Quiz Title"
+        rules={[{ required: true, message: 'Please enter quiz title' }]}
+      >
+        <Input placeholder="Enter quiz title" />
+      </Form.Item>
+
+      <Form.Item
+        name="description"
+        label="Description"
+        rules={[{ required: true, message: 'Please enter quiz description' }]}
+      >
+        <Input.TextArea rows={3} placeholder="Enter quiz description" />
+      </Form.Item>
+
+      <Form.Item
+        name="timeLimit"
+        label="Time Limit (minutes)"
+      >
+        <Input type="number" placeholder="Enter time limit in minutes" />
+      </Form.Item>
+
+      <Form.Item
+        name="closeDate"
+        label="Close Date"
+      >
+        <Input type="date" placeholder="Enter close date" />
+      </Form.Item>
+
+      <Divider style={{ margin: '16px 0' }}>Questions</Divider>
+
+      <Form.List name="questions">
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map((field, index) => (
+              <Card key={field.key} style={{ marginBottom: 12, borderRadius: 8, border: '1px solid #e0e0e0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <Text strong>Question {index + 1}</Text>
+                  {fields.length > 1 && (
+                    <Button
+                      type="text"
+                      danger
+                      size="small"
+                      icon={<DeleteOutlined />}
+                      onClick={() => remove(field.name)}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+
+                <Form.Item
+                  {...field}
+                  name={[field.name, 'text']}
+                  label="Question Text"
+                  rules={[{ required: true, message: 'Enter question text' }]}
+                >
+                  <Input.TextArea rows={2} placeholder="Enter the question" />
+                </Form.Item>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <Form.Item
+                    {...field}
+                    name={[field.name, 'option1']}
+                    label="Option 1"
+                    rules={[{ required: true, message: 'Enter option 1' }]}
+                  >
+                    <Input placeholder="Option 1" />
+                  </Form.Item>
+                  <Form.Item
+                    {...field}
+                    name={[field.name, 'option2']}
+                    label="Option 2"
+                    rules={[{ required: true, message: 'Enter option 2' }]}
+                  >
+                    <Input placeholder="Option 2" />
+                  </Form.Item>
+                  <Form.Item
+                    {...field}
+                    name={[field.name, 'option3']}
+                    label="Option 3"
+                    rules={[{ required: true, message: 'Enter option 3' }]}
+                  >
+                    <Input placeholder="Option 3" />
+                  </Form.Item>
+                  <Form.Item
+                    {...field}
+                    name={[field.name, 'option4']}
+                    label="Option 4"
+                    rules={[{ required: true, message: 'Enter option 4' }]}
+                  >
+                    <Input placeholder="Option 4" />
+                  </Form.Item>
+                </div>
+
+                <Form.Item
+                  {...field}
+                  name={[field.name, 'correctAnswer']}
+                  label="Correct Answer"
+                  rules={[{ required: true, message: 'Select correct answer' }]}
+                >
+                  <Select placeholder="Select correct option">
+                    <Select.Option value={1}>Option 1</Select.Option>
+                    <Select.Option value={2}>Option 2</Select.Option>
+                    <Select.Option value={3}>Option 3</Select.Option>
+                    <Select.Option value={4}>Option 4</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Card>
+            ))}
+            <Button
+              type="dashed"
+              block
+              icon={<PlusOutlined />}
+              onClick={() => add()}
+              style={{ marginTop: 12 }}
+            >
+              Add Question
+            </Button>
+          </>
+        )}
+      </Form.List>
+    </Form>
+  </Modal>
+);
+
 // ==================== MAIN COMPONENT ====================
 const QuizManagement = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const authRole = getAuthRole() || ROLES.STUDENT;
   const isAdmin = authRole !== ROLES.STUDENT;
+  const currentUserId = localStorage.getItem('userId');
   
   // State Management
   const [quizzes, setQuizzes] = useState([]);
@@ -382,15 +563,33 @@ const QuizManagement = () => {
   const [isAchievementModalVisible, setIsAchievementModalVisible] = useState(false);
   const [materialModal, setMaterialModal] = useState({ visible: false, title: '', content: '', links: [] });
   const [focusQuizId, setFocusQuizId] = useState(null);
+  const [editingQuiz, setEditingQuiz] = useState(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
   
   // Form Instances
   const [quizForm] = Form.useForm();
   const [achievementForm] = Form.useForm();
+  const [editForm] = Form.useForm();
 
   // ==================== DATA FETCHING ====================
   const fetchQuizzes = useCallback(async () => {
-    const localQuizzes = readLocalQuizzes();
-    setQuizzes(mergeQuizzes(fallbackQuizzes, localQuizzes));
+    try {
+      // Fetch from API
+      const serverQuizzes = await api.get('/api/quiz')
+        .then((res) => (Array.isArray(res.data) ? res.data : []))
+        .catch(() => []);
+      
+      // Also read local quizzes
+      const localQuizzes = readLocalQuizzes();
+      
+      // Merge server and local quizzes
+      setQuizzes(mergeQuizzes(serverQuizzes, localQuizzes));
+    } catch (error) {
+      // Fallback to local and fallback quizzes
+      const localQuizzes = readLocalQuizzes();
+      setQuizzes(mergeQuizzes(fallbackQuizzes, localQuizzes));
+    }
   }, []);
 
   const fetchResults = useCallback(async () => {
@@ -431,7 +630,8 @@ const QuizManagement = () => {
     setIsModalVisible(false);
     navigate('/quizzes/attempt', {
       state: {
-        quizId: selectedQuiz?.id,
+        quizId: selectedQuiz?._id || selectedQuiz?.id,
+        quiz: selectedQuiz,
         fullName: values.fullName.trim(),
         email: values.email.trim(),
       },
@@ -445,6 +645,94 @@ const QuizManagement = () => {
     setIsAchievementModalVisible(false);
     achievementForm.resetFields();
     navigate('/quizzes/performance');
+  };
+
+  const handleEditQuiz = (quiz) => {
+    setEditingQuiz(quiz);
+    setIsEditModalVisible(true);
+    
+    // Reset form first to ensure Form.List fields are properly initialized
+    editForm.resetFields();
+    
+    // Prepare questions data
+    const questionsData = (quiz.questions || []).map(q => ({
+      text: q.text,
+      option1: q.options?.[0] || '',
+      option2: q.options?.[1] || '',
+      option3: q.options?.[2] || '',
+      option4: q.options?.[3] || '',
+      correctAnswer: q.correctAnswer
+    }));
+    
+    // Set form values including questions
+    setTimeout(() => {
+      editForm.setFieldsValue({
+        title: quiz.title,
+        description: quiz.description,
+        timeLimit: quiz.timeLimit,
+        closeDate: quiz.closeDate,
+        questions: questionsData.length > 0 ? questionsData : [{}]
+      });
+    }, 0);
+  };
+
+  const handleUpdateQuiz = async (values) => {
+    try {
+      setEditLoading(true);
+      const quizId = editingQuiz._id || editingQuiz.id;
+      const payload = {
+        title: values.title,
+        description: values.description,
+        timeLimit: values.timeLimit,
+        closeDate: values.closeDate,
+        questions: (values.questions || []).map(q => ({
+          text: q.text,
+          options: [q.option1, q.option2, q.option3, q.option4],
+          correctAnswer: q.correctAnswer
+        }))
+      };
+
+      await api.put(`/api/quiz/${quizId}`, payload);
+      message.success('Quiz updated successfully');
+      setIsEditModalVisible(false);
+      editForm.resetFields();
+      setEditingQuiz(null);
+      fetchQuizzes();
+    } catch (error) {
+      message.error(error.response?.data?.error || 'Failed to update quiz');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  const handleDeleteQuiz = (quiz) => {
+    Modal.confirm({
+      title: 'Delete Quiz',
+      content: `Are you sure you want to delete "${quiz.title}"? This action cannot be undone.`,
+      okText: 'Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        try {
+          const quizId = quiz._id || quiz.id;
+          
+          if (String(quizId).startsWith('local-')) {
+            const localQuizzes = readLocalQuizzes();
+            const updated = localQuizzes.filter(q => q.id !== quizId);
+            localStorage.setItem(LOCAL_QUIZZES_KEY, JSON.stringify(updated));
+            message.success('Local quiz deleted successfully');
+            fetchQuizzes();
+            return;
+          }
+
+          await api.delete(`/api/quiz/${quizId}`);
+          message.success('Quiz deleted successfully');
+          fetchQuizzes();
+        } catch (error) {
+          message.error('Failed to delete quiz. Please try again.');
+        }
+      },
+    });
   };
 
   const closeMaterialModal = () => {
@@ -554,6 +842,91 @@ const QuizManagement = () => {
         </div>
       </div>
 
+      {/* Admin - My Created Quizzes Section */}
+      {isAdmin && (
+        <div style={{ marginBottom: 32, padding: '20px', borderRadius: 20, background: '#F7FCF7', border: '2px solid #C8E6C9' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <div style={{ width: 4, height: 24, background: '#FF9800', borderRadius: 2 }}></div>
+            <Title level={3} style={{ margin: 0, color: '#E65100' }}>My Created Quizzes</Title>
+          </div>
+          
+          {(() => {
+            const myQuizzes = quizzes.filter(q => String(q.createdBy) === String(currentUserId));
+            
+            if (myQuizzes.length === 0) {
+              return (
+                <Paragraph style={{ color: '#4B5563', marginBottom: 0 }}>
+                  You haven't created any quizzes yet. 
+                  <Button 
+                    type="link" 
+                    onClick={() => navigate('/quizzes/create')}
+                    style={{ color: '#4CAF50', padding: '0 4px' }}
+                  >
+                    Create your first quiz
+                  </Button>
+                </Paragraph>
+              );
+            }
+
+            return (
+              <Row gutter={[16, 16]}>
+                {myQuizzes.map(quiz => (
+                  <Col xs={24} sm={12} lg={8} key={quiz._id}>
+                    <Card
+                      style={{
+                        borderRadius: 16,
+                        border: '1px solid #FFE0B2',
+                        background: '#FFFEF0',
+                        overflow: 'hidden',
+                        height: '100%',
+                        boxShadow: '0 4px 12px rgba(255, 152, 0, 0.08)'
+                      }}
+                    >
+                      <div style={{ marginBottom: 12 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                          <Tag color="orange" style={{ borderRadius: 4 }}>Your Quiz</Tag>
+                          <Text type="secondary" style={{ fontSize: 12 }}>
+                            {quiz.questions?.length || 0} questions
+                          </Text>
+                        </div>
+                        <Title level={5} style={{ margin: '8px 0', color: '#1F2937' }}>
+                          {quiz.title}
+                        </Title>
+                        <Paragraph style={{ color: '#4B5563', fontSize: 12, marginBottom: 8 }}>
+                          {quiz.description || 'No description'}
+                        </Paragraph>
+                        <Text type="secondary" style={{ fontSize: 11 }}>
+                          Closes: {quiz.closeDate}
+                        </Text>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                        <Button
+                          size="small"
+                          type="primary"
+                          onClick={() => handleEditQuiz(quiz)}
+                          style={{ background: '#FF9800', border: 'none', flex: 1, borderRadius: 6 }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="small"
+                          danger
+                          onClick={() => handleDeleteQuiz(quiz)}
+                          style={{ flex: 1, borderRadius: 6 }}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            );
+          })()}
+        </div>
+      )}
+
       {/* Filter Section */}
       {focusQuizId && (
         <div
@@ -609,6 +982,10 @@ const QuizManagement = () => {
               onMaterialClick={handleMaterialClick}
               highlighted={focusQuizId === quiz.id}
               isCompleted={isCompleted}
+              currentUserId={currentUserId}
+              isAdmin={isAdmin}
+              onEditQuiz={handleEditQuiz}
+              onDeleteQuiz={handleDeleteQuiz}
             />
               );
             })()}
@@ -649,6 +1026,19 @@ const QuizManagement = () => {
       />
 
       <MaterialsModal modalState={materialModal} onClose={closeMaterialModal} />
+
+      <UpdateQuizModal
+        visible={isEditModalVisible}
+        quiz={editingQuiz}
+        form={editForm}
+        onSubmit={handleUpdateQuiz}
+        onCancel={() => {
+          setIsEditModalVisible(false);
+          editForm.resetFields();
+          setEditingQuiz(null);
+        }}
+        loading={editLoading}
+      />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card, Space, Typography, message, Divider, Select, Tooltip, Alert } from 'antd';
 import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, SaveOutlined, QuestionCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-
+import api from '@/lib/api';
 const { Title, Text } = Typography;
 const { Option } = Select;
 
@@ -41,16 +41,7 @@ const CreateQuiz = () => {
         }))
       };
 
-      const localQuiz = {
-        id: `local-${Date.now()}`,
-        title: payload.title,
-        description: payload.description || '',
-        questions: payload.questions?.length || 0,
-        closeDate: isoDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)),
-        materials: [],
-      };
-
-      addLocalQuiz(localQuiz);
+      await api.post('/api/quiz', payload);
       message.success({
         content: 'Quiz created successfully!',
         icon: <CheckCircleOutlined style={{ color: '#4CAF50' }} />,

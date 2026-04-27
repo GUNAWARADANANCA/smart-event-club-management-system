@@ -10,12 +10,7 @@ const LOCAL_QUIZZES_KEY = 'localQuizzes';
 const LOCAL_RESULTS_KEY = 'localQuizResults';
 const PASS_SCORE = 50;
 
-const fallbackQuizzes = [
-  { id: 'oop-basics', title: 'OOP Basics', closeDate: '2026-05-30' },
-  { id: 'csharp-basics', title: 'C# Basics', closeDate: '2026-04-05' },
-  { id: 'cpp-basics', title: 'C++ Basics', closeDate: '2026-05-20' },
-  { id: 'java-basics', title: 'Java Basics', closeDate: '2026-04-05' },
-];
+// Removed fallbackQuizzes to ensure only real data is shown
 
 const readLocalQuizzes = () => {
   try {
@@ -107,7 +102,7 @@ const QuizOverallProgress = () => {
         ]);
 
         const serverQuizzes = Array.isArray(quizRes.data) ? quizRes.data : [];
-        const merged = [...fallbackQuizzes, ...serverQuizzes, ...readLocalQuizzes()]
+        const merged = [...serverQuizzes, ...readLocalQuizzes()]
           .map(normalizeQuiz)
           .filter((quiz) => quiz.id || quiz.title)
           .reduce((acc, quiz) => {

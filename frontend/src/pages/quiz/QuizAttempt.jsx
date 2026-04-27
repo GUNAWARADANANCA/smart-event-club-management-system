@@ -187,8 +187,38 @@ const isQuizClosed = (quiz) => Boolean(quiz?.closeDate && quiz.closeDate < TODAY
 const QuizAttempt = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const quizId = location.state?.quizId || 'oop-basics';
-  const quiz = quizBank[quizId] || quizBank['oop-basics'];
+
+  const passedQuiz = location.state?.quiz;
+  let quizId = location.state?.quizId || 'oop-basics';
+  let quiz = quizBank[quizId];
+
+  if (passedQuiz) {
+    quizId = passedQuiz._id || passedQuiz.id || quizId;
+    quiz = {
+      ...passedQuiz,
+      questions: (passedQuiz.questions || []).map((q, idx) => {
+        let answerKey = 'a';
+        if (q.correctAnswer === 1 || q.correctAnswer === '1' || q.correctAnswer === 'option1') answerKey = 'a';
+        else if (q.correctAnswer === 2 || q.correctAnswer === '2' || q.correctAnswer === 'option2') answerKey = 'b';
+        else if (q.correctAnswer === 3 || q.correctAnswer === '3' || q.correctAnswer === 'option3') answerKey = 'c';
+        else if (q.correctAnswer === 4 || q.correctAnswer === '4' || q.correctAnswer === 'option4') answerKey = 'd';
+
+        return {
+          id: q._id || `q${idx}`,
+          text: q.text,
+          options: {
+            a: q.options?.[0] || '',
+            b: q.options?.[1] || '',
+            c: q.options?.[2] || '',
+            d: q.options?.[3] || '',
+          },
+          answer: answerKey,
+        };
+      }),
+    };
+  }
+
+  if (!quiz) quiz = quizBank['oop-basics'];
 
   const fullName = location.state?.fullName || '';
   const email = location.state?.email || '';
