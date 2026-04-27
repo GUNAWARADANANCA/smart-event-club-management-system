@@ -85,13 +85,6 @@ router.put('/:id', async (req, res, next) => {
     next(err);
   }
 });
-    }
-
-    res.json(quiz);
-  } catch (err) {
-    next(err);
-  }
-});
 
 // Delete quiz
 router.delete('/:id', async (req, res, next) => {
@@ -100,16 +93,6 @@ router.delete('/:id', async (req, res, next) => {
     const quiz = await Quiz.findByIdAndDelete(req.params.id);
     if (!quiz) return res.status(404).json({ error: 'Quiz not found' });
     await QuizResult.deleteMany({ quizId: req.params.id });
-    res.json({ message: 'Quiz deleted successfully' });
-  } catch (err) {
-    next(err);
-  }
-});
-    }
-    
-    // Also delete associated results
-    await QuizResult.deleteMany({ quizId: req.params.id });
-
     res.json({ message: 'Quiz deleted successfully' });
   } catch (err) {
     next(err);
