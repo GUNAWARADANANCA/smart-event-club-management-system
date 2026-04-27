@@ -69,7 +69,7 @@ const USER_STATUS_BADGES = [
   { label: ' Student', variant: 'default', tooltip: 'Student Status' },
   { label: ' Joined 2026', variant: 'default', tooltip: 'Member since' },
   { label: ' Active', variant: 'active', tooltip: 'Currently active' },
-  { label: '⭐ Pro Learner', variant: 'premium', tooltip: 'Premium member' },
+  { label: ' Pro Learner', variant: 'premium', tooltip: 'Premium member' },
 ];
 
 const AVATAR_BASE_URL = 'https://api.dicebear.com/7.x/avataaars/svg';
